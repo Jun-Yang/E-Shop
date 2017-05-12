@@ -7,9 +7,9 @@ require_once 'vendor/autoload.php';
 
 //DB::$host = '127.0.0.1';
 //OldPassword: ya4Ki9TUSaRATOhq  7qJtprZ2wqz5mqxD  L9Ts9LGTKVVJw3z6
-DB::$user = 'slimtodo';
+DB::$user = 'eshop';
 DB::$password = '7qJtprZ2wqz5mqxD';
-DB::$dbName = 'slimtodo';
+DB::$dbName = 'eshop';
 DB::$port = 3333;
 DB::$encoding = 'utf8';
 
@@ -33,6 +33,18 @@ $twig = $app->view()->getEnvironment();
 $twig->addGlobal('todouser', $_SESSION['todouser']);
 
 // STATE 1: First show
+$app->get('/index', function() use ($app) {
+    $app->render('index.html.twig');
+});
+
+$app->get('/category', function() use ($app) {
+    $app->render('category.html.twig');
+});
+
+$app->get('/product', function() use ($app) {
+    $app->render('product.html.twig');
+});
+
 $app->get('/register', function() use ($app) {
     $app->render('register.html.twig');
 });
