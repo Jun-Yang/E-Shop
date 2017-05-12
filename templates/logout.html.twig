@@ -2,9 +2,14 @@
 
 {% block title %}Logout successful{% endblock %}
 
-{% block content %}
+{% block headExtra %}
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/product.css" rel="stylesheet">
+{% endblock %}
 
-<p>You've logged out succesfully.
+{% block content %}
+    <p>You've logged out succesfully.
     <a href="/login">Click to login</a>.</p>
 
 {% endblock content %}
+

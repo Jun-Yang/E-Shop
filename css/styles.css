@@ -1,18 +1,10 @@
 @import url(http://fonts.googleapis.com/css?family=Tenor+Sans);
-html {
-  background-color: #5D92BA;
-  font-family: "Tenor Sans", sans-serif;
-}
-
-.container {
-  width: 500px;
-  height:500px;
-  margin: 0 auto;
-}
 
 .login, .register, .add-product, .list-product, .edit-product, .delete-product
 {
-  margin-top: 50px;
+  font-family: "Tenor Sans", sans-serif;
+  margin:0 auto;
+  margin-top: 100px;
   width: 450px;
 }
 
@@ -20,7 +12,7 @@ html {
 .edit-product-heading, .delete-product-heading
 {
   font: 1.8em/48px "Tenor Sans", sans-serif;
-  color: white;
+  color: #5D92BA;
 }
 
 .input-txt {
@@ -57,7 +49,7 @@ html {
 {
   margin: 10px 0;
   overflow: hidden;
-  float: left;
+/*  float: left;*/
   width: 100%;
 }
 
@@ -108,19 +100,12 @@ table, th, td {
     display:inline-block;
 }
 
-#footer {    
-    text-align: center;
-}
-
-#header {
-    margin-top: 20px;
-}
-
-#content {
-    margin-top: 100px;
-}
-
 .error-message {
     margin-top: 20px;
     float:left;
+}
+
+#footer {
+    margin:50px 0;
+    text-align: center;
 }

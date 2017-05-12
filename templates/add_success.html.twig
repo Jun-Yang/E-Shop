@@ -2,6 +2,11 @@
 
 {% block title %}Task add successful{% endblock %}
 
+{% block headExtra %}
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/product.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
     <p>You can continue <a href="/add">Add Product</a> 
         or
@@ -10,5 +15,5 @@
     <a href="/delete">delete Product</a>
         or
     <a href="/list">List Product</a>.</p>
-{% endblock %}
+{% endblock content %}
     

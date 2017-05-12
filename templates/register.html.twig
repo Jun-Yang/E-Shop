@@ -3,7 +3,8 @@
 {% block title %}User registration{% endblock %}
 
 {% block headExtra %}
-
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/product.css" rel="stylesheet">
     <script>
         $(document).ready(function () {
             $("#emailInUse").hide();
@@ -30,29 +31,33 @@
 
 {% block content %}
 
-    <div class="register">
-        <h1 class="register-heading">
-            <strong> please register.</strong>
-        </h1>
-        <form method="post">
-            <input type="text" name="name" placeholder="username" required="required" class="input-txt" />
-            <input type="email" name="email" placeholder="email" required="required" class="input-txt" value="{{v.email}}"/>
-            <input type="password" name="pass1" placeholder="password" required="required" class="input-txt" />
-            <input type="password" name="pass2" placeholder="password repeated" required="required" class="input-txt" />
-            <div class="register-footer">
-                <div class ="error-message">
-                    {% if errorList %}
-                        <ul class="errorList">
-                            {% for error in errorList %}
-                                <li>{{ error }}</li>
-                                {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-                <span id="emailInUse">Email already registered</span><br>
-                <button type="submit" class="btn btn--right">Register</button>
+    <div class="container">
+        <div class="row">
+            <div class="register">
+                <h1 class="register-heading">
+                    <strong>Please register.</strong>
+                </h1>
+                <form method="post">
+                    <input type="text" name="name" placeholder="username" required="required" class="input-txt" />
+                    <input type="email" name="email" placeholder="email" required="required" class="input-txt" value="{{v.email}}"/>
+                    <input type="password" name="pass1" placeholder="password" required="required" class="input-txt" />
+                    <input type="password" name="pass2" placeholder="password repeated" required="required" class="input-txt" />
+                    <div class="register-footer">
+                        <div class ="error-message">
+                            {% if errorList %}
+                                <ul class="errorList">
+                                    {% for error in errorList %}
+                                        <li>{{ error }}</li>
+                                        {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                        <span id="emailInUse">Email already registered</span><br>
+                        <button type="submit" class="btn btn--right">Register</button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 
 {% endblock content %}

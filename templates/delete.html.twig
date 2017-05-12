@@ -1,60 +1,63 @@
 {% extends "master.html.twig" %}
 
 {% block title %}Product delete{% endblock %}
-
 {% block headExtra %}
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/product.css" rel="stylesheet">
 
-<script>
-    $(document).ready(function() {
-        $("#taskNameInUse").hide();
-        $("input[name=task]").keyup(function() {
-            var taskName = $(this).val();
-            //console.log("Keyup: " + email);
-            if (taskName === "") {
-                $("#taskNameInUse").hide();
-                return;
-            }
-            $.get("/ajax/tasknameused/" + task, function(result) {
-                result = eval(result);
-                if (result) {
-                    $("#taskNameInUse").show();
-                } else {
+    <script>
+        $(document).ready(function () {
+            $("#taskNameInUse").hide();
+            $("input[name=task]").keyup(function () {
+                var taskName = $(this).val();
+                //console.log("Keyup: " + email);
+                if (taskName === "") {
                     $("#taskNameInUse").hide();
+                    return;
                 }
+                $.get("/ajax/tasknameused/" + task, function (result) {
+                    result = eval(result);
+                    if (result) {
+                        $("#taskNameInUse").show();
+                    } else {
+                        $("#taskNameInUse").hide();
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 
-{% endblock headExtra %}
-
-{% block content %}
-    <div class="delete-product">
-        <h1 class="delete-product-heading">
-            <strong>Delete Product</strong>
-        </h1>
-        <form method="post" enctype="multipart/form-data">
-            <input type="text" name="task" placeholder="Task" required="required" class="input-txt" value="{{todo.task}}"/>
-            <input type="date" name="dueDate" placeholder="DueDate" required="required" class="input-txt" value="{{todo.dueDate}}"/>
-            <select name="isDone" required="required" class="input-txt" />
-              <option value="Pending">Pending</option>
-              <option value="Done">Done</option>
-            </select>
-{#            <textarea name="description" placeholder="Description" required="required" class="input-txt"></textarea>#}
-            {#Image: <input type="file" name="image"><br>#}
-            <div class="delete-product-footer">
-                <div class ="error-message">
-                    {% if errorList %}
-                        <ul class="errorList">
-                            {% for error in errorList %}
-                                <li>{{ error }}</li>
-                                {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-                <button type="submit" class="btn btn--right">Delete Product</button>             
-            </div>
-        </form>
-    </div>
 
 {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="delete-product">
+            <h1 class="delete-product-heading">
+                <strong>Delete Product</strong>
+            </h1>
+            <form method="post" enctype="multipart/form-data">
+                <input type="text" name="task" placeholder="Task" required="required" class="input-txt" value="{{todo.task}}"/>
+                <input type="date" name="dueDate" placeholder="DueDate" required="required" class="input-txt" value="{{todo.dueDate}}"/>
+                <select name="isDone" required="required" class="input-txt" />
+                <option value="Pending">Pending</option>
+                <option value="Done">Done</option>
+                </select>
+                {#            <textarea name="description" placeholder="Description" required="required" class="input-txt"></textarea>#}
+                {#Image: <input type="file" name="image"><br>#}
+                <div class="delete-product-footer">
+                    <div class ="error-message">
+                        {% if errorList %}
+                            <ul class="errorList">
+                                {% for error in errorList %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn--right">Delete Product</button>             
+                </div>
+            </form>
+        </div>
+
+    {% endblock %}

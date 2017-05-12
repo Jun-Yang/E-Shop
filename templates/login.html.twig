@@ -1,24 +1,29 @@
 {% extends "master.html.twig" %}
 {% block title %}Login{% endblock %}
 
+{% block headExtra %}
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/product.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-
-    <div class="login">
-        <h1 class="login-heading">
-            <strong> Please login</strong>
-        </h1>
-        <form method="post">
-            <input type="text" name="name" placeholder="username" required="required" class="input-txt" />
-            <input type="password" name="password" placeholder="password" required="required" class="input-txt" />
-            <div class="login-footer">
-                <button type="submit" class="btn">Login</button>
-                <button type="submit" class="btn btn--right"><a href="/register" class='btn--no--underline'>Register</a></button>
-                {% if error %}
-                    <p class="errorList">Login failed try again.</p>
-                {% endif %}
-            </div>
-        </form>
+    <div class="container">
+        <div class="login">
+            <h1 class="login-heading">
+                <strong> Please login</strong>
+            </h1>
+            <form method="post">
+                <input type="text" name="name" placeholder="username" required="required" class="input-txt" />
+                <input type="password" name="password" placeholder="password" required="required" class="input-txt" />
+                <div class="login-footer">
+                    <button type="submit" class="btn">Login</button>
+                    <button type="submit" class="btn btn--right"><a href="/register" class='btn--no--underline'>Register</a></button>
+                    {% if error %}
+                        <p class="errorList">Login failed try again.</p>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
     </div>
-
 {% endblock content %}
 

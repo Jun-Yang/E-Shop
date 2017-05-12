@@ -2,9 +2,15 @@
 
 {% block title %}Login successful{% endblock %}
 
+{% block headExtra %}
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/product.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-    
-<p>You've logged in succesfully.
-    <a href="/add">Add Product</a>. or
-    <a href="/list">List Product</a>.</p>
+    <div class="container">
+        <p>You've logged in succesfully.
+            <a href="/add">Add Product</a>. or
+            <a href="/list">List Product</a>.</p>
+    </div>
 {% endblock content %}

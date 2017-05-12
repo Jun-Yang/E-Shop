@@ -7,9 +7,9 @@ require_once 'vendor/autoload.php';
 
 //DB::$host = '127.0.0.1';
 //OldPassword: ya4Ki9TUSaRATOhq  7qJtprZ2wqz5mqxD  L9Ts9LGTKVVJw3z6
-DB::$user = 'eshop';
-DB::$password = '7qJtprZ2wqz5mqxD';
-DB::$dbName = 'eshop';
+DB::$user = 'slimtodo';
+DB::$password = 'ya4Ki9TUSaRATOhq';
+DB::$dbName = 'slimtodo';
 DB::$port = 3333;
 DB::$encoding = 'utf8';
 
@@ -124,7 +124,7 @@ $app->get('/login', function() use ($app) {
 });
 
 $app->post('/login', function() use ($app) {
-    print_r($_POST);
+//    print_r($_POST);
     $name = $app->request()->post('name');
     $password = $app->request()->post('password');
     // verification    
