@@ -1,0 +1,34 @@
+{% extends "master.html.twig" %}
+
+{% block title %}Product list{% endblock %}
+
+{% block content %}
+    <div class="list-product">
+        <h1 class="list-product-heading">
+            <strong>List Product</strong>
+        </h1>
+        <form method="post" >
+            <table>
+                <th width = 100px>Task</th>
+                <th width = 200px>DueDate</th>
+                <th width = 200px>Is Done</th>
+                    {% for t in todos %}
+                    <tr>
+                        <td>{{ t.task }}</td>
+                        <td>{{ t.dueDate }}</td>
+                        <td>{{ t.isDone }}</td>
+                        <td><a href="/edit/{{t.id}}">Edit</a>
+                        <td><a href="/delete/{{t.id}}">Delete</a>
+                    </tr>
+                {% endfor %}
+            </table>
+            <div class="list-product-footer">
+                <div class ="error-message">
+                    You can edit or delete task in this page.
+                </div>
+                <button type="submit" class="btn btn--right"><a href="/add" class='btn--no--underline'>Add Task</a></button>
+            </div>
+        </form>    
+    </div>
+
+{% endblock %}

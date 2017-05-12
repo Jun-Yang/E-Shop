@@ -1,0 +1,59 @@
+{% extends "master.html.twig" %}
+
+{% block title %}User registration{% endblock %}
+
+{% block headExtra %}
+
+    <script>
+        $(document).ready(function () {
+            $("#emailInUse").hide();
+            $("input[name=email]").keyup(function () {
+                var email = $(this).val();
+                //console.log("Keyup: " + email);
+                if (email === "") {
+                    $("#emailInUse").hide();
+                    return;
+                }
+                $.get("/ajax/emailused/" + email, function (result) {
+                    result = eval(result);
+                    if (result) {
+                        $("#emailInUse").show();
+                    } else {
+                        $("#emailInUse").hide();
+                    }
+                });
+            });
+        });
+    </script>
+
+{% endblock headExtra %}
+
+{% block content %}
+
+    <div class="register">
+        <h1 class="register-heading">
+            <strong> please register.</strong>
+        </h1>
+        <form method="post">
+            <input type="text" name="name" placeholder="username" required="required" class="input-txt" />
+            <input type="email" name="email" placeholder="email" required="required" class="input-txt" value="{{v.email}}"/>
+            <input type="password" name="pass1" placeholder="password" required="required" class="input-txt" />
+            <input type="password" name="pass2" placeholder="password repeated" required="required" class="input-txt" />
+            <div class="register-footer">
+                <div class ="error-message">
+                    {% if errorList %}
+                        <ul class="errorList">
+                            {% for error in errorList %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <span id="emailInUse">Email already registered</span><br>
+                <button type="submit" class="btn btn--right">Register</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock content %}
+
