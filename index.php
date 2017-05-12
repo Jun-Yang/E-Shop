@@ -6,7 +6,7 @@ session_start();
 require_once 'vendor/autoload.php';
 
 //DB::$host = '127.0.0.1';
-//OldPassword: ya4Ki9TUSaRATOhq  7qJtprZ2wqz5mqxD
+//OldPassword: ya4Ki9TUSaRATOhq  7qJtprZ2wqz5mqxD  L9Ts9LGTKVVJw3z6
 DB::$user = 'slimtodo';
 DB::$password = '7qJtprZ2wqz5mqxD';
 DB::$dbName = 'slimtodo';
