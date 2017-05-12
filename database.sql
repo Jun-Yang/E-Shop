@@ -16,7 +16,7 @@ updated_ip varchar(15) NOT NULL,
 constraint category_pk primary key (name)
 );
  
-drop table products;
+-- drop table products;
 CREATE TABLE products (
 id int NOT NULL,
 category_pk varchar(50) NOT NULL,
@@ -46,61 +46,61 @@ updated_ip varchar(15) NOT NULL,
 constraint products_pk primary key (id)
 );
  
-drop table messages;
+-- drop table messages;
 CREATE TABLE messages (
 email varchar(50) NOT NULL,
 phone varchar(15),
 subject varchar(200),
-message varchar2(4000),
-response varchar2(4000),
+message varchar(4000),
+response varchar(4000),
 status int default 0,
-posted_date date default sysdate,
-created date default sysdate,
+posted_date timestamp default CURRENT_TIMESTAMP,
+created timestamp default CURRENT_TIMESTAMP,
 created_pk varchar(35) DEFAULT NULL,
 created_ip varchar(15) NOT NULL,
-updated date default sysdate,
+updated timestamp default CURRENT_TIMESTAMP,
 updated_pk varchar(35) DEFAULT NULL,
-updated_ip varchar(15) NOT NULL,
+updated_ip varchar(15) NOT NULL
 );
  
-drop table users;
+-- drop table users;
 CREATE TABLE users (
 email varchar(35) NOT NULL,
 password varchar(40) NOT NULL,
 fname varchar(255) not null,
 lname varchar(255) not null,
 phone varchar(255) not null,
-address varchar2(255),
-state varchar2(255),
-city varchar2(255),
-code varchar2(255),
+address varchar(255),
+state varchar(255),
+city varchar(255),
+code varchar(255),
 role varchar(35) default 'user',
 status int DEFAULT '0',
 visits int DEFAULT '0',
-last_login date DEFAULT sysdate,
-created date default sysdate,
+last_login timestamp DEFAULT CURRENT_TIMESTAMP,
+created timestamp default CURRENT_TIMESTAMP,
 created_ip varchar(15) NOT NULL,
-updated date default sysdate,
+updated timestamp default CURRENT_TIMESTAMP,
 updated_ip varchar(15) NOT NULL,
 updated_pk varchar(35) NOT NULL,
  
 constraint users_pk primary key (email)
 );
  
-drop table orders;
+-- drop table orders;
 create table orders(
-email varchar2(255) not null,
-first_name varchar2(255) not null,
-last_name varchar2(255) not null,
-address varchar2(255) not null,
-phone varchar2(255) not null,
-state varchar2(255) not null,
-city varchar2(255) not null,
-code varchar2(255) not null,
-cart varchar2(2048) not null,
+email varchar(255) not null,
+first_name varchar(255) not null,
+last_name varchar(255) not null,
+address varchar(255) not null,
+phone varchar(255) not null,
+state varchar(255) not null,
+city varchar(255) not null,
+code varchar(255) not null,
+cart varchar(2048) not null,
 shipped varchar(5) default 'false',
 shipped_date date default null,
  
-created date default sysdate,
-updated date default sysdate
+created timestamp default CURRENT_TIMESTAMP,
+updated timestamp default CURRENT_TIMESTAMP
 );
