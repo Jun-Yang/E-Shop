@@ -45,6 +45,14 @@ $app->get('/product', function() use ($app) {
     $app->render('product.html.twig');
 });
 
+$app->get('/contact', function() use ($app) {
+    $app->render('contact.html.twig');
+});
+
+$app->get('/about', function() use ($app) {
+    $app->render('about.html.twig');
+});
+
 $app->get('/register', function() use ($app) {
     $app->render('register.html.twig');
 });
