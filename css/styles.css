@@ -109,3 +109,24 @@ table, th, td {
     margin:50px 0;
     text-align: center;
 }
+
+.map {
+    width:400px;
+    height:200px;
+}
+
+
+.locationtable {
+    position: relative;
+ }
+ 
+ #titlelocation {
+color:#fff;
+    font-size:45px;
+    text-align:center;
+}
+
+#subtitlelocation {
+color:#fff;
+    font-size:30px;text-align:center;
+}
