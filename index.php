@@ -7,10 +7,10 @@ require_once 'vendor/autoload.php';
 
 //DB::$host = '127.0.0.1';
 //OldPassword: ya4Ki9TUSaRATOhq  7qJtprZ2wqz5mqxD  L9Ts9LGTKVVJw3z6
-DB::$user = 'slimtodo';
-DB::$password = 'ya4Ki9TUSaRATOhq';
-DB::$dbName = 'slimtodo';
-DB::$port = 3333;
+DB::$user = 'eshop';
+DB::$password = 'Pj3T3wh2zUFaAjUH';
+DB::$dbName = 'eshop';
+DB::$port = 3306;
 DB::$encoding = 'utf8';
 
 // Slim creation and setup
