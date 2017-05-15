@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 15, 2017 at 05:32 AM
+-- Generation Time: May 15, 2017 at 05:54 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -148,6 +148,7 @@ CREATE TABLE `payments` (
   `payment_way` varchar(10) DEFAULT NULL,
   `payment_details` varchar(100) DEFAULT NULL,
   `amount` varchar(100) DEFAULT NULL,
+  `pay_status` int(11) NOT NULL,
   `pay_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=koi8u;
 
