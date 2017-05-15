@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2017 at 06:02 AM
+-- Generation Time: May 15, 2017 at 04:54 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -145,17 +145,18 @@ CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `cat_id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL,
-  `title` varchar(100) NOT NULL,
+  `title` varchar(200) NOT NULL,
   `imagePath` varchar(100) NOT NULL,
+  `imagePath2` varchar(100) NOT NULL,
+  `imagePath3` varchar(100) NOT NULL,
   `model_type` int(11) NOT NULL,
   `model_name` varchar(50) NOT NULL,
   `full_name` varchar(250) NOT NULL,
   `desc1` varchar(100) NOT NULL,
   `desc2` varchar(100) DEFAULT NULL,
   `desc3` varchar(100) DEFAULT NULL,
-  `desc4` varchar(100) DEFAULT NULL,
-  `desc5` varchar(100) DEFAULT NULL,
   `price` varchar(10) NOT NULL,
+  `stock` int(11) NOT NULL,
   `discount` int(11) DEFAULT NULL,
   `posted_date` date NOT NULL,
   `update_date` date DEFAULT NULL
