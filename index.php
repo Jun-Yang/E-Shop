@@ -6,9 +6,9 @@ session_start();
 require_once 'vendor/autoload.php';
 
 //DB::$host = '127.0.0.1';
-//OldPassword: ya4Ki9TUSaRATOhq  7qJtprZ2wqz5mqxD  L9Ts9LGTKVVJw3z6
+//OldPassword: FvUVdCWTv8GuWshh
 DB::$user = 'eshop';
-DB::$password = 'Pj3T3wh2zUFaAjUH';
+DB::$password = 'FvUVdCWTv8GuWshh';
 DB::$dbName = 'eshop';
 DB::$port = 3306;
 DB::$encoding = 'utf8';
@@ -49,8 +49,16 @@ $app->get('/contact', function() use ($app) {
     $app->render('contact.html.twig');
 });
 
+$app->get('/eshop', function() use ($app) {
+    $app->render('eshop.html.twig');
+});
+
 $app->get('/about', function() use ($app) {
     $app->render('about.html.twig');
+});
+
+$app->get('/services', function() use ($app) {
+    $app->render('services.html.twig');
 });
 
 $app->get('/register', function() use ($app) {
@@ -151,7 +159,7 @@ $app->post('/login', function() use ($app) {
     } else {
         unset($user['password']);
         $_SESSION['todouser'] = $user;
-        $app->render('login_success.html.twig');
+        $app->render('category.html.twig');
     }
 });
 

@@ -1,101 +1,72 @@
 <!DOCTYPE html>
 <html>
-    <head>
+<head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <!-- Bootstrap Core CSS -->
-        <link href="/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Custom CSS -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" rel="stylesheet">
-        <link href="/css/styles.css" rel="stylesheet">
+        <!-- BOOTSTRAP CORE CSS -->
+        <link href="css/bootstrap.css" rel="stylesheet">
+        <!-- ANIMATE CSS -->
+        <link href="css/animate.css" rel="stylesheet">
+        <!-- FONT AWESOME -->
+        <link href="css/font-awesome/css/font-awesome.min.css" rel="stylesheet"> 
+        <!-- GOOGLE FONTS -->  
+        <link href="https://fonts.googleapis.com/css?family=Oswald:400,500,700" rel="stylesheet">
+        <!-- Custom Styles For This Template -->
+        <link href="css/style.css" rel="stylesheet">
         <title>{% block title %}{% endblock %}</title>
     {% block headExtra %}{% endblock %}
 </head>
+
 <body>
-    <div class="container">
-        <div id="header">
-            <!-- Navigation -->
-            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-                <div class="container">
-                    <!-- Brand and toggle get grouped for better mobile display -->
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="/index">Start Shopping</a>
-                    </div>
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav">
-                            <li>
-                                <a href="/about">About</a>
-                            </li>
-                            <li>
-                                <a href="#">Services</a>
-                            </li>
-                            <li>
-                                <a href="/contact">Contact</a>
-                            </li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                            <li>
-                                <a href="/register">Register</a>
-                            </li>
-                            <li>
-                                <a href="/login">Login</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.navbar-collapse -->
-                </div>
-                <!-- /.container -->
-            </nav>
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand logo-nav" href="#">
+                    <img src="images/logo.png" alt="logo">      
+                </a>
+            </div>
+
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href="index">Home</a></li>
+                    <li><a href="about">About</a></li>
+                    <li><a href="services">Services</a></li>
+                    <li><a href="eshop">eShop</a></li>
+                    <li><a href="contact">Contact</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
         </div>
-        <div id="content">
-        {% block content %}{% endblock content %}
+    </nav>
+
+    <div id="content">
+    {% block content %}{% endblock content %}
     </div>
-</div>    
-<div id="footer">            
-    <div class="row">
-        <div class="col-lg-12">
-            <p>
-                Copyright &copy; Your Website 2014.&nbsp;&nbsp;&nbsp;
-                <a href="http://www.facebook.com" target="_blank"><img src="images/facebook.ico" height="20" width="20" alt="facebookicon" title="Follow us on Facebook" /></a>
-                <a href="http://www.twitter.com" target="_blank"><img src="images/twitter.ico" height="20" width="20" alt="twittericon" title="Follow us on Twitter" /></a>
-                <a href="http://www.instagram.com" target="_blank"><img src="images/instagram.ico" height="20" width="20" alt="instagramicon" title="Follow us on Instagram" /></a>
-                <a href="mailto:Jaj@jaj.com"><img src="images/email.gif" height="20" width="40" alt="E mail Us" title="Email Us" /></a>
-            </p>
-        </div>
-    </div>            
-</div>   
-<script src="/js/jquery.js"></script>
-<!-- Bootstrap Core JavaScript -->
-<script src="/js/bootstrap.min.js"></script>   
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <footer>            
+        <div class="row">
+            <div class="col-lg-12">
+                <br/>
+                <p>Business Theme Copyright &copy; 2017 - <a href="#!">Terms</a> &middot; <a href="#">Privacy</a></p>
+            </div>
+        </div>            
+    </footer>   
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/wow.js"></script>
+<script type="application/javascript">
+    new WOW().init();
+</script>
+
 </body>
 </html>

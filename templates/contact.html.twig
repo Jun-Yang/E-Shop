@@ -3,103 +3,74 @@
 {% block title %}contact{% endblock %}
 
 {% block headExtra %}
-    <link href="/css/styles.css" rel="stylesheet">
-    <link href="/css/product.css" rel="stylesheet">
-
-    <script type="text/javascript">
-        var current = 0;
-
-        function init() {
-            SetScr(++current);
-        }
-
-        function SetScr(i) {
-            current = i;
-            document.getElementById('mypic').src = "images/" + i + ".jpeg";
-            if (current >= 3) {
-                current = 0;
-            }
-        }
-    </script>
 {% endblock %}
 
 {% block content %}
 
-    <div class="container">
-        <div >
-            <br />
-            <p>Where to find us?  We have two units in Montreal to better serve you.</p>
-            <br /><br />
-            <div class="row">
-                <div class="col-md-6">
-                    <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.4638436958744!2d-73.94384587517379!3d45.40575111092634!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc938500caad3a7%3A0xd807d74a59dcffcf!2sJohn+Abbott+College!5e0!3m2!1sfr!2sca!4v1477234270000"></iframe>
-                </div>
-                <div class="col-md-6">
-                    <div class="unit">
-                        <p><b>John Abbott Unit</b></p>
+    <section class="section-title">
+        <div class="container">
+            <h1> CONTACT <small> GET IN TOUCH </small></h1>
+        </div>    
+    </section>
+    
+    <div class="wow fadeInLeftBig">
+        <section class="bread-crumb">
+            <div class="container">
+                <section>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <iframe width="100%" height="400px;" src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d11186.712776910575!2d-73.58739320697185!3d45.496424704848295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1smontreal+college!5e0!3m2!1sen!2sca!4v1494617693711" frameborder="0" style="border:0" allowfullscreen></iframe>
+                                <hr>
+                                <h3>Contact Us Today!</h3>
+                                <form>
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email address</label>
+                                        <input type="email" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Message</label>
+                                        <textarea class="form-control"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-default">Submit</button>
+                                </form>
+                            </div>
+                            <div class="col-md-4">
+                                <h3>Contact Details</h3>
+                                <p>
+                                    89 West Main st<br>Merrimac, MA 01860<br>
+                                </p>
+                                <p><i class="fa fa-phone"></i> 
+                                    <abbr title="Phone"></abbr>: (555) 555-5555</p>
+                                <p><i class="fa fa-envelope-o"></i> 
+                                    <abbr title="Email"></abbr>: <a href="mailto:name@example.com">something@something.com</a>
+                                </p>
+                                <p><i class="fa fa-clock-o"></i> 
+                                    <abbr title="Hours"></abbr>: Monday - Friday: 9:00 AM to 5:00 PM</p>
+
+                                <ul class="list-unstyled list-inline list-social-icons">
+                                    <li>
+                                        <a href="#"><i class="fa fa-facebook-square fa-2x"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fa fa-linkedin-square fa-2x"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fa fa-twitter-square fa-2x"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fa fa-google-plus-square fa-2x"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <br />
-                    <div class="address">
-                        <p><b>Address:</b><br />
-                            21275 Rue Lakeshore<br />
-                            Sainte-Anne-de-Bellevue, QC<br />
-                            H9X 3L9
-                    </div>
-                    <br />
-                    <div class="hours table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr><th colspan="2">Business Hours</th>
-                            </thead>
-                            <tbody>
-                                <tr><td>Mon - Fri:</td><td>8:00 - 20:00</td></tr>
-                                <tr><td>Sat - Sun:</td><td>9:00 - 18:00</td></tr>
-                            </tbody>
-                            <tfoot>
-                                <tr><td colspan="2">* We will be closed on all holidays.</td></tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <br />		
-            <hr>
-            <br />
-            <div class="row">
-                <div class="col-md-6">
-                    <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2420.3028637742555!2d-73.5708902818473!3d45.50396952971152!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x383e632ab22c0112!2sLa+Baie+d&#39;Hudson!5e0!3m2!1sfr!2sca!4v1477241533644"></iframe>
-                </div>
-                <div class="col-md-6">
-                    <div class="unit">
-                        <p><b>Downtown Unit</b></p>
-                    </div>
-                    <br />
-                    <div class="address">
-                        <p><b>Address:</b><br />
-                            585 Rue Sainte-Catherine O<br />
-                            Montréal, QC<br />
-                            H3B 3Y5
-                    </div>
-                    <br />
-                    <div class="hours table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr><th colspan="2">Business Hours</th>
-                            </thead>
-                            <tbody>
-                                <tr><td>Mon - Fri:</td><td>7:00 - 22:00</td></tr>
-                                <tr><td>Sat - Sun:</td><td>8:00 - 20:00</td></tr>
-                            </tbody>
-                            <tfoot>
-                                <tr><td colspan="2">* We will be closed on all holidays.</td>
-                            </tfoot>
-                        </table>
-                    </div>                        
-                </div>
-            </div>
-            <hr>
-        </div>
-    </div>
-    <!-- /.container -->
-{% endblock content %}
+                </section>
+            </div> <!-- /.wow -->      
+            <!-- /.container -->
+        {% endblock content %}
 
