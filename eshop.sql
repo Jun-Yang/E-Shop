@@ -2,8 +2,8 @@
 -- version 4.6.5.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: May 15, 2017 at 05:54 AM
+-- Host: 127.0.0.1:3333
+-- Generation Time: May 15, 2017 at 08:48 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -57,6 +57,15 @@ CREATE TABLE `categories` (
   `posted_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=koi8u;
 
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`, `parent`, `layer`, `description`, `status`, `posted_date`) VALUES
+(1, 'Electric Bicycle', NULL, 1, 'Electric Bicycle', 0, '2017-05-15'),
+(2, 'Electric Scooter', NULL, 1, 'Electric Scooter', 0, '2017-05-15'),
+(3, 'Self-Balancing Scooter', NULL, 1, 'Electric Self-Balancing Scooter', 0, '2017-05-15');
+
 -- --------------------------------------------------------
 
 --
@@ -102,13 +111,13 @@ CREATE TABLE `orders` (
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `addressLine1` varchar(100) NOT NULL,
-  `addressLine2` varchar(100) NOT NULL,
+  `addressLine2` varchar(100) DEFAULT NULL,
   `city` varchar(50) NOT NULL,
-  `province` varchar(50) NOT NULL,
+  `province` varchar(50) DEFAULT NULL,
   `abbr_province` varchar(5) DEFAULT NULL,
   `city_code` varchar(20) NOT NULL,
   `phone` varchar(255) NOT NULL,
-  `state` varchar(255) NOT NULL,
+  `state` varchar(255) DEFAULT NULL,
   `country` varchar(20) DEFAULT NULL,
   `abbr_country` varchar(4) DEFAULT NULL,
   `cartId` int(11) DEFAULT NULL,
@@ -128,7 +137,7 @@ CREATE TABLE `order_products` (
   `id` int(11) NOT NULL,
   `order_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT '0',
   `user_id` int(11) NOT NULL,
   `payment_id` int(11) DEFAULT NULL,
   `invoice_id` int(11) DEFAULT NULL
@@ -148,8 +157,8 @@ CREATE TABLE `payments` (
   `payment_way` varchar(10) DEFAULT NULL,
   `payment_details` varchar(100) DEFAULT NULL,
   `amount` varchar(100) DEFAULT NULL,
-  `pay_status` int(11) NOT NULL,
-  `pay_date` date NOT NULL
+  `pay_status` int(11) DEFAULT '0',
+  `pay_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=koi8u;
 
 -- --------------------------------------------------------
@@ -163,19 +172,25 @@ CREATE TABLE `products` (
   `cat_id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL,
   `title` varchar(200) NOT NULL,
-  `imagePath` varchar(100) NOT NULL,
-  `imagePath2` varchar(100) NOT NULL,
-  `imagePath3` varchar(100) NOT NULL,
-  `model_type` int(11) NOT NULL,
-  `model_name` varchar(50) NOT NULL,
+  `image_data1` longblob NOT NULL,
+  `image_mime_type1` varchar(100) NOT NULL,
+  `image_name1` varchar(100) DEFAULT NULL,
+  `image_data2` longblob,
+  `image_mime_type2` varchar(100) DEFAULT NULL,
+  `image_name2` varchar(100) DEFAULT NULL,
+  `image_data3` longblob,
+  `image_mime_type3` varchar(100) DEFAULT NULL,
+  `image_name3` varchar(100) DEFAULT NULL,
+  `model_type` int(11) DEFAULT NULL,
+  `model_name` varchar(50) DEFAULT NULL,
   `full_name` varchar(250) NOT NULL,
   `desc1` varchar(100) NOT NULL,
   `desc2` varchar(100) DEFAULT NULL,
   `desc3` varchar(100) DEFAULT NULL,
   `price` varchar(10) NOT NULL,
-  `stock` int(11) NOT NULL,
+  `stock` int(11) DEFAULT '1',
   `discount` int(11) DEFAULT NULL,
-  `posted_date` date NOT NULL,
+  `posted_date` date DEFAULT NULL,
   `update_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=koi8u;
 
@@ -212,7 +227,7 @@ CREATE TABLE `users` (
 CREATE TABLE `wishlist` (
   `ID` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `product_id1` int(11) NOT NULL,
+  `product_id1` int(11) DEFAULT NULL,
   `product_id2` int(11) DEFAULT NULL,
   `product_id3` int(11) DEFAULT NULL,
   `product_id4` int(11) DEFAULT NULL,
@@ -309,7 +324,7 @@ ALTER TABLE `carts`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `invoices`
 --
