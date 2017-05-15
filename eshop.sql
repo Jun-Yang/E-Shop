@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 15, 2017 at 04:54 AM
+-- Generation Time: May 15, 2017 at 05:32 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -116,6 +116,22 @@ CREATE TABLE `orders` (
   `shipped_date` date DEFAULT NULL,
   `Shipping_Method` int(11) DEFAULT NULL,
   `ship_status` varchar(10) DEFAULT 'false'
+) ENGINE=InnoDB DEFAULT CHARSET=koi8u;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_products`
+--
+
+CREATE TABLE `order_products` (
+  `id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `payment_id` int(11) DEFAULT NULL,
+  `invoice_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=koi8u;
 
 -- --------------------------------------------------------
@@ -246,6 +262,12 @@ ALTER TABLE `orders`
   ADD KEY `orders_user_idfk_1` (`user_id`);
 
 --
+-- Indexes for table `order_products`
+--
+ALTER TABLE `order_products`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `payments`
 --
 ALTER TABLE `payments`
@@ -302,6 +324,11 @@ ALTER TABLE `messages`
 --
 ALTER TABLE `orders`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `order_products`
+--
+ALTER TABLE `order_products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `payments`
 --
