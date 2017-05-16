@@ -2,7 +2,6 @@
 {% block title %}Login{% endblock %}
 
 {% block headExtra %}
-    <link href="/css/styles.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -22,31 +21,29 @@
                     <div class="wow fadeIn">                        
                         <!--<h2>Welcome to our company</h2>-->
                         <div class="login">
-                    <h1 class="login-heading">
-                        <strong> Login</strong>
-                    </h1>
-            <hr>
+                            <h1 class="login-heading">
+                                <strong> Login</strong>
+                            </h1>
+                            <hr>
 
-            
-            <form method="post">
-                <div class="form-group">
-                    <label>User Name</label><br>
-                    <input type="text" name="name" placeholder="username" class="login_form" required="required" class="input-txt" />
-                </div>
-                
-                <div class="form-group">
-                    <label>Password</label><br>
-                    <input type="password" name="password" placeholder="password" class="login_form" required="required" class="input-txt" />
-                </div>    
-                <div class="login-footer">
-                    <button type="submit" class="btn btn-primary btn-lg">Login</button>
-                    {% if error %}
-                        <p class="errorList">Login failed try again.</p>
-                    {% endif %}
-                </div>
-            </form>
-        </div>
-                        
+                            <form method="post">
+                                <div class="form-group">
+                                    <label>User Name</label><br>
+                                    <input type="text" name="name" placeholder="username" class="login_form" required="required" class="input-txt" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Password</label><br>
+                                    <input type="password" name="password" placeholder="password" class="login_form" required="required" class="input-txt" />
+                                </div>    
+                                <div class="login-footer">
+                                    <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                                    {% if error %}
+                                        <p class="errorList">Login failed try again.</p>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
 
                     </div>
                 </div>
