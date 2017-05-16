@@ -206,7 +206,19 @@ footer {
     }
 }
 
+/* Login image  STYLE */
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+}
 
+.login_form {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
 
-
-
+login_user_right {
+    text-align: right;
+}

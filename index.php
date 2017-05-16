@@ -10,7 +10,7 @@ require_once 'vendor/autoload.php';
 DB::$user = 'eshop';
 DB::$password = 'FvUVdCWTv8GuWshh';
 DB::$dbName = 'eshop';
-DB::$port = 3306;
+DB::$port = 3333;
 DB::$encoding = 'utf8';
 
 // Slim creation and setup
@@ -116,7 +116,7 @@ $app->post('/register', function() use ($app) {
             'email' => $email,
             'password' => $pass1
         ));
-        $app->render('register_success.html.twig');
+        $app->render('eshop.html.twig');
     }
 });
 
