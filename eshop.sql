@@ -2,8 +2,8 @@
 -- version 4.6.5.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: May 16, 2017 at 06:22 AM
+-- Host: 127.0.0.1:3333
+-- Generation Time: May 16, 2017 at 08:13 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -187,9 +187,9 @@ CREATE TABLE `products` (
   `desc1` varchar(100) NOT NULL,
   `desc2` varchar(100) DEFAULT NULL,
   `desc3` varchar(100) DEFAULT NULL,
-  `price` varchar(10) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
   `stock` int(11) DEFAULT '1',
-  `discount` int(11) DEFAULT NULL,
+  `discount` decimal(3,2) DEFAULT NULL,
   `posted_date` date DEFAULT NULL,
   `update_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=koi8u;
@@ -202,21 +202,31 @@ CREATE TABLE `products` (
 
 CREATE TABLE `users` (
   `ID` int(11) NOT NULL,
+  `name` varchar(50) DEFAULT NULL,
   `email` varchar(35) NOT NULL,
   `password` varchar(40) NOT NULL,
-  `fname` varchar(255) NOT NULL,
-  `lname` varchar(255) NOT NULL,
-  `phone` varchar(255) NOT NULL,
+  `fname` varchar(255) DEFAULT NULL,
+  `lname` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
   `addressLine1` varchar(100) DEFAULT NULL,
   `addressLine2` varchar(100) DEFAULT NULL,
   `state` varchar(255) DEFAULT NULL,
   `city` varchar(255) DEFAULT NULL,
   `code` varchar(255) DEFAULT NULL,
   `TYPE` int(11) DEFAULT NULL,
-  `role` varchar(35) DEFAULT 'user',
+  `role` enum('admin','user') DEFAULT 'user',
   `status` int(11) DEFAULT '0',
   `last_login` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=koi8u;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`ID`, `name`, `email`, `password`, `fname`, `lname`, `phone`, `addressLine1`, `addressLine2`, `state`, `city`, `code`, `TYPE`, `role`, `status`, `last_login`) VALUES
+(1, 'chen', 'cc@123.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-16 17:36:07'),
+(2, 'chenc', 'aa@123.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-16 17:41:36'),
+(3, 'mike', 'mike@123.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-16 18:06:33');
 
 -- --------------------------------------------------------
 
@@ -362,7 +372,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `wishlist`
 --
