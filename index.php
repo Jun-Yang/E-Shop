@@ -65,6 +65,10 @@ $app->get('/register', function() use ($app) {
     $app->render('register.html.twig');
 });
 
+$app->get('/admin', function() use ($app) {
+    $app->render('admin_panel.html.twig');
+});
+
 // Receiving a submission
 $app->post('/register', function() use ($app) {
     // extract variables
