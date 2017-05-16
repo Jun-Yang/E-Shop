@@ -2,8 +2,8 @@
 -- version 4.6.5.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3333
--- Generation Time: May 15, 2017 at 08:48 PM
+-- Host: 127.0.0.1
+-- Generation Time: May 16, 2017 at 06:22 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -107,7 +107,7 @@ CREATE TABLE `messages` (
 CREATE TABLE `orders` (
   `ID` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
+  `order_products_id` int(11) NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `addressLine1` varchar(100) NOT NULL,
@@ -275,13 +275,16 @@ ALTER TABLE `messages`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `orders_user_idfk_1` (`user_id`);
+  ADD KEY `orders_user_idfk_1` (`user_id`),
+  ADD KEY `order_products_id` (`order_products_id`);
 
 --
 -- Indexes for table `order_products`
 --
 ALTER TABLE `order_products`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `order_id` (`order_id`),
+  ADD KEY `product_id` (`product_id`);
 
 --
 -- Indexes for table `payments`
@@ -386,7 +389,15 @@ ALTER TABLE `invoices`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`order_products_id`) REFERENCES `order_products` (`id`),
   ADD CONSTRAINT `orders_user_idfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`);
+
+--
+-- Constraints for table `order_products`
+--
+ALTER TABLE `order_products`
+  ADD CONSTRAINT `order_products_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`ID`),
+  ADD CONSTRAINT `order_products_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
 
 --
 -- Constraints for table `payments`
