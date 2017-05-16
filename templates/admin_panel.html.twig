@@ -1,6 +1,123 @@
 <head>
-    <title>ADMIN PANEL</title>
     <link rel="stylesheet" type="text/css" href="css/admin.css" />
+    <title>{% block title %}{% endblock %}</title>
+    {% block headExtra %}{% endblock %}
+</head>
+
+<body>
+    <div id="main_container">
+
+        <div class="header">
+            <div class="logo"><a href="#"><img src="../images/logo.png" alt="" title="" border="0" /></a></div>
+            <div class="right_header">Welcome Admin, <a href="#">Visit site</a> | <a href="#" class="messages">(3) Messages</a> | <a href="logout" class="logout">Logout</a></div>
+            <div id="clock_a"></div>
+        </div>
+
+        <div class="main_content">
+            <div class="menu">
+                <ul>
+                    <li><a href="admin">Admin Home</a></li>
+                    <li><a href="admin_user">Manage Users</a>
+                        <ul>
+                            <li><a href="" title="">Add user</a></li>
+                            <li><a href="" title="">Edit user</a></li>
+                            <li><a href="" title="">Delete user</a></li>
+                            <li><a href="" title="">Block user</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="admin_category">Manage Categories</a>
+                        <ul>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                            <li><a class="sub1" href="" title="">sublevel2</a>
+                                <ul>
+                                    <li><a href="" title="">sublevel link</a></li>
+                                    <li><a href="" title="">sulevel link</a></li>
+                                    <li><a class="sub2" href="#nogo">sublevel3</a>
+                                        <ul>
+                                            <li><a href="#nogo">Third level-1</a></li>
+                                            <li><a href="#nogo">Third level-2</a></li>
+                                            <li><a href="#nogo">Third level-3</a></li>
+                                            <li><a href="#nogo">Third level-4</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="" title="">sulevel link</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="admin_order">Manage Orders</a>
+                        <ul>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                            <li><a class="sub1" href="" title="">sublevel2</a>
+                                <ul>
+                                    <li><a href="" title="">sublevel link</a></li>
+                                    <li><a href="" title="">sulevel link</a></li>
+                                    <li><a class="sub2" href="#nogo">sublevel3</a>
+                                        <ul>
+                                            <li><a href="#nogo">Third level-1</a></li>
+                                            <li><a href="#nogo">Third level-2</a></li>
+                                            <li><a href="#nogo">Third level-3</a></li>
+                                            <li><a href="#nogo">Third level-4</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="" title="">sulevel link</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="">Settings</a>
+                        <ul>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                            <li><a class="sub1" href="" title="">sublevel2</a>
+                                <ul>
+                                    <li><a href="" title="">sublevel link</a></li>
+                                    <li><a href="" title="">sulevel link</a></li>
+                                    <li><a class="sub2" href="#nogo">sublevel3</a>
+                                        <ul>
+                                            <li><a href="#nogo">Third level-1</a></li>
+                                            <li><a href="#nogo">Third level-2</a></li>
+                                            <li><a href="#nogo">Third level-3</a></li>
+                                            <li><a href="#nogo">Third level-4</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="" title="">sulevel link</a></li>
+                                </ul>
+                            </li>
+
+                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="">Templates</a></li>
+                    <li><a href="">Custom details</a></li>
+                    <li><a href="">Contact</a></li>
+                </ul>
+            </div> 
+            
+            <div id="content">
+                {% block content %}{% endblock content %}
+            </div>
+            
+            <div class="clear"></div>
+        </div> <!--end of main content-->        
+    </div>
+    
+    <footer>            
+        <div class="row">
+            <div class="col-lg-12">
+                <br/>
+                <p>Business Theme Copyright &copy; 2017 - <a href="#!">Terms</a> &middot; <a href="#">Privacy</a></p>
+            </div>
+        </div>            
+    </footer>   
+    
     <script type="text/javascript" src="js/admin/clockp.js"></script>
     <script type="text/javascript" src="js/admin/clockh.js"></script> 
     <script type="text/javascript" src="js/admin/jquery.min.js"></script>
@@ -35,249 +152,6 @@
             $('.ask').jConfirmAction();
         });
 
-    </script>
-
-</head>
-
-<body>
-    <div id="main_container">
-
-        <div class="header">
-            <div class="logo"><a href="#"><img src="../images/logo.png" alt="" title="" border="0" /></a></div>
-            <div class="right_header">Welcome Admin, <a href="#">Visit site</a> | <a href="#" class="messages">(3) Messages</a> | <a href="#" class="logout">Logout</a></div>
-            <div id="clock_a"></div>
-        </div>
-
-        <div class="main_content">
-            <div class="menu">
-                <ul>
-                    <li><a class="current" href="index.html">Admin Home</a></li>
-                    <li><a href="list.html">Manage Categories</a>
-                        <ul>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="login.html">Manage Users</a>
-                        <ul>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a class="sub1" href="" title="">sublevel2</a>
-                                <ul>
-                                    <li><a href="" title="">sublevel link</a></li>
-                                    <li><a href="" title="">sulevel link</a></li>
-                                    <li><a class="sub2" href="#nogo">sublevel3</a>
-                                        <ul>
-                                            <li><a href="#nogo">Third level-1</a></li>
-                                            <li><a href="#nogo">Third level-2</a></li>
-                                            <li><a href="#nogo">Third level-3</a></li>
-                                            <li><a href="#nogo">Third level-4</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="" title="">sulevel link</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="login.html">Manage Orders</a>
-                        <ul>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a class="sub1" href="" title="">sublevel2</a>
-                                <ul>
-                                    <li><a href="" title="">sublevel link</a></li>
-                                    <li><a href="" title="">sulevel link</a></li>
-                                    <li><a class="sub2" href="#nogo">sublevel3</a>
-                                        <ul>
-                                            <li><a href="#nogo">Third level-1</a></li>
-                                            <li><a href="#nogo">Third level-2</a></li>
-                                            <li><a href="#nogo">Third level-3</a></li>
-                                            <li><a href="#nogo">Third level-4</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="" title="">sulevel link</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="login.html">Settings</a>
-                        <ul>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                            <li><a class="sub1" href="" title="">sublevel2</a>
-                                <ul>
-                                    <li><a href="" title="">sublevel link</a></li>
-                                    <li><a href="" title="">sulevel link</a></li>
-                                    <li><a class="sub2" href="#nogo">sublevel3</a>
-                                        <ul>
-                                            <li><a href="#nogo">Third level-1</a></li>
-                                            <li><a href="#nogo">Third level-2</a></li>
-                                            <li><a href="#nogo">Third level-3</a></li>
-                                            <li><a href="#nogo">Third level-4</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="" title="">sulevel link</a></li>
-                                </ul>
-                            </li>
-
-                            <li><a href="" title="">Lorem ipsum dolor sit amet</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="">Templates</a></li>
-                    <li><a href="">Custom details</a></li>
-                    <li><a href="">Contact</a></li>
-                </ul>
-            </div> 
-
-            <div class="center_content">  
-                <div class="left_content">
-                    <div class="sidebar_search">
-                        <form>
-                            <input type="text" name="searchinput" class="search_input" value="search keyword" onclick="this.value = ''" />
-                            <input type="image" class="search_submit" src="../images/admin/search.png" alt="search_submit"/>
-                        </form>            
-                    </div>
-
-                    <div class="sidebarmenu">
-                        <a class="menuitem submenuheader" href="">Subcategories</a>
-                        <div class="submenu">
-                            <ul>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                            </ul>
-                        </div>
-                        <a class="menuitem submenuheader" href="" >Sidebar Settings</a>
-                        <div class="submenu">
-                            <ul>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                            </ul>
-                        </div>
-                        <a class="menuitem submenuheader" href="">Add new products</a>
-                        <div class="submenu">
-                            <ul>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                                <li><a href="">Sidebar submenu</a></li>
-                            </ul>
-                        </div>
-                        <a class="menuitem" href="">User Reference</a>
-                        <a class="menuitem" href="">Blue button</a>
-                        <a class="menuitem_green" href="">Green button</a>
-                        <a class="menuitem_red" href="">Red button</a>
-                    </div>
-                </div>  
-
-                <div class="right_content">            
-                    <h2>Products Categories Settings</h2> 
-                    <table id="rounded-corner" summary="2007 Major IT Companies' Profit">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="rounded-company"></th>
-                                <th scope="col" class="rounded">Product</th>
-                                <th scope="col" class="rounded">Details</th>
-                                <th scope="col" class="rounded">Price</th>
-                                <th scope="col" class="rounded">Date</th>
-                                <th scope="col" class="rounded">Edit</th>
-                                <th scope="col" class="rounded-q4">Delete</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <td colspan="6" class="rounded-foot-left"><em>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</em></td>
-                                <td class="rounded-foot-right">&nbsp;</td>
-                            </tr>
-                        </tfoot>
-                        <td><input type="checkbox" name="ckbox" /></td>
-                        <td>Product name</td>
-                        <td>details</td>
-                        <td>150$</td>
-                        <td>12/05/2010</td>
-                        <td><a href="#"><img src="../images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
-                        <td><a href="#" class="ask"><img src="../images/admin/trash.png" alt="" title="" border="0" /></a></td>
-                        <tr>
-                            <td><input type="checkbox" name="ckbox" /></td>
-                            <td>Product name</td>
-                            <td>details</td>
-                            <td>150$</td>
-                            <td>12/05/2010</td>
-
-                            <td><a href="#"><img src="../images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
-                            <td><a href="#" class="ask"><img src="../images/admin/trash.png" alt="" title="" border="0" /></a></td>
-                        </tr> 
-
-                        <tr>
-                            <td><input type="checkbox" name="ckbox" /></td>
-                            <td>Product name</td>
-                            <td>details</td>
-                            <td>150$</td>
-                            <td>12/05/2010</td>
-
-                            <td><a href="#"><img src="../images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
-                            <td><a href="#" class="ask"><img src="../images/admin/trash.png" alt="" title="" border="0" /></a></td>
-                        </tr>
-
-                        <tr>
-                            <td><input type="checkbox" name="ckbox" /></td>
-                            <td>Product name</td>
-                            <td>details</td>
-                            <td>150$</td>
-                            <td>12/05/2010</td>
-
-                            <td><a href="#"><img src="../images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
-                            <td><a href="#" class="ask"><img src="../images/admin/trash.png" alt="" title="" border="0" /></a></td>
-                        </tr>  
-                        <tr>
-                            <td><input type="checkbox" name="ckbox" /></td>
-                            <td>Product name</td>
-                            <td>details</td>
-                            <td>150$</td>
-                            <td>12/05/2010</td>
-
-                            <td><a href="#"><img src="../images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
-                            <td><a href="#" class="ask"><img src="../images/admin/trash.png" alt="" title="" border="0" /></a></td>
-                        </tr>
-
-                        <tr>
-                            <td><input type="checkbox" name="ckbox" /></td>
-                            <td>Product name</td>
-                            <td>details</td>
-                            <td>150$</td>
-                            <td>12/05/2010</td>
-
-                            <td><a href="#"><img src="../images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
-                            <td><a href="#" class="ask"><img src="../images/admin/trash.png" alt="" title="" border="0" /></a></td>
-                        </tr>    
-                    </table>
-
-                    <a href="#" class="bt_green"><span class="bt_green_lft"></span><strong>Add new item</strong><span class="bt_green_r"></span></a>
-                    <a href="#" class="bt_blue"><span class="bt_blue_lft"></span><strong>View all items from category</strong><span class="bt_blue_r"></span></a>
-                    <a href="#" class="bt_red"><span class="bt_red_lft"></span><strong>Delete items</strong><span class="bt_red_r"></span></a> 
-
-                    <div class="pagination">
-                        <span class="disabled"><< prev</span><span class="current">1</span><a href="">2</a><a href="">3</a><a href="">4</a><a href="">5</a>…<a href="">10</a><a href="">11</a><a href="">12</a>...<a href="">100</a><a href="">101</a><a href="">next >></a>
-                    </div> 
-                </div><!-- end of right content-->
-            </div>   <!--end of center content --> 
-
-            <div class="clear"></div>
-        </div> <!--end of main content-->        
-    </div>		
+    </script>    
 </body>
 </html>

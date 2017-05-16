@@ -69,6 +69,17 @@ $app->get('/admin', function() use ($app) {
     $app->render('admin_panel.html.twig');
 });
 
+$app->get('/admin_user', function() use ($app) {
+    $app->render('admin_user.html.twig');
+    
+});$app->get('/admin_category', function() use ($app) {
+    $app->render('admin_category.html.twig');
+    
+});$app->get('/admin_order', function() use ($app) {
+    $app->render('admin_order.html.twig');
+});
+
+
 // Receiving a submission
 $app->post('/register', function() use ($app) {
     // extract variables
