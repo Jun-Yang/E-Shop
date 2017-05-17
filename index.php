@@ -144,7 +144,7 @@ $app->post('/login', function() use ($app, $log) {
         if(crypt($pass, $user['password']) == $user['password']) {
             // LOGIN successful
             unset($user['password']);
-            $_SESSION['user'] = $user;
+            $_SESSION['eshopuser'] = $user;
             $log->debug(sprintf("User %s logged in successfuly from IP %s", $user['ID'], $_SERVER['REMOTE_ADDR']));
             $app->render('eshop.html.twig');
         } else {
