@@ -86,7 +86,15 @@ $app->post('/register', function() use ($app, $log) {
     if (strlen($name) < 4) {
         array_push($errorList, "Name must be at least 4 characters long");
         unset($valueList['name']);
+    } else {
+        $user = DB::queryFirstRow("SELECT ID FROM users WHERE name=%s", $name);
+        if ($user) {
+            array_push($errorList, "username already registered");
+            unset($valueList['name']);
+        }
     }
+    
+    
     if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
         array_push($errorList, "Email does not look like a valid email");
         unset($valueList['email']);
@@ -630,18 +638,29 @@ $app->get('/register', function() use ($app) {
     $app->render('register.html.twig');
 });
 
-$app->get('/admin', function() use ($app) {
+$app->get('/admin_product', function() use ($app) {
     $app->render('admin_panel.html.twig');
 });
 
 $app->get('/admin_user', function() use ($app) {
-    $app->render('admin_user.html.twig');
-    
-});$app->get('/admin_category', function() use ($app) {
-    $app->render('admin_category.html.twig');
-    
-});$app->get('/admin_order', function() use ($app) {
-    $app->render('admin_order.html.twig');
+    $userList =  DB::query("SELECT * FROM users");
+    $app->render("admin_user.html.twig", array(
+        'userList' => $userList
+    ));
+});
+
+$app->get('/admin_category', function() use ($app) {
+    $categoryList =  DB::query("SELECT * FROM categories");
+    $app->render("admin_category.html.twig", array(
+        'categoryList' => $categoryList
+    ));
+});
+
+$app->get('/admin_order', function() use ($app) {
+    $orderList =  DB::query("SELECT * FROM orders");
+    $app->render("admin_order.html.twig", array(
+        'orderList' => $orderList
+    ));
 });
 
 $app->run();

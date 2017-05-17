@@ -95,7 +95,9 @@ height:auto;
 padding:0px 0 50px 0;
 background:url("../images/admin/menu_bg.jpg") no-repeat center top #fff;
 }
-.footer{width:900px;height:87px;background:url("../images/admin/footer_bg.jpg") no-repeat center top;}
+.footer{width:900px;height:87px;
+       background:url("../images/admin/footer_bg.jpg") no-repeat center top;
+}
 .footer_login{width:600px;margin:auto;}
 
 .left_footer{float:left;padding:25px 0 0 10px;color:#a8549b;font-size:11px;}
