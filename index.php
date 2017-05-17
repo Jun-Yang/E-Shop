@@ -241,39 +241,56 @@ $app->post('/add', function() use ($app) {
         return;
     }
 //    print_r($_POST);
-    $task = $app->request()->post('task');
-    $dueDate = $app->request()->post('dueDate');
-    $isDone = $app->request()->post('isDone');
+    $title = $app->request()->post('title');
+    $cat_id = $app->request()->post('cat_id');
+    $model_name = $app->request()->post('model_name');
+    $model_no = $app->request()->post('model_no');
+    $desc1 = $app->request()->post('desc1');
+    //$desc2 = $app->request()->post('desc2');
+    //$desc3 = $app->request()->post('desc3');
+    $price = $app->request()->post('price');
+    $stock = $app->request()->post('stock');
+    $discount = $app->request()->post('discount');
+    $today = date("Y-m-d");
+    $posted_date = $today;
     //
     $errorList = array();
-    $valueList = array('task' => $task);
+    $valueList = array('task' => $title);
     
-    if (strlen($task) < 2 || strlen($task) > 100 ) {
+    print_r($title);
+    if (strlen($title) < 2 || strlen($title) > 100 ) {
         array_push($errorList, "Task name must be 2-100 characters long");        
     }else {
-        $todo = DB::queryFirstRow("SELECT * FROM todos WHERE task=%s", $task);
+        $todo = DB::queryFirstRow("SELECT * FROM products WHERE title=%s", $title);
         if ($todo) {
-            array_push($errorList, "Task name already in use");
+            array_push($errorList, "Product title already in use");
         }
     }
-    
-    $today = date("Y-m-d");
-    if ($dueDate < $today) {
-        array_push($errorList, "Due date must be after today");        
-    }
+
 //    print_r($_SESSION['eshopuser']);
     if ($errorList) {
         $app->render("add.html.twig", ["errorList" => $errorList,
             'v' => $valueList
             ]);
-    } else {      
-        DB::insert('todos', ["ownerId" => $_SESSION['eshopuser']['id'],
-            "task" => $task,
-            "dueDate" => $dueDate,
-            "isDone" => $isDone
-            ]);
+    } else {       
+        DB::insert('products',array(
+            "title" => $title,
+            "cat_id" => $cat_id,
+            "model_name" => $model_name,
+            "model_no" => $model_no,
+            "desc1" => $desc1,
+            "price" => $price,
+            "stock" => $stock,
+            "discount" => $discount,
+            "posted_date" => $today
+            ));
         $app->render("add_success.html.twig", array(
-            "task" => $task
+            "title" => $title,
+            "title" => $title,
+            "cat_id" => $cat_id,
+            "model_name" => $model_name,
+            "price" => $price,
+            "stock" => $stock
         ));
     }    
 });
