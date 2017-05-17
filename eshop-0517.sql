@@ -2,8 +2,8 @@
 -- version 4.6.5.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: May 17, 2017 at 06:07 AM
+-- Host: 127.0.0.1:3333
+-- Generation Time: May 16, 2017 at 08:13 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -181,7 +181,7 @@ CREATE TABLE `products` (
   `image_data3` longblob,
   `image_mime_type3` varchar(100) DEFAULT NULL,
   `image_name3` varchar(100) DEFAULT NULL,
-  `model_no` int(11) DEFAULT NULL,
+  `model_type` int(11) DEFAULT NULL,
   `model_name` varchar(50) DEFAULT NULL,
   `full_name` varchar(250) NOT NULL,
   `desc1` varchar(100) NOT NULL,
@@ -193,14 +193,6 @@ CREATE TABLE `products` (
   `posted_date` date DEFAULT NULL,
   `update_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=koi8u;
-
---
--- Dumping data for table `products`
---
-
-INSERT INTO `products` (`id`, `cat_id`, `name`, `title`, `image_data1`, `image_mime_type1`, `image_name1`, `image_data2`, `image_mime_type2`, `image_name2`, `image_data3`, `image_mime_type3`, `image_name3`, `model_no`, `model_name`, `full_name`, `desc1`, `desc2`, `desc3`, `price`, `stock`, `discount`, `posted_date`, `update_date`) VALUES
-(1, 1, '', 'dfsfds', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'fdsaf', '', 'fdsa', NULL, NULL, '111.00', 111, '1.00', '2017-05-17', NULL),
-(2, 1, '', 'yun', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, 'good yun', '', 'good yun bike', NULL, NULL, '399.99', 200, '1.00', '2017-05-17', NULL);
 
 -- --------------------------------------------------------
 
@@ -234,8 +226,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`ID`, `name`, `email`, `password`, `fname`, `lname`, `phone`, `addressLine1`, `addressLine2`, `state`, `city`, `code`, `TYPE`, `role`, `status`, `last_login`) VALUES
 (1, 'chen', 'cc@123.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-16 17:36:07'),
 (2, 'chenc', 'aa@123.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-16 17:41:36'),
-(3, 'mike', 'mike@123.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-16 18:06:33'),
-(4, 'yu1', 'yu@111.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-17 01:53:08');
+(3, 'mike', 'mike@123.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-16 18:06:33');
 
 -- --------------------------------------------------------
 
@@ -376,12 +367,12 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `wishlist`
 --
