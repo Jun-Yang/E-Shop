@@ -39,7 +39,7 @@ CREATE TABLE `carts` (
   `product_id8` int(11) DEFAULT NULL,
   `product_id9` int(11) DEFAULT NULL,
   `product_id10` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -55,7 +55,7 @@ CREATE TABLE `categories` (
   `description` varchar(300) DEFAULT NULL,
   `status` int(11) DEFAULT '0',
   `posted_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `categories`
@@ -78,7 +78,7 @@ CREATE TABLE `invoices` (
   `order_id` int(11) NOT NULL,
   `invoice_status` varchar(10) DEFAULT NULL,
   `send_status` varchar(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -96,7 +96,7 @@ CREATE TABLE `messages` (
   `status` int(11) DEFAULT '0',
   `posted_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -125,7 +125,7 @@ CREATE TABLE `orders` (
   `shipped_date` date DEFAULT NULL,
   `Shipping_Method` int(11) DEFAULT NULL,
   `ship_status` varchar(10) DEFAULT 'false'
-) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -141,7 +141,7 @@ CREATE TABLE `order_products` (
   `user_id` int(11) NOT NULL,
   `payment_id` int(11) DEFAULT NULL,
   `invoice_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -159,7 +159,7 @@ CREATE TABLE `payments` (
   `amount` varchar(100) DEFAULT NULL,
   `pay_status` int(11) DEFAULT '0',
   `pay_date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -192,7 +192,7 @@ CREATE TABLE `products` (
   `discount` decimal(3,2) DEFAULT NULL,
   `posted_date` date DEFAULT NULL,
   `update_date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `products`
@@ -225,7 +225,7 @@ CREATE TABLE `users` (
   `role` enum('admin','user') DEFAULT 'user',
   `status` int(11) DEFAULT '0',
   `last_login` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
@@ -256,7 +256,7 @@ CREATE TABLE `wishlist` (
   `product_id8` int(11) DEFAULT NULL,
   `product_id9` int(11) DEFAULT NULL,
   `product_id10` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Indexes for dumped tables

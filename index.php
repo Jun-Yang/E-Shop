@@ -1,54 +1,51 @@
 <?php
 
-session_cache_limiter(false);
 session_start();
 
+// enable on-demand class loader
 require_once 'vendor/autoload.php';
 
-//DB::$host = '127.0.0.1';
-//OldPassword: FvUVdCWTv8GuWshh
-/*
-DB::$user = 'eshop';
-DB::$password = 'FvUVdCWTv8GuWshh';
-DB::$dbName = 'eshop';
-DB::$port = 3333;
-DB::$encoding = 'utf8';
-*/
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
-DB::$user = 'eshop';
-DB::$password = 'FvUVdCWTv8GuWshh';
-DB::$dbName = 'eshop';
-DB::$port = 3306;
-DB::$encoding = 'utf8';
+// create a log channel
+$log = new Logger('main');
+$log->pushHandler(new StreamHandler('logs/everything.log', Logger::DEBUG));
+$log->pushHandler(new StreamHandler('logs/errors.log', Logger::ERROR));
 
+if ($_SERVER['SERVER_NAME'] == 'localhost') {
+    DB::$dbName = 'eshop';
+    DB::$user = 'eshop';
+    DB::$password = 'FvUVdCWTv8GuWshh';
+    DB::$host = '127.0.0.1';   // sometimes needed on Mac OSX
+    DB::$port = 3333;
+} else { // hosted on external server
+    DB::$dbName = 'cp4724_slimshop';
+    DB::$user = 'cp4724_slimshop';
+    DB::$password = 'FvUVdCWTv8GuWshh';
+    DB::$port = 3306;
+}
+DB::$error_handler = 'sql_error_handler';
+DB::$nonsql_error_handler = 'nonsql_error_handler';
 
-// Slim creation and setup
-$app = new \Slim\Slim(array(
-    'view' => new \Slim\Views\Twig()
-        ));
-
-$view = $app->view();
-$view->parserOptions = array(
-    'debug' => true,
-    'cache' => dirname(__FILE__) . './cache'
-);
-
-$view->setTemplatesDirectory(dirname(__FILE__) . './templates');
-
-//if user not login , u won't get err message
-if (!isset($_SESSION['eshopuser'])){
-   $_SESSION['eshopuser']=array(); 
+function nonsql_error_handler($params) {
+    global $app, $log;
+    $log->error("Database error: " . $params['error']);
+    http_response_code(500);
+    $app->render('error_internal.html.twig');
+    die;
 }
 
-$twig = $app->view()->getEnvironment();
-$twig ->addGlobal('eshopuser',$_SESSION['eshopuser']);
+function sql_error_handler($params) {
+    global $app, $log;
+    $log->error("SQL error: " . $params['error']);
+    $log->error(" in query: " . $params['query']);
+    http_response_code(500);
+    $app->render('error_internal.html.twig');
+    die; // don't want to keep going if a query broke
+}
 
-// STATE 1: First show
-$app->get('/register', function() use ($app) {
-    $app->render('register.html.twig');
-});
-
-
+// instantiate Slim - router in front controller (this file)
 // Slim creation and setup
 $app = new \Slim\Slim(array(
     'view' => new \Slim\Views\Twig()
@@ -61,14 +58,542 @@ $view->parserOptions = array(
 );
 $view->setTemplatesDirectory(dirname(__FILE__) . '/templates');
 
+/*
+  \Slim\Route::setDefaultConditions(array(
+  'id' => '\d+'
+  )); */
+
 if (!isset($_SESSION['eshopuser'])) {
     $_SESSION['eshopuser'] = array();
 }
 
 $twig = $app->view()->getEnvironment();
-$twig->addGlobal('eshopuser', $_SESSION['eshopuser']);
+$twig->addGlobal('sessionUser', $_SESSION['eshopuser']);
 
-// STATE 1: First show
+$app->get('/', function() use ($app) {
+    $app->render('index.html.twig');
+});
+
+// State 1: first show
+$app->get('/register', function() use ($app, $log) {
+    $app->render('register.html.twig');
+});
+// State 2: submission
+$app->post('/register', function() use ($app, $log) {
+    $name = $app->request->post('name');
+    $email = $app->request->post('email');
+    $pass1 = $app->request->post('pass1');
+    $pass2 = $app->request->post('pass2');
+    $valueList = array('name' => $name, 'email' => $email);
+    // submission received - verify
+    $errorList = array();
+    if (strlen($name) < 4) {
+        array_push($errorList, "Name must be at least 4 characters long");
+        unset($valueList['name']);
+    }
+    if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
+        array_push($errorList, "Email does not look like a valid email");
+        unset($valueList['email']);
+    } else {
+        $user = DB::queryFirstRow("SELECT ID FROM users WHERE email=%s", $email);
+        if ($user) {
+            array_push($errorList, "Email already registered");
+            unset($valueList['email']);
+        }
+    }
+    // ALTERNATIVE: if (($msg = verifyPassword($pass1)) !== TRUE) {
+    $msg = verifyPassword($pass1);
+    if ($msg !== TRUE) {
+        array_push($errorList, $msg);
+    } else if ($pass1 != $pass2) {
+        array_push($errorList, "Passwords don't match");
+    }
+    //
+    if ($errorList) {
+        // STATE 3: submission failed        
+        $app->render('register.html.twig', array(
+            'errorList' => $errorList, 'v' => $valueList
+        ));
+    } else {
+        // STATE 2: submission successful
+        DB::insert('users', array(
+            'name' => $name, 
+            'email' => $email,
+            'password' => password_hash($pass1, CRYPT_BLOWFISH)
+                // 'password' => hash('sha256', $pass1)
+        ));
+        $id = DB::insertId();
+        $log->debug(sprintf("User %s created", $id));
+        $app->render('login.html.twig');
+    }
+});
+
+$app->get('/login', function() use ($app, $log) {
+    $app->render('login.html.twig');
+});
+
+$app->post('/login', function() use ($app, $log) {
+    $email = $app->request->post('email');
+    $pass = $app->request->post('pass');
+    $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
+    if (!$user) {
+        $log->debug(sprintf("User failed for email %s from IP %s", $email, $_SERVER['REMOTE_ADDR']));
+        $app->render('login.html.twig', array('loginFailed' => TRUE));
+    } else {
+        // password MUST be compared in PHP because SQL is case-insenstive
+        //if ($user['password'] == hash('sha256', $pass)) {
+        if (password_verify($pass, $user['password'])) {
+            // LOGIN successful
+            unset($user['password']);
+            $_SESSION['user'] = $user;
+            $log->debug(sprintf("User %s logged in successfuly from IP %s", $user['ID'], $_SERVER['REMOTE_ADDR']));
+            $app->render('eshop.html.twig');
+        } else {
+            $log->debug(sprintf("User failed for email %s from IP %s", $email, $_SERVER['REMOTE_ADDR']));
+            echo 'login failed';
+            $app->render('login.html.twig', array('loginFailed' => TRUE));
+        }
+    }
+});
+
+$app->get('/logout', function() use ($app, $log) {
+    $_SESSION['eshopuser'] = array();
+    $app->render('logout_success.html.twig');
+});
+
+$app->get('/cart', function() use ($app) {
+    $cartitemList = DB::query(
+                    "SELECT cartitems.ID as ID, productID, quantity,"
+                    . " name, description, imagePath, price "
+                    . " FROM cartitems, products "
+                    . " WHERE cartitems.productID = products.ID AND sessionID=%s", session_id());
+    $app->render('cart.html.twig', array(
+        'cartitemList' => $cartitemList
+    ));
+});
+
+$app->post('/cart', function() use ($app) {
+    $productID = $app->request()->post('productID');
+    $quantity = $app->request()->post('quantity');
+    // FIXME: make sure the item is not in the cart yet
+    $item = DB::queryFirstRow("SELECT * FROM cartitems WHERE productID=%d AND sessionID=%s", $productID, session_id());
+    if ($item) {
+        DB::update('cartitems', array(
+            'sessionID' => session_id(),
+            'productID' => $productID,
+            'quantity' => $item['quantity'] + $quantity
+                ), "productID=%d AND sessionID=%s", $productID, session_id());
+    } else {
+        DB::insert('cartitems', array(
+            'sessionID' => session_id(),
+            'productID' => $productID,
+            'quantity' => $quantity
+        ));
+    }
+    // show current contents of the cart
+    $cartitemList = DB::query(
+                    "SELECT cartitems.ID as ID, productID, quantity,"
+                    . " name, description, imagePath, price "
+                    . " FROM cartitems, products "
+                    . " WHERE cartitems.productID = products.ID AND sessionID=%s", session_id());
+    $app->render('cart.html.twig', array(
+        'cartitemList' => $cartitemList
+    ));
+});
+
+// AJAX call, not used directy by eshopuser
+$app->get('/cart/update/:cartitemID/:quantity', function($cartitemID, $quantity) use ($app) {
+    if ($quantity == 0) {
+        DB::delete('cartitems', 'cartitems.ID=%d AND cartitems.sessionID=%s', $cartitemID, session_id());
+    } else {
+        DB::update('cartitems', array('quantity' => $quantity), 'cartitems.ID=%d AND cartitems.sessionID=%s', $cartitemID, session_id());
+    }
+    echo json_encode(DB::affectedRows() == 1);
+});
+
+// order handling
+$app->map('/order', function () use ($app) {
+    $totalBeforeTax = DB::queryFirstField(
+                    "SELECT SUM(products.price * cartitems.quantity) "
+                    . " FROM cartitems, products "
+                    . " WHERE cartitems.sessionID=%s AND cartitems.productID=products.ID", session_id());
+    // TODO: properly compute taxes, shipping, ...
+    $shippingBeforeTax = 15.00;
+    $taxes = ($totalBeforeTax + $shippingBeforeTax) * 0.15;
+    $totalWithShippingAndTaxes = $totalBeforeTax + $shippingBeforeTax + $taxes;
+
+    if ($app->request->isGet()) {
+        $app->render('order.html.twig', array(
+            'totalBeforeTax' => number_format($totalBeforeTax, 2),
+            'shippingBeforeTax' => number_format($shippingBeforeTax, 2),
+            'taxes' => number_format($taxes, 2),
+            'totalWithShippingAndTaxes' => number_format($totalWithShippingAndTaxes, 2)
+        ));
+    } else {
+        $name = $app->request->post('name');
+        $email = $app->request->post('email');
+        $address = $app->request->post('address');
+        $postalCode = $app->request->post('postalCode');
+        $phoneNumber = $app->request->post('phoneNumber');
+        $valueList = array(
+            'name' => $name,
+            'email' => $email,
+            'address' => $address,
+            'postalCode' => $postalCode,
+            'phoneNumber' => $phoneNumber
+        );
+        // FIXME: verify inputs - MUST DO IT IN A REAL SYSTEM
+        $errorList = array();
+        //
+        if ($errorList) {
+            $app->render('order.html.twig', array(
+                'totalBeforeTax' => number_format($totalBeforeTax, 2),
+                'shippingBeforeTax' => number_format($shippingBeforeTax, 2),
+                'taxes' => number_format($taxes, 2),
+                'totalWithShippingAndTaxes' => number_format($totalWithShippingAndTaxes, 2),
+                'v' => $valueList
+            ));
+        } else { // SUCCESSFUL SUBMISSION
+            DB::$error_handler = FALSE;
+            DB::$throw_exception_on_error = TRUE;
+            // PLACE THE ORDER
+            try {
+                DB::startTransaction();
+                // 1. create summary record in 'orders' table (insert)
+                DB::insert('orders', array(
+                    'userID' => $_SESSION['eshopuser'] ? $_SESSION['eshopuser']['ID'] : NULL,
+                    'name' => $name,
+                    'address' => $address,
+                    'postalCode' => $postalCode,
+                    'email' => $email,
+                    'phoneNumber' => $phoneNumber,
+                    'totalBeforeTax' => $totalBeforeTax,
+                    'shippingBeforeTax' => $shippingBeforeTax,
+                    'taxes' => $taxes,
+                    'totalWithShippingAndTaxes' => $totalWithShippingAndTaxes,
+                    'dateTimePlaced' => date('Y-m-d H:i:s')
+                ));
+                $orderID = DB::insertId();
+                // 2. copy all records from cartitems to 'orderitems' (select & insert)
+                $cartitemList = DB::query(
+                                "SELECT productID as origProductID, quantity, price"
+                                . " FROM cartitems, products "
+                                . " WHERE cartitems.productID = products.ID AND sessionID=%s", session_id());
+                // add orderID to every sub-array (element) in $cartitemList
+                array_walk($cartitemList, function(&$item, $key) use ($orderID) {
+                    $item['orderID'] = $orderID;
+                });
+                /* This is the same as the following foreach loop:
+                  foreach ($cartitemList as &$item) {
+                  $item['orderID'] = $orderID;
+                  } */
+                DB::insert('orderitems', $cartitemList);
+                // 3. delete cartitems for this user's session (delete)
+                DB::delete('cartitems', "sessionID=%s", session_id());
+                DB::commit();
+                // TODO: send a confirmation email
+                /*
+                  $emailHtml = $app->view()->getEnvironment()->render('email_order.html.twig');
+                  $headers = "MIME-Version: 1.0\r\n";
+                  $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+                  mail($email, "Order " .$orderID . " placed ", $emailHtml, $headers);
+                 */
+                //
+                $app->render('order_success.html.twig');
+            } catch (MeekroDBException $e) {
+                DB::rollback();
+                sql_error_handler(array(
+                    'error' => $e->getMessage(),
+                    'query' => $e->getQuery()
+                ));
+            }
+        }
+    }
+})->via('GET', 'POST');
+
+// PASSWOR RESET
+
+function generateRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
+$app->map('/passreset', function () use ($app, $log) {
+    // Alternative to cron-scheduled cleanup
+    if (rand(1,1000) == 111) {
+        // TODO: do the cleanup 1 in 1000 accessed to /passreset URL
+    }
+    if ($app->request()->isGet()) {
+        $app->render('passreset.html.twig');
+    } else {
+        $email = $app->request()->post('email');
+        $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
+        if ($user) {
+            $app->render('passreset_success.html.twig');
+            $secretToken = generateRandomString(50);
+            // VERSION 1: delete and insert
+            /*
+              DB::delete('passresets', 'userID=%d', $user['ID']);
+              DB::insert('passresets', array(
+              'userID' => $user['ID'],
+              'secretToken' => $secretToken,
+              'expiryDateTime' => date("Y-m-d H:i:s", strtotime("+5 hours"))
+              )); */
+            // VERSION 2: insert-update TODO
+            DB::insertUpdate('passresets', array(
+                'userID' => $user['ID'],
+                'secretToken' => $secretToken,
+                'expiryDateTime' => date("Y-m-d H:i:s", strtotime("+5 minutes"))
+            ));
+            // email user
+            $url = 'http://' . $_SERVER['SERVER_NAME'] . '/passreset/' . $secretToken;
+            $html = $app->view()->render('email_passreset.html.twig', array(
+                'name' => $user['name'],
+                'url' => $url
+            ));
+            $headers = "MIME-Version: 1.0\r\n";
+            $headers.= "Content-Type: text/html; charset=UTF-8\r\n";
+            $headers.= "From: Noreply <noreply@ipd8.info>\r\n";
+            $headers.= "To: " . htmlentities($user['name']) . " <" . $email . ">\r\n";
+
+            mail($email, "Password reset from SlimShop", $html, $headers);
+        } else {
+            $app->render('passreset.html.twig', array('error' => TRUE));
+        }
+    }
+})->via('GET', 'POST');
+
+$app->get('/scheduled/daily', function() use ($app, $log) {
+    DB::$error_handler = FALSE;
+    DB::$throw_exception_on_error = TRUE;
+            // PLACE THE ORDER
+    $log->debug("Daily scheduler run started");
+    // 1. clean up old password reset requests
+    try {
+        DB::delete('passresets', "expiryDateTime < NOW()");    
+        $log->debug("Password resets clean up, removed " . DB::affectedRows());
+    } catch (MeekroDBException $e) {
+        sql_error_handler(array(
+                    'error' => $e->getMessage(),
+                    'query' => $e->getQuery()
+                ));
+    }
+    // 2. clean up old cart items (normally we never do!)
+    try {
+        DB::delete('cartitems', "createdTS < DATE(DATE_ADD(NOW(), INTERVAL -1 DAY))");
+    } catch (MeekroDBException $e) {
+        sql_error_handler(array(
+                    'error' => $e->getMessage(),
+                    'query' => $e->getQuery()
+                ));
+    }
+    $log->debug("Cart items clean up, removed " . DB::affectedRows());
+    $log->debug("Daily scheduler run completed");
+    echo "Completed";
+});
+
+$app->map('/passreset/:secretToken', function($secretToken) use ($app) {
+    $row = DB::queryFirstRow("SELECT * FROM passresets WHERE secretToken=%s", $secretToken);
+    if (!$row) {
+        $app->render('passreset_notfound_expired.html.twig');
+        return;
+    }
+    if (strtotime($row['expiryDateTime']) < time()) {
+        $app->render('passreset_notfound_expired.html.twig');
+        return;
+    }
+    //
+    if ($app->request()->isGet()) {
+        $app->render('passreset_form.html.twig');
+    } else {
+        $pass1 = $app->request()->post('pass1');
+        $pass2 = $app->request()->post('pass2');
+        // TODO: verify password quality and that pass1 matches pass2
+        $errorList = array();
+        $msg = verifyPassword($pass1);
+        if ($msg !== TRUE) {
+            array_push($errorList, $msg);
+        } else if ($pass1 != $pass2) {
+            array_push($errorList, "Passwords don't match");
+        }
+        //
+        if ($errorList) {
+            $app->render('passreset_form.html.twig', array(
+                'errorList' => $errorList
+            ));
+        } else {
+            // success - reset the password
+            DB::update('users', array(
+                'password' => password_hash($pass1, CRYPT_BLOWFISH)
+                    ), "ID=%d", $row['userID']);
+            DB::delete('passresets','secretToken=%s', $secretToken);
+            $app->render('passreset_form_success.html.twig');
+        }
+    }
+})->via('GET', 'POST');
+
+
+// ADMIN - CRUD for products table
+$app->get('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
+    /* FOR PROJECTS WITH MANY ACCESS LEVELS
+    if (($_SESSION['user']) || ($_SESSION['level'] != 'admin')) {
+        $app->render('forbidden.html.twig');
+        return;
+    } */
+    if ($op == 'edit') {
+        $product = DB::queryFirstRow("SELECT * FROM products WHERE id=%i", $id);
+        if (!$product) {
+            echo 'Product not found';
+            return;
+        }
+        $app->render("admin_product_add.html.twig", array(
+            'v' => $product, 'operation' => 'Update'
+        ));
+    } else {
+        $app->render("admin_product_add.html.twig",
+                array('operation' => 'Add'
+        ));
+    }
+})->conditions(array(
+    'op' => '(add|edit)',
+    'id' => '[0-9]+'));
+
+$app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
+    $name = $app->request()->post('name');
+    $description = $app->request()->post('description');
+    $price = $app->request()->post('price');
+    $valueList = array(
+        'name' => $name,
+        'description' => $description,
+        'price' => $price);
+    // WRONG: $image = isset($_FILES['image']) ? $_FILES['image'] : array();
+    $image = $_FILES['image'];
+    // print_r($image);
+    //    
+    $errorList = array();
+    if (strlen($name) < 2 || strlen($name) > 100) {
+        array_push($errorList, "Name must be 2-100 characters long");
+    }
+    if (strlen($description) < 2 || strlen($description) > 1000) {
+        array_push($errorList, "Description must be 2-1000 characters long");
+    }
+    if (empty($price) || $price < 0 || $price > 99999999) {
+        array_push($errorList, "Price must be between 0 and 99999999");
+    }
+    if ($image['error'] != 0) {
+        array_push($errorList, "Image is required to create a product");
+    } else {
+        $imageInfo = getimagesize($image["tmp_name"]);
+        if (!$imageInfo) {
+            array_push($errorList, "File does not look like an valid image");
+        } else {
+            // FIXME: opened a security hole here! .. must be forbidden
+            if (strstr($image["name"], "..")) {
+                array_push($errorList, "File name invalid");
+            }
+            // FIXME: only allow select extensions .jpg .gif .png, never .php
+            $ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
+            if (!in_array($ext, array('jpg', 'jpeg', 'gif', 'png'))) {
+                array_push($errorList, "File name invalid");
+            }
+            // FIXME: do not allow file to override an previous upload
+            if (file_exists('uploads/' . $image['name'])) {
+                array_push($errorList, "File name already exists. Will not override.");
+            }
+        }
+    }
+    //
+    if ($errorList) {
+        $app->render("admin_product_add.html.twig", array(
+            'v' => $valueList,
+            "errorList" => $errorList,
+            'operation' => ($op == 'edit' ? 'Edit' : 'Update')
+        ));
+    } else {
+        // DONT GET FIRED OVER THESE!!!
+        // FIXME: opened a security hole here! .. must be forbidden
+        // FIXME: only allow select extensions .jpg .gif .png, never .php
+        // FIXME: do not allow file to override an previous upload
+        $imagePath = "uploads/" . $image['name'];
+        move_uploaded_file($image["tmp_name"], $imagePath);
+        if ($op == 'edit') {
+            // unlink('') OLD file - requires select            
+            $oldImagePath = DB::queryFirstField(
+                            'SELECT imagePath FROM products WHERE id=%i', $id);
+            if (($oldImagePath) && file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+            DB::update('products', array(
+                "name" => $name,
+                "description" => $description,
+                "price" => $price,
+                "imagePath" => $imagePath
+                    ), "id=%i", $id);
+        } else {
+            DB::insert('products', array(
+                "name" => $name,
+                "description" => $description,
+                "price" => $price,
+                "imagePath" => $imagePath
+            ));
+        }
+        $app->render("admin_product_add_success.html.twig", array(
+            "imagePath" => $imagePath
+        ));
+    }
+})->conditions(array(
+    'op' => '(add|edit)',
+    'id' => '[0-9]+'));
+
+// HOMEWORK: implement a table of existing products with links for editing
+$app->get('/admin/product/list', function() use ($app) {
+    $productList =  DB::query("SELECT * FROM products");
+    $app->render("admin_product_list.html.twig", array(
+        'productList' => $productList
+    ));
+});
+
+$app->get('/admin/product/delete/:id', function($id) use ($app) {
+    $product = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
+    $app->render('admin_product_delete.html.twig', array(
+        'p' => $product
+    ));
+});
+
+$app->post('/admin/product/delete/:id', function($id) use ($app) {
+    DB::delete('products', 'id=%i', $id);
+    $app->render('admin_product_delete_success.html.twig');
+});
+
+/*
+  // ALTERNATIVE: provide product/quantitiy in URL
+  $app->get('/cart/add/:productID/:quantity', function() use ($app) {
+  }); */
+
+
+$app->get('/emailexists/:email', function($email) use ($app, $log) {
+    $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
+    if ($user) {
+        echo "Email already registered";
+    }
+});
+
+// returns TRUE if password is strong enough,
+// otherwise returns string describing the problem
+function verifyPassword($pass1) {
+    if (!preg_match('/[0-9;\'".,<>`~|!@#$%^&*()_+=-]/', $pass1) || (!preg_match('/[a-z]/', $pass1)) || (!preg_match('/[A-Z]/', $pass1)) || (strlen($pass1) < 8)) {
+        return "Password must be at least 8 characters " .
+                "long, contain at least one upper case, one lower case, " .
+                " one digit or special character";
+    }
+    return TRUE;
+}
+
 $app->get('/index', function() use ($app) {
     $app->render('index.html.twig');
 });
@@ -114,318 +639,5 @@ $app->get('/admin_user', function() use ($app) {
 });$app->get('/admin_order', function() use ($app) {
     $app->render('admin_order.html.twig');
 });
-
-
-// Receiving a submission
-$app->post('/register', function() use ($app) {
-    // extract variables
-    $name = $app->request()->post('name');
-    $email = $app->request()->post('email');
-    $pass1 = $app->request()->post('pass1');
-    $pass2 = $app->request()->post('pass2');
-    // list of values to retain after a failed submission
-    $valueList = array('email' => $email);
-    // check for errors and collect error messages
-    $errorList = array();
-    if(strlen($name) < 3) {
-        array_push($errorList, "name too short, must be 3 characters or longer");
-    }
-    if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
-        array_push($errorList, "Email is invalid");
-    } else {
-        $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
-        if ($user) {
-            array_push($errorList, "Email already in use");
-        }
-    }
-    if ($pass1 != $pass2) {
-        array_push($errorList, "Passwors do not match");
-    } else {
-        if (strlen($pass1) < 6) {
-            array_push($errorList, "Password too short, must be 6 characters or longer");
-        } 
-        if (preg_match('/[A-Z]/', $pass1) != 1
-         || preg_match('/[a-z]/', $pass1) != 1
-         || preg_match('/[0-9]/', $pass1) != 1) {
-            array_push($errorList, "Password must contain at least one lowercase, "
-                    . "one uppercase letter, and a digit");
-        }
-    }
-    //
-    if ($errorList) {
-        $app->render('register.html.twig', array(
-            'errorList' => $errorList,
-            'v' => $valueList
-        ));
-    } else {
-        DB::insert('users', array(
-            'name' => $name,
-            'email' => $email,
-            'password' => $pass1
-        ));
-        $app->render('eshop.html.twig');
-    }
-});
-
-// AJAX: Is user with this email already registered?
-$app->get('/ajax/emailused/:email', function($email) {
-    $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
-    //echo json_encode($user, JSON_PRETTY_PRINT);
-    echo json_encode($user != null);    
-});
-
-// AJAX: Is user with this task name already registered?
-$app->get('/ajax/tasknameused/:task', function($task) {
-    $todo = DB::queryFirstRow("SELECT * FROM todos WHERE task=%s", $task);
-    //echo json_encode($user, JSON_PRETTY_PRINT);
-    echo json_encode($todo != null);    
-});
-
-$app->get('/', function() use ($app) {
-    $app->render('index.html.twig');
-});
-
-// HOMEWORK 1: implement login form
-$app->get('/login', function() use ($app) {
-    $app->render('login.html.twig');
-    
-});
-
-$app->post('/login', function() use ($app) {
-//    print_r($_POST);
-    $name = $app->request()->post('name');
-    $password = $app->request()->post('password');
-    // verification    
-    $error = false;
-    $user = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $name);
-    if (!$user) {
-        $error = true;
-    } else {
-        if ($user['password'] != $password) {
-            $error = true;
-        }
-    }
-    // decide what to render
-    if ($error) {
-        $app->render('login.html.twig', array("error" => true));
-    } else {
-        unset($user['password']);
-        $_SESSION['eshopuser'] = $user;
-        //print_r($_SESSION['eshopuser']);
-        $app->render('category.html.twig');
-        
-    }
-});
-
-$app->get('/logout', function() use ($app) {
-    unset($_SESSION['eshopuser']);
-//    session_destroy();
-    $app->render('logout.html.twig');
-});
-
-// HOMEWORK 2: find and implement any tutorial about PHP file upload.
-// create a new pure-PHP project to do it in
-
-
-$app->get('/add', function() use ($app) {
-    if (!$_SESSION['eshopuser']) {
-        $app->render('forbidden.html.twig');
-        return;
-    }
-    $app->render('add.html.twig');
-});
-
-$app->post('/add', function() use ($app) {
-    if (!$_SESSION['eshopuser']) {
-        $app->render('forbidden.html.twig');
-        return;
-    }
-//    print_r($_POST);
-    $title = $app->request()->post('title');
-    $cat_id = $app->request()->post('cat_id');
-    $model_name = $app->request()->post('model_name');
-    $model_no = $app->request()->post('model_no');
-    $desc1 = $app->request()->post('desc1');
-    //$desc2 = $app->request()->post('desc2');
-    //$desc3 = $app->request()->post('desc3');
-    $price = $app->request()->post('price');
-    $stock = $app->request()->post('stock');
-    $discount = $app->request()->post('discount');
-    $today = date("Y-m-d");
-    $posted_date = $today;
-    //
-    $errorList = array();
-    $valueList = array('task' => $title);
-    
-    print_r($title);
-    if (strlen($title) < 2 || strlen($title) > 100 ) {
-        array_push($errorList, "Task name must be 2-100 characters long");        
-    }else {
-        $todo = DB::queryFirstRow("SELECT * FROM products WHERE title=%s", $title);
-        if ($todo) {
-            array_push($errorList, "Product title already in use");
-        }
-    }
-
-//    print_r($_SESSION['eshopuser']);
-    if ($errorList) {
-        $app->render("add.html.twig", ["errorList" => $errorList,
-            'v' => $valueList
-            ]);
-    } else {       
-        DB::insert('products',array(
-            "title" => $title,
-            "cat_id" => $cat_id,
-            "model_name" => $model_name,
-            "model_no" => $model_no,
-            "desc1" => $desc1,
-            "price" => $price,
-            "stock" => $stock,
-            "discount" => $discount,
-            "posted_date" => $today
-            ));
-        $app->render("add_success.html.twig", array(
-            "title" => $title,
-            "title" => $title,
-            "cat_id" => $cat_id,
-            "model_name" => $model_name,
-            "price" => $price,
-            "stock" => $stock
-        ));
-    }    
-});
-
-$app->get('/delete/:id', function($id) use ($app) {
-    if (!$_SESSION['eshopuser']) {
-        $app->render('login.html.twig');
-        return;
-    }
-    $todo = DB::queryFirstRow("SELECT * FROM todos where id = %i", $id);
-    $app->render('delete.html.twig', ["todo" => $todo]);
-});
-
-$app->post('/delete/:id', function($id) use ($app) {
-   if (!$_SESSION['eshopuser']) {
-        $app->render('forbidden.html.twig');
-        return;
-    }
-//    print_r($_POST);
-    DB::delete('todos',"id=%i", $id);
-    $app->render("delete_success.html.twig", array(
-        "id" => $id
-    ));
-});
-
-// HOMEWORK: implement a table of existing todos with links for editing
-$app->get('/list', function() use ($app) {
-    if (!$_SESSION['eshopuser']) {
-        $app->render('login.html.twig');
-        return;
-    }
-    $todos = DB::query("SELECT * FROM todos where ownerId = %i", $_SESSION['eshopuser']['id']);
-//    print_r($todos);
-    $app->render("list.html.twig", ["todos" => $todos]);    
-});
-
-// HOMEWORK: implement UPDATE/edit of an existing todo
-$app->get('/edit/:id', function($id) use ($app) {
-    if (!$_SESSION['eshopuser']) {
-        $app->render('login.html.twig');
-        return;
-    }
-    $todo = DB::queryFirstRow("SELECT * FROM todos where id = %i", $id);
-    $app->render('edit.html.twig', ["todo" => $todo]);
-});
-
-// NOTE: allow user NOT to replace image with a new one
-// in other words if no image is uploaded you keep the existing one
-$app->post('/edit/:id', function($id) use ($app) {
-    if (!$_SESSION['eshopuser']) {
-        $app->render('login.html.twig');
-        return;
-    }
-//    print_r($_POST);
-    $task = $app->request()->post('task');
-    $dueDate = $app->request()->post('dueDate');
-    $isDone = $app->request()->post('isDone');
-    //
-    $errorList = array();
-    $todo = array('task' => $task,
-                  "dueDate" => $dueDate,
-                  "isDone" => $isDone);
-    
-    if (strlen($task) < 2 || strlen($task) > 100 ) {
-        array_push($errorList, "Task name must be 2-100 characters long");        
-    }else {
-        $todo = DB::queryFirstRow("SELECT * FROM todos WHERE task=%s", $task);
-        if ($todo) {
-            array_push($errorList, "Task name already in use");
-        }
-    }
-    
-    $today = date("Y-m-d");
-    if ($dueDate < $today) {
-        array_push($errorList, "Due date must be after today");        
-    }
-//    print_r($_SESSION['eshopuser']);
-    if ($errorList) {
-        $app->render("edit.html.twig", ["errorList" => $errorList,
-            "todo" => $todo]);
-    } else {      
-        DB::update('todos', ["ownerId" => $_SESSION['eshopuser']['id'],
-            "task" => $task,
-            "dueDate" => $dueDate,
-            "isDone" => $isDone
-            ],"id=%i", $id);
-        $app->render("edit_success.html.twig", array(
-            "task" => $task
-        ));
-    }
-});
-
-$app->get('/admin/product/add', function() use ($app) {
-    $app->render("admin_product_add.html.twig");    
-});
-
-$app->post('/admin/product/add', function() use ($app) {
-    $name = $app->request()->post('name');
-    $description = $app->request()->post('description');
-    $image = isset($_FILES['image']) ? $_FILES['image'] : array();
-    //
-    $errorList = array();
-    if (strlen($name) < 2 || strlen($name) > 100 ) {
-        array_push($errorList, "Name must be 2-100 characters long");        
-    }
-    if (strlen($description) < 2 || strlen($description) > 1000 ) {
-        array_push($errorList, "Description must be 2-1000 characters long");        
-    }
-    if (!$image) {
-        array_push($errorList, "Image is required to create a todo");
-    } else {
-        $imageInfo = getimagesize($image["tmp_name"]);
-        if (!$imageInfo) {
-            array_push($errorList, "File does not look like an valid image");
-        }
-    }
-    //
-    if ($errorList) {
-        $app->render("admin_todo_add.html.twig", array(
-            "errorList" => $errorList
-        ));
-    } else {      
-        // FIXME: opened a security hole here! ..
-        $imagePath = "uploads/" . $image['name'];
-        move_uploaded_file($image["tmp_name"], $imagePath);
-        DB::insert('products', array(
-            "name" => $name,
-            "description" => $description,
-            "imagePath" => $imagePath
-        ));
-        $app->render("admin_product_add_success.html.twig", array(
-            "imagePath" => $imagePath
-        ));
-    }    
-});
-
 
 $app->run();
