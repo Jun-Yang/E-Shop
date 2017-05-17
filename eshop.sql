@@ -2,8 +2,8 @@
 -- version 4.6.5.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: May 17, 2017 at 06:07 AM
+-- Host: 127.0.0.1:3333
+-- Generation Time: May 17, 2017 at 08:38 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -212,7 +212,7 @@ CREATE TABLE `users` (
   `ID` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `email` varchar(35) NOT NULL,
-  `password` varchar(40) NOT NULL,
+  `password` varchar(100) NOT NULL,
   `fname` varchar(255) DEFAULT NULL,
   `lname` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
@@ -232,10 +232,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`ID`, `name`, `email`, `password`, `fname`, `lname`, `phone`, `addressLine1`, `addressLine2`, `state`, `city`, `code`, `TYPE`, `role`, `status`, `last_login`) VALUES
-(1, 'chen', 'cc@123.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-16 17:36:07'),
-(2, 'chenc', 'aa@123.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-16 17:41:36'),
-(3, 'mike', 'mike@123.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-16 18:06:33'),
-(4, 'yu1', 'yu@111.com', 'AAaa11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-17 01:53:08');
+(7, 'Jerry003', 'Jerry003@123.com', '$2y$10$erdahXcf.UC5ZbYph05haOli8tlgg0TcO5B7AarUSZwuQ5DUklM.u', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-17 18:36:43');
 
 -- --------------------------------------------------------
 
@@ -381,7 +378,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `wishlist`
 --

@@ -1,5 +1,5 @@
 <?php
-
+session_cache_limiter(false);
 session_start();
 
 // enable on-demand class loader
@@ -58,10 +58,6 @@ $view->parserOptions = array(
 );
 $view->setTemplatesDirectory(dirname(__FILE__) . '/templates');
 
-/*
-  \Slim\Route::setDefaultConditions(array(
-  'id' => '\d+'
-  )); */
 
 if (!isset($_SESSION['eshopuser'])) {
     $_SESSION['eshopuser'] = array();
