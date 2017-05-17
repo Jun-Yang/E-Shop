@@ -120,7 +120,7 @@ $app->post('/register', function() use ($app, $log) {
         ));
         $id = DB::insertId();
         $log->debug(sprintf("User %s created", $id));
-        $app->render('login.html.twig');
+        $app->render('eshop.html.twig');
     }
 });
 
@@ -132,6 +132,7 @@ $app->post('/login', function() use ($app, $log) {
     $name = $app->request->post('name');
     $pass = $app->request->post('pass');
     $user = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $name);
+//    print_r($user);
     if (!$user) {
         $log->debug(sprintf("User failed for username %s from IP %s", $name, $_SERVER['REMOTE_ADDR']));
         $app->render('login.html.twig', array('loginFailed' => TRUE));
@@ -142,7 +143,16 @@ $app->post('/login', function() use ($app, $log) {
             unset($user['password']);
             $_SESSION['eshopuser'] = $user;
             $log->debug(sprintf("User %s logged in successfuly from IP %s", $user['ID'], $_SERVER['REMOTE_ADDR']));
-            $app->render('eshop.html.twig');
+            if($user['role'] === 'admin') {
+               $app->render('admin_user.html.twig',array(
+                            "eshopuser" => $_SESSION['eshopuser']
+                )); 
+            }else {
+                $app->render('eshop.html.twig',array(
+                            "eshopuser" => $_SESSION['eshopuser']
+                ));
+            }
+            
         } else {
             $log->debug(sprintf("User failed for username %s from IP %s", $name, $_SERVER['REMOTE_ADDR']));
             $app->render('login.html.twig', array('loginFailed' => TRUE));
@@ -152,7 +162,7 @@ $app->post('/login', function() use ($app, $log) {
 
 $app->get('/logout', function() use ($app, $log) {
     $_SESSION['eshopuser'] = array();
-    $app->render('logout_success.html.twig');
+    $app->render('eshop.html.twig');
 });
 
 $app->get('/cart', function() use ($app) {
