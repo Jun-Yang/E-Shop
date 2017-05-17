@@ -133,24 +133,22 @@ $app->get('/login', function() use ($app, $log) {
 });
 
 $app->post('/login', function() use ($app, $log) {
-    $email = $app->request->post('email');
+    $name = $app->request->post('name');
     $pass = $app->request->post('pass');
-    $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
+    $user = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $name);
     if (!$user) {
-        $log->debug(sprintf("User failed for email %s from IP %s", $email, $_SERVER['REMOTE_ADDR']));
+        $log->debug(sprintf("User failed for username %s from IP %s", $name, $_SERVER['REMOTE_ADDR']));
         $app->render('login.html.twig', array('loginFailed' => TRUE));
     } else {
         // password MUST be compared in PHP because SQL is case-insenstive
-        //if ($user['password'] == hash('sha256', $pass)) {
-        if (password_verify($pass, $user['password'])) {
+        if(crypt($pass, $user['password']) == $user['password']) {
             // LOGIN successful
             unset($user['password']);
             $_SESSION['user'] = $user;
             $log->debug(sprintf("User %s logged in successfuly from IP %s", $user['ID'], $_SERVER['REMOTE_ADDR']));
             $app->render('eshop.html.twig');
         } else {
-            $log->debug(sprintf("User failed for email %s from IP %s", $email, $_SERVER['REMOTE_ADDR']));
-            echo 'login failed';
+            $log->debug(sprintf("User failed for username %s from IP %s", $name, $_SERVER['REMOTE_ADDR']));
             $app->render('login.html.twig', array('loginFailed' => TRUE));
         }
     }
