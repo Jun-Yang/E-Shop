@@ -211,8 +211,9 @@ $app->post('/login', function() use ($app) {
     } else {
         unset($user['password']);
         $_SESSION['eshopuser'] = $user;
-        $app->render('category.html.twig');
         print_r($_SESSION['eshopuser']);
+        $app->render('category.html.twig');
+        
     }
 });
 
