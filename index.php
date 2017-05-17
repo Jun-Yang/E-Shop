@@ -7,10 +7,18 @@ require_once 'vendor/autoload.php';
 
 //DB::$host = '127.0.0.1';
 //OldPassword: FvUVdCWTv8GuWshh
+/*
 DB::$user = 'eshop';
 DB::$password = 'FvUVdCWTv8GuWshh';
 DB::$dbName = 'eshop';
 DB::$port = 3333;
+DB::$encoding = 'utf8';
+*/
+
+DB::$user = 'eshop';
+DB::$password = 'FvUVdCWTv8GuWshh';
+DB::$dbName = 'eshop';
+DB::$port = 3306;
 DB::$encoding = 'utf8';
 
 
@@ -180,6 +188,7 @@ $app->get('/', function() use ($app) {
 // HOMEWORK 1: implement login form
 $app->get('/login', function() use ($app) {
     $app->render('login.html.twig');
+    
 });
 
 $app->post('/login', function() use ($app) {
@@ -203,6 +212,7 @@ $app->post('/login', function() use ($app) {
         unset($user['password']);
         $_SESSION['eshopuser'] = $user;
         $app->render('category.html.twig');
+        print_r($_SESSION['eshopuser']);
     }
 });
 

@@ -212,6 +212,13 @@ footer {
     margin: 24px 0 12px 0;
 }
 
+.messagecontainer {
+    text-align: center;
+    font-size: 28px;
+    color: blue;
+    margin: 24px 0 12px 0;
+}
+
 .login_form {
     width: 100%;
     padding: 12px 20px;
