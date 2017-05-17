@@ -13,6 +13,34 @@ DB::$dbName = 'eshop';
 DB::$port = 3333;
 DB::$encoding = 'utf8';
 
+
+// Slim creation and setup
+$app = new \Slim\Slim(array(
+    'view' => new \Slim\Views\Twig()
+        ));
+
+$view = $app->view();
+$view->parserOptions = array(
+    'debug' => true,
+    'cache' => dirname(__FILE__) . './cache'
+);
+
+$view->setTemplatesDirectory(dirname(__FILE__) . './templates');
+
+//if user not login , u won't get err message
+if (!isset($_SESSION['eshopuser'])){
+   $_SESSION['eshopuser']=array(); 
+}
+
+$twig = $app->view()->getEnvironment();
+$twig ->addGlobal('eshopuser',$_SESSION['eshopuser']);
+
+// STATE 1: First show
+$app->get('/register', function() use ($app) {
+    $app->render('register.html.twig');
+});
+
+
 // Slim creation and setup
 $app = new \Slim\Slim(array(
     'view' => new \Slim\Views\Twig()
@@ -25,12 +53,12 @@ $view->parserOptions = array(
 );
 $view->setTemplatesDirectory(dirname(__FILE__) . '/templates');
 
-if (!isset($_SESSION['todouser'])) {
-    $_SESSION['todouser'] = array();
+if (!isset($_SESSION['eshopuser'])) {
+    $_SESSION['eshopuser'] = array();
 }
 
 $twig = $app->view()->getEnvironment();
-$twig->addGlobal('todouser', $_SESSION['todouser']);
+$twig->addGlobal('eshopuser', $_SESSION['eshopuser']);
 
 // STATE 1: First show
 $app->get('/index', function() use ($app) {
@@ -173,13 +201,13 @@ $app->post('/login', function() use ($app) {
         $app->render('login.html.twig', array("error" => true));
     } else {
         unset($user['password']);
-        $_SESSION['todouser'] = $user;
+        $_SESSION['eshopuser'] = $user;
         $app->render('category.html.twig');
     }
 });
 
 $app->get('/logout', function() use ($app) {
-    unset($_SESSION['todouser']);
+    unset($_SESSION['eshopuser']);
 //    session_destroy();
     $app->render('logout.html.twig');
 });
@@ -189,7 +217,7 @@ $app->get('/logout', function() use ($app) {
 
 
 $app->get('/add', function() use ($app) {
-    if (!$_SESSION['todouser']) {
+    if (!$_SESSION['eshopuser']) {
         $app->render('forbidden.html.twig');
         return;
     }
@@ -197,7 +225,7 @@ $app->get('/add', function() use ($app) {
 });
 
 $app->post('/add', function() use ($app) {
-    if (!$_SESSION['todouser']) {
+    if (!$_SESSION['eshopuser']) {
         $app->render('forbidden.html.twig');
         return;
     }
@@ -222,13 +250,13 @@ $app->post('/add', function() use ($app) {
     if ($dueDate < $today) {
         array_push($errorList, "Due date must be after today");        
     }
-//    print_r($_SESSION['todouser']);
+//    print_r($_SESSION['eshopuser']);
     if ($errorList) {
         $app->render("add.html.twig", ["errorList" => $errorList,
             'v' => $valueList
             ]);
     } else {      
-        DB::insert('todos', ["ownerId" => $_SESSION['todouser']['id'],
+        DB::insert('todos', ["ownerId" => $_SESSION['eshopuser']['id'],
             "task" => $task,
             "dueDate" => $dueDate,
             "isDone" => $isDone
@@ -240,7 +268,7 @@ $app->post('/add', function() use ($app) {
 });
 
 $app->get('/delete/:id', function($id) use ($app) {
-    if (!$_SESSION['todouser']) {
+    if (!$_SESSION['eshopuser']) {
         $app->render('login.html.twig');
         return;
     }
@@ -249,7 +277,7 @@ $app->get('/delete/:id', function($id) use ($app) {
 });
 
 $app->post('/delete/:id', function($id) use ($app) {
-   if (!$_SESSION['todouser']) {
+   if (!$_SESSION['eshopuser']) {
         $app->render('forbidden.html.twig');
         return;
     }
@@ -262,18 +290,18 @@ $app->post('/delete/:id', function($id) use ($app) {
 
 // HOMEWORK: implement a table of existing todos with links for editing
 $app->get('/list', function() use ($app) {
-    if (!$_SESSION['todouser']) {
+    if (!$_SESSION['eshopuser']) {
         $app->render('login.html.twig');
         return;
     }
-    $todos = DB::query("SELECT * FROM todos where ownerId = %i", $_SESSION['todouser']['id']);
+    $todos = DB::query("SELECT * FROM todos where ownerId = %i", $_SESSION['eshopuser']['id']);
 //    print_r($todos);
     $app->render("list.html.twig", ["todos" => $todos]);    
 });
 
 // HOMEWORK: implement UPDATE/edit of an existing todo
 $app->get('/edit/:id', function($id) use ($app) {
-    if (!$_SESSION['todouser']) {
+    if (!$_SESSION['eshopuser']) {
         $app->render('login.html.twig');
         return;
     }
@@ -284,7 +312,7 @@ $app->get('/edit/:id', function($id) use ($app) {
 // NOTE: allow user NOT to replace image with a new one
 // in other words if no image is uploaded you keep the existing one
 $app->post('/edit/:id', function($id) use ($app) {
-    if (!$_SESSION['todouser']) {
+    if (!$_SESSION['eshopuser']) {
         $app->render('login.html.twig');
         return;
     }
@@ -311,12 +339,12 @@ $app->post('/edit/:id', function($id) use ($app) {
     if ($dueDate < $today) {
         array_push($errorList, "Due date must be after today");        
     }
-//    print_r($_SESSION['todouser']);
+//    print_r($_SESSION['eshopuser']);
     if ($errorList) {
         $app->render("edit.html.twig", ["errorList" => $errorList,
             "todo" => $todo]);
     } else {      
-        DB::update('todos', ["ownerId" => $_SESSION['todouser']['id'],
+        DB::update('todos', ["ownerId" => $_SESSION['eshopuser']['id'],
             "task" => $task,
             "dueDate" => $dueDate,
             "isDone" => $isDone

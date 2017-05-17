@@ -18,6 +18,9 @@
         <link href="css/style.css" rel="stylesheet">
         <title>{% block title %}{% endblock %}</title>
     {% block headExtra %}{% endblock %}
+    <link rel="icon" href="images/favicon2.ico">
+  
+
 </head>
 
 <body>
@@ -46,8 +49,8 @@
                     <li><br>
                          
                         <div id="header" class="login_user_right">
-                            {% if todouser %}
-                                &nbsp;&nbsp;&nbsp; Welcome {{ todouser.name }}, you may <a href="/logout">Logout</a>.</a>
+                            {% if eshopuser %}
+                                &nbsp;&nbsp;&nbsp; Welcome {{ eshopuser.name }}, you may <a href="/logout">Logout</a>.</a>
                             {% else %}
                                 &nbsp;&nbsp;&nbsp; You may <a href="/login">Login</a> or <a href="/register">register</a>
                             {% endif %}
