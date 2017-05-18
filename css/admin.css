@@ -190,8 +190,9 @@ float:left;
 padding:30px 0 0 20px;
 }
 .right_content{
-width:625px;
-float:left;
+width:800px;
+float:none;
+margin:0 auto;
 padding:30px 0 0 30px;
 }
 
@@ -250,32 +251,35 @@ color: #0e4354;
 background:url("../images/admin/sidebar_menu_top.gif") no-repeat center;
 width:195px;
 height:31px;
-margin:0 0 5px 0;
+margin:0 auto;
+float:right;
+padding:0 50px 20px 0;
 }
 input.search_input{
 width:155px;
-height:16px;
-margin:5px 0 0 5px;
+height:20px;
+margin:15px 0 0 5px;
 border:1px #bdebfd solid;
 background:#92dbf8;
-padding:4px 0 0 2px;
-float:left;
+padding:4px 20px 0px 2px;
 color:#096184;
 font-size:11px;
+float:right;
 }
 input.search_submit{
-float:left;
+float:right;
 background:none;
 border:none;
-margin:7px 0 0 8px;
+margin:15px -180px 0 0px;
 }
 
 #rounded-corner
 {
-margin:0px;
-width:625px;
+margin:0 auto;
+width:800px;
 text-align: left;
 border-collapse: collapse;
+padding:200 0 20 0;
 }
 #rounded-corner thead th.rounded-company
 {
@@ -354,19 +358,19 @@ text-shadow: 0px 1px 0px #000;
 background: url("../images/admin/buttonn.png") left top no-repeat;
 }
 
-a.bt_green{display:block; float:right; margin:10px 5px 10px 5px; line-height:31px; text-decoration:none; color:#FFFFFF; text-shadow:1px 1px #8fa42b;}
+a.bt_green{display:block; margin:10px 5px 10px 5px; line-height:31px; text-decoration:none; color:#FFFFFF; text-shadow:1px 1px #8fa42b;}
 a.bt_green strong{width:auto;height:31px; padding:0 10px 0 10px;display:block; float:left;background:url("../images/admin/bt_green_center.gif") repeat-x center;}
 a.bt_green span.bt_green_lft{width:10px;height:31px;display:block; float:left;background:url("../images/admin/bt_green_left.gif") no-repeat center right;}
 a.bt_green span.bt_green_r{width:10px;height:31px;display:block; float:left;background:url("../images/admin/bt_green_r.gif") no-repeat center right;}
 a:hover.bt_green{ text-decoration:underline;}
 
-a.bt_blue{display:block; float:right; margin:10px 5px 10px 5px; line-height:31px; text-decoration:none; color:#FFFFFF; text-shadow:1px 1px #3597bf;}
+a.bt_blue{display:block; margin:10px 5px 10px 5px; line-height:31px; text-decoration:none; color:#FFFFFF; text-shadow:1px 1px #3597bf;}
 a.bt_blue strong{width:auto;height:31px; padding:0 10px 0 10px;display:block; float:left;background:url("../images/admin/bt_blue_center.gif") repeat-x center;}
 a.bt_blue span.bt_blue_lft{width:10px;height:31px;display:block; float:left;background:url("../images/admin/bt_blue_left.gif") no-repeat center right;}
 a.bt_blue span.bt_blue_r{width:10px;height:31px;display:block; float:left;background:url("../images/admin/bt_blue_r.gif") no-repeat center right;}
 a:hover.bt_blue{ text-decoration:underline;}
 
-a.bt_red{display:block; float:right; margin:10px 5px 10px 5px; line-height:31px; text-decoration:none; color:#FFFFFF; text-shadow:1px 1px #c24739;}
+a.bt_red{display:block; margin:10px 5px 10px 5px; line-height:31px; text-decoration:none; color:#FFFFFF; text-shadow:1px 1px #c24739;}
 a.bt_red strong{width:auto;height:31px; padding:0 10px 0 10px;display:block; float:left;background:url("../images/admin/bt_red_center.gif") repeat-x center;}
 a.bt_red span.bt_red_lft{width:10px;height:31px;display:block; float:left;background:url("../images/admin/bt_red_left.gif") no-repeat center right;}
 a.bt_red span.bt_red_r{width:10px;height:31px;display:block; float:left;background:url("../images/admin/bt_red_r.gif") no-repeat center right;}
@@ -410,7 +414,7 @@ border:1px #eac7c7 solid;background-position:15px 10px;padding:20px 20px 15px 60
 
 /*--------------*/
 div.pagination {
-width:625px;
+width:800px;
 clear:both;
 padding:10px 0 10px 0;
 margin:0px;
@@ -445,4 +449,9 @@ padding: 2px 5px 2px 5px;
 margin-right: 2px;
 border: 1px solid #f3f3f3;
 color: #ccc;
+}
+.left_h2 {
+    text-align:left;
+    float:left;
+    padding:15px 100px 0 0;
 }

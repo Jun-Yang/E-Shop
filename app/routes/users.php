@@ -102,7 +102,9 @@ $app->post('/login', function() use ($app, $log) {
             $_SESSION['eshopuser'] = $user;
             $log->debug(sprintf("User %s logged in successfuly from IP %s", $user['ID'], $_SERVER['REMOTE_ADDR']));
             if($user['role'] === 'admin') {
+               $userList =  DB::query("SELECT * FROM users");
                $app->render('admin_user.html.twig',array(
+                            'userList' => $userList,
                             "eshopuser" => $_SESSION['eshopuser']
                 )); 
             }else {

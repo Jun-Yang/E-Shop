@@ -4,62 +4,25 @@
 
 {% block content %}
     <div class="center_content">  
-        <div class="left_content">
-            <div class="sidebar_search">
-                <form>
-                    <input type="text" name="searchinput" class="search_input" value="search keyword" onclick="this.value = ''" />
-                    <input type="image" class="search_submit" src="../images/admin/search.png" alt="search_submit"/>
-                </form>            
-            </div>
-
-            <div class="sidebarmenu">
-                <a class="menuitem submenuheader" href="">Subcategories</a>
-                <div class="submenu">
-                    <ul>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                    </ul>
-                </div>
-                <a class="menuitem submenuheader" href="" >Sidebar Settings</a>
-                <div class="submenu">
-                    <ul>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                    </ul>
-                </div>
-                <a class="menuitem submenuheader" href="">Add new products</a>
-                <div class="submenu">
-                    <ul>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                        <li><a href="">Sidebar submenu</a></li>
-                    </ul>
-                </div>
-                <a class="menuitem" href="">User Reference</a>
-                <a class="menuitem" href="">Blue button</a>
-                <a class="menuitem_green" href="">Green button</a>
-                <a class="menuitem_red" href="">Red button</a>
-            </div>
-        </div>  
 
         <div class="right_content">            
-            <h2>Products Categories List</h2> 
+            <h2 class="left_h2">Products Categories List</h2> 
+            <div class="sidebar_search">
+            <form>
+                <input type="text" name="searchinput" class="search_input" value="search keyword" onclick="this.value = ''" />
+                <input type="image" class="search_submit" src="../images/admin/search.png" alt="search_submit"/>
+            </form>            
+            </div>
+
             <table id="rounded-corner" summary="2007 Major IT Companies' Profit">
                 <thead>
                     <tr>
                         <th scope="col" class="rounded-company"></th>
-                        <th scope="col" class="rounded">Product</th>
-                        <th scope="col" class="rounded">Details</th>
-                        <th scope="col" class="rounded">Price</th>
-                        <th scope="col" class="rounded">Date</th>
+                        <th scope="col" class="rounded">Id</th>
+                        <th scope="col" class="rounded">Name</th>
+                        <th scope="col" class="rounded">Description</th>
+                        <th scope="col" class="rounded">Status</th>
+                        <th scope="col" class="rounded">Post Date</th>
                         <th scope="col" class="rounded">Edit</th>
                         <th scope="col" class="rounded-q4">Delete</th>
                     </tr>
@@ -67,20 +30,15 @@
                 {% for c in categoryList %}
                     <tr>
                         <td><input type="checkbox" name="ckbox" /></td>
-                        <td>{{u.ID}}</td>
-                        <td>{{u.name}}</td>
-                        <td>{{u.email}}</td>
-                        <td><a href="/admin_edit_user"><img src="images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
-                        <td><a href="#" class="ask"><img src="images/admin/trash.png" alt="" title="" border="0" /></a></td>
+                        <td>{{c.ID}}</td>
+                        <td>{{c.name}}</td>
+                        <td>{{c.description}}</td>
+                        <td>{{c.status}}</td>
+                        <td>{{c.postDate}}</td>
+                        <td><a href="/admin_edit_category"><img src="images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
+                        <td><a href="/admin_delete_category" class="ask"><img src="images/admin/trash.png" alt="" title="" border="0" /></a></td>
                     </tr> 
                 {% endfor %}
-                <tfoot>
-                    <tr>
-                        <td colspan="6" class="rounded-foot-left"><em>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</em></td>
-                        <td class="rounded-foot-right">&nbsp;</td>
-                    </tr>
-                </tfoot>
-                
             </table>
 
             <a href="#" class="bt_green"><span class="bt_green_lft"></span><strong>Add new category</strong><span class="bt_green_r"></span></a>
