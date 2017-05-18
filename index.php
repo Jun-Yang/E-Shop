@@ -5,10 +5,21 @@ session_start();
 // enable on-demand class loader
 require_once 'vendor/autoload.php';
 
-//Import Hybridauth's namespace
-use Hybridauth\Hybridauth; 
-//Now we may proceed and instantiate Hybridauth's classes
-$instance = new Hybridauth([ /* ... */ ]); 
+//Facebook login
+//$config = array(
+//      "base_url" => "http://localhost:8008/vendor/hybridauth/hybridauth/hybridauth/",
+//      "providers" => array (
+//        "Facebook" => array (
+//          "enabled" => true,
+//          "keys"    => array("id" => "294651954316911", "secret" => "ec92b4a05fc2edd8153309f9b166ee60"),
+//          "scope"   => ['email', 'user_about_me', 'user_birthday', 'user_hometown'], // optional
+//          "display" => "popup" // optional
+//    )));
+// 
+//    require_once( "vendor/hybridauth/hybridauth/hybridauth/hybrid/Auth.php" ); 
+//    $hybridauth = new Hybrid_Auth( $config ); 
+//    $adapter = $hybridauth->authenticate( "Facebook" ); 
+//    $user_profile = $adapter->getUserProfile();
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;

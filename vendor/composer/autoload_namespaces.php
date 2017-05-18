@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Slim' => array($vendorDir . '/slim/slim'),
+    'Hybrid' => array($vendorDir . '/hybridauth/hybridauth/hybridauth'),
 );
