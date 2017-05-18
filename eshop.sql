@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3333
--- Generation Time: May 17, 2017 at 08:38 PM
+-- Generation Time: May 18, 2017 at 08:14 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -23,22 +23,15 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `carts`
+-- Table structure for table `cartitems`
 --
 
-CREATE TABLE `carts` (
+CREATE TABLE `cartitems` (
   `ID` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `product_id1` int(11) NOT NULL,
-  `product_id2` int(11) DEFAULT NULL,
-  `product_id3` int(11) DEFAULT NULL,
-  `product_id4` int(11) DEFAULT NULL,
-  `product_id5` int(11) DEFAULT NULL,
-  `product_id6` int(11) DEFAULT NULL,
-  `product_id7` int(11) DEFAULT NULL,
-  `product_id8` int(11) DEFAULT NULL,
-  `product_id9` int(11) DEFAULT NULL,
-  `product_id10` int(11) DEFAULT NULL
+  `sessionID` varchar(50) NOT NULL,
+  `productID` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `createdTS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -48,23 +41,23 @@ CREATE TABLE `carts` (
 --
 
 CREATE TABLE `categories` (
-  `id` int(11) NOT NULL,
+  `ID` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `parent` varchar(50) DEFAULT NULL,
   `layer` int(11) NOT NULL,
   `description` varchar(300) DEFAULT NULL,
   `status` int(11) DEFAULT '0',
-  `posted_date` date NOT NULL
+  `postDate` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `categories`
 --
 
-INSERT INTO `categories` (`id`, `name`, `parent`, `layer`, `description`, `status`, `posted_date`) VALUES
+INSERT INTO `categories` (`ID`, `name`, `parent`, `layer`, `description`, `status`, `postDate`) VALUES
 (1, 'Electric Bicycle', NULL, 1, 'Electric Bicycle', 0, '2017-05-15'),
 (2, 'Electric Scooter', NULL, 1, 'Electric Scooter', 0, '2017-05-15'),
-(3, 'Self-Balancing Scooter', NULL, 1, 'Electric Self-Balancing Scooter', 0, '2017-05-15');
+(3, 'Scooter', NULL, 1, 'Electric Scooter', 0, '2017-05-15');
 
 -- --------------------------------------------------------
 
@@ -74,10 +67,10 @@ INSERT INTO `categories` (`id`, `name`, `parent`, `layer`, `description`, `statu
 
 CREATE TABLE `invoices` (
   `ID` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `invoice_status` varchar(10) DEFAULT NULL,
-  `send_status` varchar(10) DEFAULT NULL
+  `userID` int(11) NOT NULL,
+  `orderID` int(11) NOT NULL,
+  `invoiceStatus` varchar(10) DEFAULT NULL,
+  `sendStatus` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -94,9 +87,39 @@ CREATE TABLE `messages` (
   `message` varchar(4000) DEFAULT NULL,
   `response` varchar(4000) DEFAULT NULL,
   `status` int(11) DEFAULT '0',
-  `posted_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_date` date DEFAULT NULL
+  `postDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `creatDate` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orderitems`
+--
+
+CREATE TABLE `orderitems` (
+  `ID` int(11) NOT NULL,
+  `orderID` int(11) NOT NULL,
+  `origProductID` int(11) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `quantity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orderpayment`
+--
+
+CREATE TABLE `orderpayment` (
+  `ID` int(11) NOT NULL,
+  `orderID` int(11) NOT NULL,
+  `productID` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT '0',
+  `userID` int(11) NOT NULL,
+  `paymentID` int(11) DEFAULT NULL,
+  `invoiceID` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -106,41 +129,19 @@ CREATE TABLE `messages` (
 
 CREATE TABLE `orders` (
   `ID` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `order_products_id` int(11) NOT NULL,
-  `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `addressLine1` varchar(100) NOT NULL,
-  `addressLine2` varchar(100) DEFAULT NULL,
-  `city` varchar(50) NOT NULL,
-  `province` varchar(50) DEFAULT NULL,
-  `abbr_province` varchar(5) DEFAULT NULL,
-  `city_code` varchar(20) NOT NULL,
-  `phone` varchar(255) NOT NULL,
-  `state` varchar(255) DEFAULT NULL,
-  `country` varchar(20) DEFAULT NULL,
-  `abbr_country` varchar(4) DEFAULT NULL,
-  `cartId` int(11) DEFAULT NULL,
-  `shiped` varchar(5) DEFAULT 'false',
-  `shipped_date` date DEFAULT NULL,
-  `Shipping_Method` int(11) DEFAULT NULL,
-  `ship_status` varchar(10) DEFAULT 'false'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `order_products`
---
-
-CREATE TABLE `order_products` (
-  `id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `quantity` int(11) DEFAULT '0',
-  `user_id` int(11) NOT NULL,
-  `payment_id` int(11) DEFAULT NULL,
-  `invoice_id` int(11) DEFAULT NULL
+  `userID` int(11) DEFAULT NULL,
+  `name` varchar(50) NOT NULL,
+  `address` varchar(100) NOT NULL,
+  `postalCode` varchar(6) NOT NULL,
+  `email` varchar(250) NOT NULL,
+  `phoneNumber` varchar(10) NOT NULL,
+  `totalBeforeTax` decimal(10,2) NOT NULL,
+  `shippingBeforeTax` decimal(10,2) NOT NULL,
+  `taxes` decimal(10,2) NOT NULL,
+  `totalWithShippingAndTaxes` decimal(10,2) NOT NULL,
+  `dateTimePlaced` datetime NOT NULL,
+  `dateTimeShipped` datetime DEFAULT NULL,
+  `status` enum('placed','shipped','cancelled','delivered') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -151,14 +152,14 @@ CREATE TABLE `order_products` (
 
 CREATE TABLE `payments` (
   `ID` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `payment_status` varchar(10) DEFAULT NULL,
-  `payment_way` varchar(10) DEFAULT NULL,
-  `payment_details` varchar(100) DEFAULT NULL,
+  `userID` int(11) NOT NULL,
+  `orderID` int(11) NOT NULL,
+  `paymentStatus` varchar(10) DEFAULT NULL,
+  `paymentWay` varchar(10) DEFAULT NULL,
+  `paymentDetails` varchar(100) DEFAULT NULL,
   `amount` varchar(100) DEFAULT NULL,
-  `pay_status` int(11) DEFAULT '0',
-  `pay_date` date DEFAULT NULL
+  `payStatus` int(11) DEFAULT '0',
+  `payDate` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -168,37 +169,37 @@ CREATE TABLE `payments` (
 --
 
 CREATE TABLE `products` (
-  `id` int(11) NOT NULL,
-  `cat_id` int(11) NOT NULL,
-  `name` varchar(200) NOT NULL,
+  `ID` int(11) NOT NULL,
+  `catID` int(11) NOT NULL,
+  `name` varchar(300) NOT NULL,
   `title` varchar(200) NOT NULL,
-  `image_data1` longblob NOT NULL,
-  `image_mime_type1` varchar(100) NOT NULL,
-  `image_name1` varchar(100) DEFAULT NULL,
-  `image_data2` longblob,
-  `image_mime_type2` varchar(100) DEFAULT NULL,
-  `image_name2` varchar(100) DEFAULT NULL,
-  `image_data3` longblob,
-  `image_mime_type3` varchar(100) DEFAULT NULL,
-  `image_name3` varchar(100) DEFAULT NULL,
-  `model_no` int(11) DEFAULT NULL,
-  `model_name` varchar(50) DEFAULT NULL,
-  `full_name` varchar(250) NOT NULL,
+  `imageData1` longblob,
+  `imageMimeType1` varchar(100) NOT NULL,
+  `imageName1` varchar(100) DEFAULT NULL,
+  `imageData2` longblob,
+  `imageMimeType2` varchar(100) DEFAULT NULL,
+  `imageName2` varchar(100) DEFAULT NULL,
+  `imageData3` longblob,
+  `imageMimeType3` varchar(100) DEFAULT NULL,
+  `imageName3` varchar(100) DEFAULT NULL,
+  `modelNo` int(11) DEFAULT NULL,
+  `modelName` varchar(50) DEFAULT NULL,
+  `fullName` varchar(250) DEFAULT NULL,
   `desc1` varchar(100) NOT NULL,
   `desc2` varchar(100) DEFAULT NULL,
   `desc3` varchar(100) DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
   `stock` int(11) DEFAULT '1',
   `discount` decimal(3,2) DEFAULT NULL,
-  `posted_date` date DEFAULT NULL,
-  `update_date` date DEFAULT NULL
+  `postDate` date DEFAULT NULL,
+  `updateDate` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `cat_id`, `name`, `title`, `image_data1`, `image_mime_type1`, `image_name1`, `image_data2`, `image_mime_type2`, `image_name2`, `image_data3`, `image_mime_type3`, `image_name3`, `model_no`, `model_name`, `full_name`, `desc1`, `desc2`, `desc3`, `price`, `stock`, `discount`, `posted_date`, `update_date`) VALUES
+INSERT INTO `products` (`ID`, `catID`, `name`, `title`, `imageData1`, `imageMimeType1`, `imageName1`, `imageData2`, `imageMimeType2`, `imageName2`, `imageData3`, `imageMimeType3`, `imageName3`, `modelNo`, `modelName`, `fullName`, `desc1`, `desc2`, `desc3`, `price`, `stock`, `discount`, `postDate`, `updateDate`) VALUES
 (1, 1, '', 'dfsfds', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'fdsaf', '', 'fdsa', NULL, NULL, '111.00', 111, '1.00', '2017-05-17', NULL),
 (2, 1, '', 'yun', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, 'good yun', '', 'good yun bike', NULL, NULL, '399.99', 200, '1.00', '2017-05-17', NULL);
 
@@ -242,17 +243,17 @@ INSERT INTO `users` (`ID`, `name`, `email`, `password`, `fname`, `lname`, `phone
 
 CREATE TABLE `wishlist` (
   `ID` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `product_id1` int(11) DEFAULT NULL,
-  `product_id2` int(11) DEFAULT NULL,
-  `product_id3` int(11) DEFAULT NULL,
-  `product_id4` int(11) DEFAULT NULL,
-  `product_id5` int(11) DEFAULT NULL,
-  `product_id6` int(11) DEFAULT NULL,
-  `product_id7` int(11) DEFAULT NULL,
-  `product_id8` int(11) DEFAULT NULL,
-  `product_id9` int(11) DEFAULT NULL,
-  `product_id10` int(11) DEFAULT NULL
+  `userID` int(11) NOT NULL,
+  `productID1` int(11) DEFAULT NULL,
+  `productID2` int(11) DEFAULT NULL,
+  `productID3` int(11) DEFAULT NULL,
+  `productID4` int(11) DEFAULT NULL,
+  `productID5` int(11) DEFAULT NULL,
+  `productID6` int(11) DEFAULT NULL,
+  `productID7` int(11) DEFAULT NULL,
+  `productID8` int(11) DEFAULT NULL,
+  `productID9` int(11) DEFAULT NULL,
+  `productID10` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -260,25 +261,27 @@ CREATE TABLE `wishlist` (
 --
 
 --
--- Indexes for table `carts`
+-- Indexes for table `cartitems`
 --
-ALTER TABLE `carts`
+ALTER TABLE `cartitems`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `carts_user_id_FK1` (`user_id`);
+  ADD UNIQUE KEY `sessionID_2` (`sessionID`,`productID`),
+  ADD KEY `sessionID` (`sessionID`),
+  ADD KEY `productID` (`productID`);
 
 --
 -- Indexes for table `categories`
 --
 ALTER TABLE `categories`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`ID`);
 
 --
 -- Indexes for table `invoices`
 --
 ALTER TABLE `invoices`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `invoices_user_idfk_1` (`user_id`),
-  ADD KEY `invoices_orders_idfk_1` (`order_id`);
+  ADD KEY `invoices_userIDfk_1` (`userID`),
+  ADD KEY `invoices_ordersIDfk_1` (`orderID`);
 
 --
 -- Indexes for table `messages`
@@ -287,35 +290,42 @@ ALTER TABLE `messages`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Indexes for table `orderitems`
+--
+ALTER TABLE `orderitems`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `origProductID` (`origProductID`),
+  ADD KEY `orderID` (`orderID`);
+
+--
+-- Indexes for table `orderpayment`
+--
+ALTER TABLE `orderpayment`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `orderID` (`orderID`),
+  ADD KEY `productID` (`productID`);
+
+--
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `orders_user_idfk_1` (`user_id`),
-  ADD KEY `order_products_id` (`order_products_id`);
-
---
--- Indexes for table `order_products`
---
-ALTER TABLE `order_products`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `order_id` (`order_id`),
-  ADD KEY `product_id` (`product_id`);
+  ADD KEY `userID` (`userID`);
 
 --
 -- Indexes for table `payments`
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `payments_user_idfk_1` (`user_id`),
-  ADD KEY `payments_orders_idfk_1` (`order_id`);
+  ADD KEY `payments_userIDfk_1` (`userID`),
+  ADD KEY `payments_ordersIDfk_1` (`orderID`);
 
 --
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `products_categories_idfk_1` (`cat_id`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `products_categoriesIDfk_1` (`catID`);
 
 --
 -- Indexes for table `users`
@@ -328,22 +338,22 @@ ALTER TABLE `users`
 --
 ALTER TABLE `wishlist`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `wishlist_user_idfk_1` (`user_id`);
+  ADD KEY `wishlist_userIDfk_1` (`userID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `carts`
+-- AUTO_INCREMENT for table `cartitems`
 --
-ALTER TABLE `carts`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `cartitems`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `invoices`
 --
@@ -355,15 +365,20 @@ ALTER TABLE `invoices`
 ALTER TABLE `messages`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `orderitems`
+--
+ALTER TABLE `orderitems`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `orderpayment`
+--
+ALTER TABLE `orderpayment`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `order_products`
---
-ALTER TABLE `order_products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `payments`
 --
@@ -373,7 +388,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `users`
 --
@@ -389,50 +404,37 @@ ALTER TABLE `wishlist`
 --
 
 --
--- Constraints for table `carts`
---
-ALTER TABLE `carts`
-  ADD CONSTRAINT `carts_user_id_FK1` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`);
-
---
 -- Constraints for table `invoices`
 --
 ALTER TABLE `invoices`
-  ADD CONSTRAINT `invoices_orders_idfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`ID`),
-  ADD CONSTRAINT `invoices_user_idfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`);
+  ADD CONSTRAINT `invoices_ordersIDfk_1` FOREIGN KEY (`orderID`) REFERENCES `orders` (`ID`),
+  ADD CONSTRAINT `invoices_userIDfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`);
 
 --
--- Constraints for table `orders`
+-- Constraints for table `orderpayment`
 --
-ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`order_products_id`) REFERENCES `order_products` (`id`),
-  ADD CONSTRAINT `orders_user_idfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`);
-
---
--- Constraints for table `order_products`
---
-ALTER TABLE `order_products`
-  ADD CONSTRAINT `order_products_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`ID`),
-  ADD CONSTRAINT `order_products_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+ALTER TABLE `orderpayment`
+  ADD CONSTRAINT `orderpayment_ibfk_1` FOREIGN KEY (`orderID`) REFERENCES `orders` (`ID`),
+  ADD CONSTRAINT `orderpayment_ibfk_2` FOREIGN KEY (`productID`) REFERENCES `products` (`ID`);
 
 --
 -- Constraints for table `payments`
 --
 ALTER TABLE `payments`
-  ADD CONSTRAINT `payments_orders_idfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`ID`),
-  ADD CONSTRAINT `payments_user_idfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`);
+  ADD CONSTRAINT `payments_ordersIDfk_1` FOREIGN KEY (`orderID`) REFERENCES `orders` (`ID`),
+  ADD CONSTRAINT `payments_userIDfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`);
 
 --
 -- Constraints for table `products`
 --
 ALTER TABLE `products`
-  ADD CONSTRAINT `products_categories_idfk_1` FOREIGN KEY (`cat_id`) REFERENCES `categories` (`id`);
+  ADD CONSTRAINT `products_categoriesIDfk_1` FOREIGN KEY (`catID`) REFERENCES `categories` (`ID`);
 
 --
 -- Constraints for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  ADD CONSTRAINT `wishlist_user_idfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`);
+  ADD CONSTRAINT `wishlist_userIDfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

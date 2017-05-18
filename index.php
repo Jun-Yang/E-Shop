@@ -586,6 +586,8 @@ $app->get('/admin/product/list', function() use ($app) {
     ));
 });
 
+
+
 $app->get('/admin/product/delete/:id', function($id) use ($app) {
     $product = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
     $app->render('admin_product_delete.html.twig', array(
@@ -678,5 +680,15 @@ $app->get('/admin_order', function() use ($app) {
         'orderList' => $orderList
     ));
 });
+
+
+//add
+
+$app->get('/add', function() use ($app) {
+    $app->render("add.html.twig", array(
+        'productList' => $productList
+    ));
+});
+
 
 $app->run();
