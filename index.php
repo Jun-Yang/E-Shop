@@ -5,6 +5,11 @@ session_start();
 // enable on-demand class loader
 require_once 'vendor/autoload.php';
 
+//Import Hybridauth's namespace
+use Hybridauth\Hybridauth; 
+//Now we may proceed and instantiate Hybridauth's classes
+$instance = new Hybridauth([ /* ... */ ]); 
+
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
