@@ -20,8 +20,8 @@ if ($_SERVER['SERVER_NAME'] == 'localhost') {
     DB::$host = '127.0.0.1';   // sometimes needed on Mac OSX
     DB::$port = 3333;
 } else { // hosted on external server
-    DB::$dbName = 'cp4724_slimshop';
-    DB::$user = 'cp4724_slimshop';
+    DB::$dbName = 'cp4776_eshop';
+    DB::$user = 'cp4776_eshop';
     DB::$password = 'FvUVdCWTv8GuWshh';
     DB::$port = 3306;
 }
