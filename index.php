@@ -3,15 +3,15 @@ session_cache_limiter(false);
 session_start();
 
 // enable on-demand class loader
-require_once 'vendor/autoload.php';
+require_once 'app/vendor/autoload.php';
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 // create a log channel
 $log = new Logger('main');
-$log->pushHandler(new StreamHandler('logs/everything.log', Logger::DEBUG));
-$log->pushHandler(new StreamHandler('logs/errors.log', Logger::ERROR));
+$log->pushHandler(new StreamHandler('app/logs/everything.log', Logger::DEBUG));
+$log->pushHandler(new StreamHandler('app/logs/errors.log', Logger::ERROR));
 
 if ($_SERVER['SERVER_NAME'] == 'localhost') {
     DB::$dbName = 'eshop';
@@ -54,9 +54,9 @@ $app = new \Slim\Slim(array(
 $view = $app->view();
 $view->parserOptions = array(
     'debug' => true,
-    'cache' => dirname(__FILE__) . '/cache'
+    'cache' => dirname(__FILE__) . '/app/cache'
 );
-$view->setTemplatesDirectory(dirname(__FILE__) . '/templates');
+$view->setTemplatesDirectory(dirname(__FILE__) . '/app/templates');
 
 
 if (!isset($_SESSION['eshopuser'])) {
