@@ -682,13 +682,4 @@ $app->get('/admin_order', function() use ($app) {
 });
 
 
-//add
-
-$app->get('/add', function() use ($app) {
-    $app->render("add.html.twig", array(
-        'productList' => $productList
-    ));
-});
-
-
 $app->run();
