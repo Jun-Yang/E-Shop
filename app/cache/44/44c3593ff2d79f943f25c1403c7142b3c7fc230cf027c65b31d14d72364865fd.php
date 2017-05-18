@@ -113,8 +113,8 @@ class __TwigTemplate_536b9dcc04da76e8a0fb480d380f75e38b1d211e0461e70e4cdbd71b2e6
     </footer>   
 
 <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>
-<script src=\"js/bootstrap.js\"></script>
-<script src=\"js/wow.js\"></script>
+<script src=\"scripts/bootstrap.js\"></script>
+<script src=\"scripts/wow.js\"></script>
 <script type=\"application/javascript\">
     new WOW().init();
 </script>
@@ -239,8 +239,8 @@ class __TwigTemplate_536b9dcc04da76e8a0fb480d380f75e38b1d211e0461e70e4cdbd71b2e6
     </footer>   
 
 <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>
-<script src=\"js/bootstrap.js\"></script>
-<script src=\"js/wow.js\"></script>
+<script src=\"scripts/bootstrap.js\"></script>
+<script src=\"scripts/wow.js\"></script>
 <script type=\"application/javascript\">
     new WOW().init();
 </script>
