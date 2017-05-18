@@ -11,7 +11,11 @@
     {% endif %}
     
     <form method="POST">
-        Enter your email: <input type="email" name="email"><br>
-        <input type="submit" value="Request password reset">
+        <div class="form-group">
+            <label>Enter your email:</label><br>
+            <input type="email" name="email" placeholder="email" class="login_form input-txt" required="required" />
+        </div>    
+        <div class="login-footer">
+            <button type="submit" class="btn-lg btn-primary col-xs-2 col-md-2">Request password reset</button>        
     </form>
 {% endblock %}
