@@ -1,0 +1,57 @@
+{% extends "admin_panel.html.twig" %}
+
+{% block title %}Admin Products{% endblock %}
+
+{% block content %}
+    <div class="center_content">  
+
+        <div class="right_content">            
+            <h2 class="left_h2">Product List</h2> 
+            <div class="sidebar_search">
+                <form>
+                    <input type="text" name="searchinput" class="search_input" value="search keyword" onclick="this.value = ''" />
+                    <input type="image" class="search_submit" src="../images/admin/search.png" alt="search_submit"/>
+                </form>            
+            </div>
+
+            <table id="rounded-corner" summary="2007 Major IT Companies' Profit">
+                <thead>
+                    <tr>
+                        <th scope="col" class="rounded-company"></th>
+                        <th scope="col" class="rounded">ID</th>
+                        <th scope="col" class="rounded">name</th>
+                        <th scope="col" class="rounded">title</th>
+                        <th scope="col" class="rounded">Edit</th>
+                        <th scope="col" class="rounded-q4">Delete</th>
+                    </tr>
+                </thead>
+                
+                {% for p in productList %}
+                    <tr>
+                        <td><input type="checkbox" name="ckbox" /></td>
+                        <td>{{p.ID}}</td>
+                        <td>{{p.name}}</td>
+                        <td>{{p.title}}</td>
+                        <td><a href="/admin_edit_product"><img src="images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
+                        <td><a href="/admin_delete_product" class="ask"><img src="images/admin/trash.png" alt="" title="" border="0" /></a></td>
+                    </tr> 
+                {% endfor %}
+            </table>
+
+            <a href="admin_add_product" class="bt_green"><span class="bt_green_lft"></span><strong>Add new product</strong><span class="bt_green_r"></span></a>
+            
+            <a href="#" class="bt_red"><span class="bt_red_lft"></span><strong>Delete products</strong><span class="bt_red_r"></span></a> 
+
+            <div class="pagination">
+                <span class="disabled"><< prev</span>
+                {% for p in productList %}
+                     {% if loop.index0 % 8 == 0 %}
+                         <a href="">{{loop.index0 / 8}}</a>
+                    {% endif %}     
+                {% endfor %}
+                <a href="">next >></a>
+            </div> 
+        </div><!-- end of right content-->
+    </div>   <!--end of center content --> 
+{% endblock content %}
+

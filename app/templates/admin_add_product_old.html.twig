@@ -1,32 +1,10 @@
-{% extends "master.html.twig" %}
+{% extends "admin_panel.html.twig" %}
 
-{% block title %}Product add{% endblock %}
+{% block title %}Add New Product{% endblock %}
 
 {% block headExtra %}
-    <link href="/css/styles.css" rel="stylesheet">
-    <link href="/css/product.css" rel="stylesheet">
 
-    <script>
-        $(document).ready(function () {
-            $("#taskNameInUse").hide();
-            $("input[name=task]").keyup(function () {
-                var taskName = $(this).val();
-                //console.log("Keyup: " + email);
-                if (taskName === "") {
-                    $("#taskNameInUse").hide();
-                    return;
-                }
-                $.get("/ajax/tasknameused/" + task, function (result) {
-                    result = eval(result);
-                    if (result) {
-                        $("#taskNameInUse").show();
-                    } else {
-                        $("#taskNameInUse").hide();
-                    }
-                });
-            });
-        });
-    </script>
+
 
 {% endblock %}
 

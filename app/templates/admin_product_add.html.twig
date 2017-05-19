@@ -1,0 +1,60 @@
+{% extends "admin_panel.html.twig" %}
+
+{% block title %}Admin Products{% endblock %}
+
+{% block content %}
+    <div class="center_content">  
+
+        <form method="post" enctype="multipart/form-data" >
+            <div class="form-group">
+                <label>Product Title</label>
+                <input type="text" name="title" placeholder="title" class="input-txt" required="required" />
+                <label>Category Id</label>
+                <input type="text" name="catID" placeholder="category" required="required" class="input-txt" value="{{v.category}}"/>
+                <label>Model Name</label>
+                <input type="text" name="modelName" placeholder="modelName" required="required" class="input-txt" />
+
+            </div>  
+
+            <div class="form-group">
+                <label>Model NO.</label>
+                <input type="text" name="modelNo" placeholder="model_no" required="required" class="input-txt" />
+                <label>Description</label>
+                <input type="text" name="desc1" placeholder="Product Description Line1" required="required" class="input-txt" />
+                <label>Description</label>
+                <input type="text" name="desc2" placeholder="Product Description Line2" required="required" class="input-txt" />
+
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <input type="text" name="price" placeholder="price" required="required" class="input-txt" />CDN$
+                <label>Quantity(Stock)</label>
+                <input type="text" name="stock" placeholder="stock" required="required" class="input-txt" />
+                <label>Discount</label>
+                <input type="text" name="discount" placeholder="100%" required="required" class="input-txt" />
+            </div>
+            <div class="login-footer">
+                <div class ="error-message">
+                    {% if errorList %}
+                        <ul class="errorList">
+                            {% for error in errorList %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Add One Product</button><br>
+                {% if error %}
+                    <p class="errorList">Register failed try again.</p>
+                {% endif %}
+            </div> <!--login-footer-->
+        </form>
+            
+            <a href="#" class="bt_green"><span class="bt_green_lft"></span><strong>Add new Product</strong><span class="bt_green_r"></span></a>
+            <a href="admin_product_list" class="bt_blue"><span class="bt_blue_lft"></span><strong>List all Product</strong><span class="bt_blue_r"></span></a>
+            <a href="#" class="bt_red"><span class="bt_red_lft"></span><strong>Delete Product</strong><span class="bt_red_r"></span></a> 
+    </div>   <!--end of center content --> 
+{% endblock content %}
+
+
