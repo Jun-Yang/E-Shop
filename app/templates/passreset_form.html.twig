@@ -3,25 +3,28 @@
 {% block title %}Password reset{% endblock %}
 
 {% block content %}
-            
-<h1>Password reset</h1>
 
-{% if errorList %}
-    <ul>
-    {% for error in errorList %}
-        <li>{{ error }}</li>
-    {% endfor %}
-    </ul>
-{% endif %}
-
-<p>Enter your new password below.</p>
-
-<form method="post">
-   <label>Password</label><br>
-   <input type="password" name="pass1" placeholder="password" class="login_form input-txt" required="required" />
-   <label>Password (repeated)</label><br>
-   <input type="password" name="pass2" placeholder="password" class="login_form input-txt" required="required" />
-   <input type="submit" value="Reset password">
-</form>
+    <div class="container">
+        <section class="section-title">
+            <h1>Password reset</h1>
+        </section>
+        <br/>
+        {% if errorList %}
+            <ul>
+                {% for error in errorList %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+            </ul>
+        {% endif %}
+        <p>Enter your new password below.</p>
+        <form method="POST">
+            <label>Password: </label>          
+            <input type="password" name="pass1" placeholder="password" class="login_form input-txt" required="required" /><br>
+            <label>Password (repeated)</label>
+            <input type="password" name="pass2" placeholder="password" class="login_form input-txt" required="required" /><br>
+            <input type="submit" value="Reset password">
+        </form>
+    </div>
+    <br/>    
 
 {% endblock %}

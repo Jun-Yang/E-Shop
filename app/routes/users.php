@@ -148,7 +148,7 @@ $app->map('/passreset', function () use ($app, $log) {
         $email = $app->request()->post('email');
         $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
         if ($user) {
-            $app->render('passreset_success.html.twig');
+            $app->render('passreset_sentemail.html.twig');
             $secretToken = generateRandomString(50);
             // VERSION 1: delete and insert
             /*
@@ -175,7 +175,7 @@ $app->map('/passreset', function () use ($app, $log) {
             $headers.= "From: Noreply <noreply@ipd9.info>\r\n";
             $headers.= "To: " . htmlentities($user['name']) . " <" . $email . ">\r\n";
 
-            mail($email, "Password reset from eShop", $html, $headers);
+//            mail($email, "Password reset from eShop", $html, $headers);
         } else {
             $app->render('passreset.html.twig', array('error' => TRUE));
         }
@@ -185,11 +185,11 @@ $app->map('/passreset', function () use ($app, $log) {
 $app->map('/passreset/:secretToken', function($secretToken) use ($app) {
     $row = DB::queryFirstRow("SELECT * FROM passresets WHERE secretToken=%s", $secretToken);
     if (!$row) {
-        $app->render('passreset_notfound_expired.html.twig');
+        $app->render('passreset_failed.html.twig');
         return;
     }
     if (strtotime($row['expiryDateTime']) < time()) {
-        $app->render('passreset_notfound_expired.html.twig');
+        $app->render('passreset_failed.html.twig');
         return;
     }
     //
@@ -217,7 +217,7 @@ $app->map('/passreset/:secretToken', function($secretToken) use ($app) {
                 'password' => password_hash($pass1, CRYPT_BLOWFISH)
                     ), "ID=%d", $row['userID']);
             DB::delete('passresets','secretToken=%s', $secretToken);
-            $app->render('passreset_form_success.html.twig');
+            $app->render('passreset_success.html.twig');
         }
     }
 })->via('GET', 'POST');

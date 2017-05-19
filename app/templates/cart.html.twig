@@ -40,11 +40,11 @@
 {% block content %}
 
     <div class="container">
+        <section class="section-title">
+            <h1>Cart</h1>
+        </section>
+        <br/>
         <form action="/order">
-            <section class="section-title">
-                <h1>Cart</h1>
-            </section>
-            <br/>
             <div class="table-responsive">
                 <table class="table table-hover" border="1">
                     {% for ci in cartitemList %}
@@ -67,4 +67,5 @@
         </form>
         <br/>
     </div>
+                    
 {% endblock %}
