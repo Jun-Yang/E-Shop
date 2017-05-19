@@ -10,6 +10,21 @@ color: #0e4354;
 .clear{
 clear:both;
 }
+
+#button_manage {
+    
+    background-color: #882baf;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
 a{
 color:#256c89;
 }
@@ -185,16 +200,23 @@ clear:both;
 }
 
 .left_content{
-width:195px;
+width:395px;
 float:left;
 padding:30px 0 0 20px;
 }
+
 .right_content{
 width:800px;
 float:none;
 margin:0 auto;
 padding:30px 0 0 30px;
 }
+
+.edit_content{
+width:350px;
+float:left;
+}
+
 
 .sidebarmenu{
 margin:0px 0;

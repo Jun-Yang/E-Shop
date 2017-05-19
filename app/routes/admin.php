@@ -60,6 +60,7 @@ $app->post('/admin_product_add', function() use ($app) {
     }
 //    print_r($_POST);
     $title = $app->request()->post('title');
+    $name = $app->request()->post('name');
     $catID = $app->request()->post('catID');
     $modelName = $app->request()->post('modelName');
     $modelNo = $app->request()->post('modelNo');
@@ -71,10 +72,30 @@ $app->post('/admin_product_add', function() use ($app) {
     $discount = $app->request()->post('discount');
     $today = date("Y-m-d");
     $postDate = $today;
-
+    $image = isset($_FILES['image']) ? $_FILES['image'] : array();
     $errorList = array();
+    /*if (strlen($name) < 2 || strlen($name) > 100) {
+        array_push($errorList, "Name must be 2-100 characters long");
+    }*/
+   
+    if (empty($price) || $price < 0 || $price > 99999999) {
+        array_push($errorList, "Price must be between 0 and 99999999");
+    }
+    if ($image) {
+        $imageInfo = getimagesize($image["tmp_name"]);
+        if (!$imageInfo) {
+            array_push($errorList, "File does not look like an valid image");
+        } else {
+            $width = $imageInfo[0];
+            $height = $imageInfo[1];
+            if ($width > 300 || $height > 300) {
+                array_push($errorList, "Image must at most 300 by 300 pixels");
+            }
+        }
+    }
+    
     $valueList = array('title' => $title);
-
+    
     if (strlen($title) < 2 || strlen($title) > 200) {
         array_push($errorList, "Task name must be 2-100 characters long");
     } else {
@@ -83,17 +104,18 @@ $app->post('/admin_product_add', function() use ($app) {
             array_push($errorList, "Product title already in use");
         }
     }
-
-    $today = date("Y-m-d");
-    if ($postDate < $today) {
-        array_push($errorList, "Post date invalid");
-    }
+        
 //    print_r($_SESSION['todouser']);
     if ($errorList) {
         $app->render("admin_product_add.html.twig", ["errorList" => $errorList,
             'v' => $valueList
         ]);
     } else {
+        
+         
+        $imageBinaryData = file_get_contents($image['tmp_name']);
+        $mimeType = mime_content_type($image['tmp_name']);
+        
         DB::insert('products', array(
             "title" => $title,
             "catID" => $catID,
@@ -103,7 +125,9 @@ $app->post('/admin_product_add', function() use ($app) {
             "price" => $price,
             "stock" => $stock,
             "discount" => $discount,
-            "postDate" => $today
+            "postDate" => $today,
+            'imageData1' => $imageBinaryData,
+            'imageMimeType1' => $mimeType
         ));
         $app->render("add_success.html.twig", array(
             "title" => $title,
