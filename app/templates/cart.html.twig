@@ -1,6 +1,9 @@
 {% extends "master.html.twig" %}
 
-{% block head %}
+{% block title %}Cart{% endblock %}
+
+{% block headExtra %}
+
     <script>
         function increment(ID) {
             var value = $("input[name=quantity" + ID + "]").val();
@@ -31,29 +34,37 @@
             $(".updateLink").hide();
         });
     </script>
+
 {% endblock %}
 
-{% block title %}Cart{% endblock %}
-
 {% block content %}
-    <div class="table-responsive">
-        <table class="table table-hover" border="1">
-            {% for ci in cartitemList %}
-                <tr id="itemrow{{ci.ID}}">
-                    <td>{{ci.name}}</td>
-                    <td>{{ci.price}}</td>
-                    <td><button onclick="decrement({{ci.ID}})">-</button>
-                        <input type="number" name="quantity{{ci.ID}}"
-                               value="{{ci.quantity}}" style="width:30px;">
-                        <button onclick="increment({{ci.ID}})">+</button>
-                        <a href="" class="updateLink" id="update{{ci.ID}}"
-                           onclick="update(event,{{ci.ID}} )">update</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
+
+    <div class="container">
+        <form action="/order">
+            <section class="section-title">
+                <h1>Cart</h1>
+            </section>
+            <br/>
+            <div class="table-responsive">
+                <table class="table table-hover" border="1">
+                    {% for ci in cartitemList %}
+                        <tr id="itemrow{{ci.ID}}">
+                            <td>{{ci.name}}</td>
+                            <td>{{ci.price}}</td>
+                            <td><button onclick="decrement({{ci.ID}})">-</button>
+                                <input type="number" name="quantity{{ci.ID}}"
+                                       value="{{ci.quantity}}" style="width:30px;">
+                                <button onclick="increment({{ci.ID}})">+</button>
+                                <a href="" class="updateLink" id="update{{ci.ID}}"
+                                   onclick="update(event,{{ci.ID}} )">Update</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <input type="submit" class="btn-lg btn-info" value="Place Order" />
+
+        </form>
+        <br/>
     </div>
-    <a href="/order">Place order</a>
-
-
 {% endblock %}

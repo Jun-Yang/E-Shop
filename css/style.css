@@ -229,3 +229,7 @@ footer {
 login_user_right {
     text-align: right;
 }
+
+.nounderline{
+    text-decoration: none
+}
