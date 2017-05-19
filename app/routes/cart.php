@@ -3,11 +3,12 @@
 $app->get('/cart', function() use ($app) {
     $cartitemList = DB::query(
                     "SELECT cartitems.ID as ID, productID, quantity,"
-                    . " name, description, imagePath, price "
+                    . " name, desc1, imageName1, price "
                     . " FROM cartitems, products "
                     . " WHERE cartitems.productID = products.ID AND sessionID=%s", session_id());
     $app->render('cart.html.twig', array(
-        'cartitemList' => $cartitemList
+        'cartitemList' => $cartitemList,
+        "eshopuser" => $_SESSION['eshopuser']
     ));
 });
 
@@ -32,11 +33,12 @@ $app->post('/cart', function() use ($app) {
     // show current contents of the cart
     $cartitemList = DB::query(
                     "SELECT cartitems.ID as ID, productID, quantity,"
-                    . " name, description, imagePath, price "
+                    . " name, desc1, imageName1, price "
                     . " FROM cartitems, products "
                     . " WHERE cartitems.productID = products.ID AND sessionID=%s", session_id());
     $app->render('cart.html.twig', array(
-        'cartitemList' => $cartitemList
+        'cartitemList' => $cartitemList,
+        "eshopuser" => $_SESSION['eshopuser']
     ));
 });
 

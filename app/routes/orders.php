@@ -16,7 +16,8 @@ $app->map('/order', function () use ($app) {
             'totalBeforeTax' => number_format($totalBeforeTax, 2),
             'shippingBeforeTax' => number_format($shippingBeforeTax, 2),
             'taxes' => number_format($taxes, 2),
-            'totalWithShippingAndTaxes' => number_format($totalWithShippingAndTaxes, 2)
+            'totalWithShippingAndTaxes' => number_format($totalWithShippingAndTaxes, 2),
+            "eshopuser" => $_SESSION['eshopuser']
         ));
     } else {
         $name = $app->request->post('name');
@@ -40,7 +41,8 @@ $app->map('/order', function () use ($app) {
                 'shippingBeforeTax' => number_format($shippingBeforeTax, 2),
                 'taxes' => number_format($taxes, 2),
                 'totalWithShippingAndTaxes' => number_format($totalWithShippingAndTaxes, 2),
-                'v' => $valueList
+                'v' => $valueList,
+                "eshopuser" => $_SESSION['eshopuser']
             ));
         } else { // SUCCESSFUL SUBMISSION
             DB::$error_handler = FALSE;

@@ -16,10 +16,10 @@
             $("input[name=quantity" + ID + "]").val(value);
             $("#update" + ID).show();
         }
-        function update(e,ID) {
+        function update(e, ID) {
             e.preventDefault();
             var quantity = $("input[name=quantity" + ID + "]").val();
-            $.get("/cart/update/" + ID + "/" + quantity, function() {
+            $.get("/cart/update/" + ID + "/" + quantity, function () {
                 console.log("quantity updated");
                 $("#update" + ID).hide();
             });
@@ -36,23 +36,24 @@
 {% block title %}Cart{% endblock %}
 
 {% block content %}
-    <table border="1">
-        {% for ci in cartitemList %}
-            <tr id="itemrow{{ci.ID}}">
-                <td>{{ci.name}}</td>
-                <td>{{ci.price}}</td>
-                <td><button onclick="decrement({{ci.ID}})">-</button>
-                    <input type="number" name="quantity{{ci.ID}}"
-                           value="{{ci.quantity}}" style="width:30px;">
-                    <button onclick="increment({{ci.ID}})">+</button>
-                    <a href="" class="updateLink" id="update{{ci.ID}}"
-                          onclick="update(event,{{ci.ID}})">update</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
- 
-   <a href="/order">Place order</a>
-        
-        
+    <div class="table-responsive">
+        <table class="table table-hover" border="1">
+            {% for ci in cartitemList %}
+                <tr id="itemrow{{ci.ID}}">
+                    <td>{{ci.name}}</td>
+                    <td>{{ci.price}}</td>
+                    <td><button onclick="decrement({{ci.ID}})">-</button>
+                        <input type="number" name="quantity{{ci.ID}}"
+                               value="{{ci.quantity}}" style="width:30px;">
+                        <button onclick="increment({{ci.ID}})">+</button>
+                        <a href="" class="updateLink" id="update{{ci.ID}}"
+                           onclick="update(event,{{ci.ID}} )">update</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <a href="/order">Place order</a>
+
+
 {% endblock %}

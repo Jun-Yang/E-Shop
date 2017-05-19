@@ -402,61 +402,53 @@
         ]
     },
     {
-        "name": "hybridauth/hybridauth",
-        "version": "v2.9.5",
-        "version_normalized": "2.9.5.0",
+        "name": "paragonie/random_compat",
+        "version": "v2.0.10",
+        "version_normalized": "2.0.10.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/hybridauth/hybridauth.git",
-            "reference": "4e95e9c4a9e85a6ce4735dbb3924715a0493981a"
+            "url": "https://github.com/paragonie/random_compat.git",
+            "reference": "634bae8e911eefa89c1abfbf1b66da679ac8f54d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/hybridauth/hybridauth/zipball/4e95e9c4a9e85a6ce4735dbb3924715a0493981a",
-            "reference": "4e95e9c4a9e85a6ce4735dbb3924715a0493981a",
+            "url": "https://api.github.com/repos/paragonie/random_compat/zipball/634bae8e911eefa89c1abfbf1b66da679ac8f54d",
+            "reference": "634bae8e911eefa89c1abfbf1b66da679ac8f54d",
             "shasum": ""
         },
         "require": {
-            "ext-curl": "*",
-            "facebook/graph-sdk": "^5.4",
             "php": ">=5.2.0"
         },
         "require-dev": {
-            "squizlabs/php_codesniffer": "2.*"
+            "phpunit/phpunit": "4.*|5.*"
         },
-        "time": "2017-05-06T07:11:02+00:00",
+        "suggest": {
+            "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+        },
+        "time": "2017-03-13T16:27:32+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
-            "psr-0": {
-                "Hybrid": "hybridauth/"
-            },
-            "classmap": [
-                "hybridauth/Hybrid"
+            "files": [
+                "lib/random.php"
             ]
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "(MIT or GPL-3.0+)"
+            "MIT"
         ],
         "authors": [
             {
-                "name": "Miled",
-                "email": "hybridauth@gmail.com"
+                "name": "Paragon Initiative Enterprises",
+                "email": "security@paragonie.com",
+                "homepage": "https://paragonie.com"
             }
         ],
-        "description": "Open source social sign on PHP library.",
-        "homepage": "http://hybridauth.sourceforge.net",
+        "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
         "keywords": [
-            "OpenId",
-            "facebook",
-            "google",
-            "hybridauth",
-            "login",
-            "oauth",
-            "social",
-            "twitter",
-            "yahoo"
+            "csprng",
+            "pseudorandom",
+            "random"
         ]
     }
 ]

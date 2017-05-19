@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3333
--- Generation Time: May 18, 2017 at 08:14 PM
+-- Generation Time: May 19, 2017 at 04:45 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -147,6 +147,19 @@ CREATE TABLE `orders` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `passresets`
+--
+
+CREATE TABLE `passresets` (
+  `ID` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `secretToken` varchar(50) NOT NULL,
+  `expiryDateTime` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `payments`
 --
 
@@ -233,7 +246,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`ID`, `name`, `email`, `password`, `fname`, `lname`, `phone`, `addressLine1`, `addressLine2`, `state`, `city`, `code`, `TYPE`, `role`, `status`, `last_login`) VALUES
-(7, 'Jerry003', 'Jerry003@123.com', '$2y$10$erdahXcf.UC5ZbYph05haOli8tlgg0TcO5B7AarUSZwuQ5DUklM.u', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-17 18:36:43');
+(7, 'Jerry', 'Jerry@123.com', '$2y$10$erdahXcf.UC5ZbYph05haOli8tlgg0TcO5B7AarUSZwuQ5DUklM.u', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 0, '2017-05-17 18:36:43'),
+(8, 'admin', 'admin@admin.org', '$2y$10$x5bXQG8.5cPuaz67dTEJae1cnpHT/jRRPSvM6mA8yF/XIalnHVFCO', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', 0, '2017-05-18 20:21:13');
 
 -- --------------------------------------------------------
 
@@ -313,6 +327,13 @@ ALTER TABLE `orders`
   ADD KEY `userID` (`userID`);
 
 --
+-- Indexes for table `passresets`
+--
+ALTER TABLE `passresets`
+  ADD PRIMARY KEY (`ID`),
+  ADD UNIQUE KEY `userID` (`userID`);
+
+--
 -- Indexes for table `payments`
 --
 ALTER TABLE `payments`
@@ -380,6 +401,11 @@ ALTER TABLE `orderpayment`
 ALTER TABLE `orders`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
+-- AUTO_INCREMENT for table `passresets`
+--
+ALTER TABLE `passresets`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+--
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
@@ -393,7 +419,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `wishlist`
 --
