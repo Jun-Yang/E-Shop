@@ -33,3 +33,13 @@ how to use Micro-Gamma expressions to solve ...
 
 --- May 16 YangJun
 1. continue design administratio panel
+
+May 17 Chen Chen
+1 Finished Edit admin panel 
+
+2 start facebook login
+
+
+May 18 Chen Chen 
+1 finish Management Product /html/admin.php/admin_product_add.php
+2 start Add product
