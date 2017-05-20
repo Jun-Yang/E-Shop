@@ -138,3 +138,12 @@ $app->post('/admin_product_add', function() use ($app) {
         ));
     }
 });
+
+//Admin_Panel->Manage Users->Add users
+
+$app->get('/admin_user_add', function() use ($app) {
+    $app->render("admin_user_add.html.twig", array(
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});
+

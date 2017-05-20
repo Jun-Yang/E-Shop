@@ -35,11 +35,16 @@ how to use Micro-Gamma expressions to solve ...
 1. continue design administratio panel
 
 May 17 Chen Chen
-1 Finished Edit admin panel 
-
+1 Finished Edit admin panel
 2 start facebook login
 
 
-May 18 Chen Chen 
+May 18 Chen Chen
 1 finish Management Product /html/admin.php/admin_product_add.php
 2 start Add product
+
+May 19 Chen Chen
+Modify database product table sql
+
+May 20 Chen Chen
+Start to do admin_pannel manage user
