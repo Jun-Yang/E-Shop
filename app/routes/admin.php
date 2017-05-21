@@ -22,14 +22,6 @@ $app->map('/admin_user', function() use ($app) {
     ));
 })->via('GET', 'POST');
 
-//$app->post('/admin_user', function() use ($app) {
-//    $userList =  DB::query("SELECT * FROM users");
-//    $app->render("admin_user.html.twig", array(
-//        'userList' => $userList,
-//        "eshopuser" => $_SESSION['eshopuser']
-//    ));
-//});
-
 
 $app->get('/admin_category', function() use ($app) {
     $categoryList = DB::query("SELECT * FROM categories");
@@ -58,14 +50,15 @@ $app->post('/admin_product_add', function() use ($app) {
         $app->render('forbidden.html.twig');
         return;
     }
-//    print_r($_POST);
+
     $title = $app->request()->post('title');
     $name = $app->request()->post('name');
     $catID = $app->request()->post('catID');
     $modelName = $app->request()->post('modelName');
     $modelNo = $app->request()->post('modelNo');
     $desc1 = $app->request()->post('desc1');
-    //$desc2 = $app->request()->post('desc2');
+    $desc2 = $app->request()->post('desc2');
+    $code = $app->request()->post('code');
     //$desc3 = $app->request()->post('desc3');
     $price = $app->request()->post('price');
     $stock = $app->request()->post('stock');
@@ -73,11 +66,12 @@ $app->post('/admin_product_add', function() use ($app) {
     $today = date("Y-m-d");
     $postDate = $today;
     $image = isset($_FILES['image']) ? $_FILES['image'] : array();
+    //$image2 = isset($_FILES['image']) ? $_FILES['image'] : array();
     $errorList = array();
-    /*if (strlen($name) < 2 || strlen($name) > 100) {
-        array_push($errorList, "Name must be 2-100 characters long");
-    }*/
-   
+    /* if (strlen($name) < 2 || strlen($name) > 100) {
+      array_push($errorList, "Name must be 2-100 characters long");
+      } */
+
     if (empty($price) || $price < 0 || $price > 99999999) {
         array_push($errorList, "Price must be between 0 and 99999999");
     }
@@ -88,14 +82,14 @@ $app->post('/admin_product_add', function() use ($app) {
         } else {
             $width = $imageInfo[0];
             $height = $imageInfo[1];
-            if ($width > 300 || $height > 300) {
-                array_push($errorList, "Image must at most 300 by 300 pixels");
+            if ($width > 2000 || $height > 2000) {
+                array_push($errorList, "Image must at most 2000 by 2000 pixels");
             }
         }
     }
-    
+
     $valueList = array('title' => $title);
-    
+
     if (strlen($title) < 2 || strlen($title) > 200) {
         array_push($errorList, "Task name must be 2-100 characters long");
     } else {
@@ -104,26 +98,26 @@ $app->post('/admin_product_add', function() use ($app) {
             array_push($errorList, "Product title already in use");
         }
     }
-        
+
 //    print_r($_SESSION['todouser']);
     if ($errorList) {
         $app->render("admin_product_add.html.twig", ["errorList" => $errorList,
             'v' => $valueList
         ]);
     } else {
-        
-         
         $imageBinaryData = file_get_contents($image['tmp_name']);
         $mimeType = mime_content_type($image['tmp_name']);
-        
+
         DB::insert('products', array(
             "title" => $title,
             "catID" => $catID,
+            "name" => $name,
             "modelName" => $modelName,
             "modelNo" => $modelNo,
             "desc1" => $desc1,
             "price" => $price,
             "stock" => $stock,
+            "code" => $code,
             "discount" => $discount,
             "postDate" => $today,
             'imageData1' => $imageBinaryData,
@@ -147,3 +141,91 @@ $app->get('/admin_user_add', function() use ($app) {
     ));
 });
 
+$app->post('/admin_user_add', function() use ($app) {
+    if (!$_SESSION['eshopuser']) {
+        $app->render('forbidden.html.twig');
+        return;
+    }
+    $name = $app->request()->post('name');
+    $fname = $app->request()->post('fname');
+    $lname = $app->request()->post('lname');
+    $email = $app->request()->post('email');
+    $phone = $app->request()->post('phone');
+    $city = $app->request()->post('city');
+    $addressLine1 = $app->request()->post('addressLine1');
+    $addressLine2 = $app->request()->post('addressLine2');
+    $code = $app->request()->post('code');
+    $state = $app->request()->post('state');
+    $code = $app->request()->post('code');
+    $role = $app->request()->post('role');
+    $pass1 = $app->request->post('pass1');
+    $today = date("Y-m-d");
+    //$last_login = $today;
+    $errorList = array();
+    $valueList = array('name' => $name);
+    if (strlen($name) < 2 || strlen($name) > 200) {
+        array_push($errorList, "Username name must be 2-100 characters long");
+    } else {
+        $userList = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $name);
+        if ($userList) {
+            array_push($errorList, "Username already in use");
+        }
+    }
+
+    if ($errorList) {
+        $app->render("admin_user_add.html.twig", ["errorList" => $errorList,
+            'v' => $valueList
+        ]);
+    } else {
+
+        print_r($role);
+        /*
+        DB::insert('users', array(
+            "name" => $name,
+            "fname" => $fname,
+            "lname" => $lname,
+            "email" => $email,
+            "phone" => $phone,
+            "city" => $city,
+            "addressLine1" => $addressLine1,
+            "addressLine2" => $addressLine2,
+            "code" => $code,
+            "state" => $state,
+            'password' => password_hash($pass1, CRYPT_BLOWFISH),
+            'role' => $role,
+        ));
+        
+        $app->render("admin_user_add_success.html.twig", array(
+            "name" => $name,
+            "fname" => $fname,
+            "lname" => $lname,
+            "email" => $email,
+            "phone" => $phone
+        ));
+         */
+        DB::insert('users', array(
+            'name' => $name, 
+            "fname" => $fname,
+            "lname" => $lname,
+            "email" => $email,
+            "phone" => $phone,
+            'password' => password_hash($pass1, CRYPT_BLOWFISH),
+            "city" => $city,
+            "addressLine1" => $addressLine1,
+            "addressLine2" => $addressLine2,
+            "code" => $code,
+            "state" => $state,
+            
+        ));
+        $id = DB::insertId();
+        //$log->debug(sprintf("User %s created", $id));
+        $app->render("admin_user_add_success.html.twig", array(
+            "name" => $name,
+            "fname" => $fname,
+            "lname" => $lname,
+            "email" => $email,
+            "phone" => $phone
+        ));
+        
+    }
+});
