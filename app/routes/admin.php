@@ -206,7 +206,6 @@ $app->post('/admin_user_add', function() use ($app) {
 
 
 //Admin_Panel->Manage Category->Add Category
-
 $app->get('/admin_category_add', function() use ($app) {
     $app->render("admin_category_add.html.twig", array(
         "eshopuser" => $_SESSION['eshopuser']
@@ -257,6 +256,76 @@ $app->post('/admin_category_add', function() use ($app) {
         $app->render("admin_category_add_success.html.twig", array(
             "name" => $name,
             "layer" => $layer
+        ));
+        
+    }
+});
+
+//Admin_Panel->Manage Order->Add Order
+$app->get('/admin_order_add', function() use ($app) {
+    $app->render("admin_order_add.html.twig", array(
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});
+
+$app->post('/admin_order_add', function() use ($app) {
+    if (!$_SESSION['eshopuser']) {
+        $app->render('forbidden.html.twig');
+        return;
+    }
+    $name = $app->request()->post('name');
+    $userID = $app->request()->post('userID');
+    $address = $app->request()->post('address');
+    $postalCode = $app->request()->post('postalCode');
+    $email = $app->request()->post('email');
+    $phoneNumber = $app->request()->post('phoneNumber');
+    $totalBeforeTax = $app->request()->post('totalBeforeTax');
+    $shippingBeforeTax = $app->request()->post('shippingBeforeTax');
+    $taxes = $app->request()->post('taxes');
+    $totalWithShippingAndTaxes = $app->request()->post('totalWithShippingAndTaxes');
+    $dateTimePlaced = $app->request()->post('dateTimePlaced');
+    $dateTimeShipped = $app->request()->post('dateTimeShipped');
+    $status = $app->request()->post('status');
+    $today = date("Y-m-d");
+    $postDate = $today;
+    
+    $errorList = array();
+    $valueList = array('name' => $name);
+    if (strlen($name) < 2 || strlen($name) > 200) {
+        array_push($errorList, "name name must be 2-100 characters long");
+    } /*else {
+        $userList = DB::queryFirstRow("SELECT * FROM orders WHERE name=%s", $name);
+        if ($userList) {
+            array_push($errorList, "orderID name already in use");
+        }
+    }*/
+
+    if ($errorList) {
+        $app->render("admin_order_add.html.twig", ["errorList" => $errorList,
+            'v' => $valueList
+        ]);
+    } else {
+        
+        DB::insert('orders', array(
+            "name" => $name, 
+            "userID" => $userID, 
+            "address" => $address, 
+            "postalCode" => $postalCode, 
+            "email" => $email, 
+            "phoneNumber" => $phoneNumber, 
+            "totalBeforeTax" => $totalBeforeTax, 
+            "shippingBeforeTax" => $shippingBeforeTax, 
+            "taxes" => $taxes, 
+            "totalWithShippingAndTaxes" => $totalWithShippingAndTaxes, 
+            "dateTimePlaced" => $dateTimePlaced, 
+            "dateTimeShipped" => $dateTimeShipped, 
+            "status" => $status
+        ));
+        $id = DB::insertId();
+        //$log->debug(sprintf("User %s created", $id));
+        $app->render("admin_order_add_success.html.twig", array(
+            "name" => $name,
+            "userID" => $userID
         ));
         
     }
