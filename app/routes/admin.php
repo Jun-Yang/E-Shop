@@ -348,3 +348,56 @@ $app->get('/admin_message', function() use ($app) {
         "eshopuser" => $_SESSION['eshopuser']
     ));
 });
+
+$app->get('/admin_news_add', function() use ($app) {
+    $mList = DB::query("SELECT * FROM news");
+    $app->render("admin_news_add.html.twig", array(
+        'mList' => $mList,
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});
+
+$app->post('/admin_news_add', function() use ($app) {
+    if (!$_SESSION['eshopuser']) {
+        $app->render('forbidden.html.twig');
+        return;
+    }
+    $subject = $app->request()->post('subject');
+    $content = $app->request()->post('content');
+    $status = "published";
+    $today = date("Y-m-d");
+    $postDate = $today;
+    
+    $errorList = array();
+    $valueList = array('subject' => $subject);
+    if (strlen($content) < 2 || strlen($content) > 200) {
+        array_push($errorList, "Username name must be 2-100 characters long");
+    }
+    if ($errorList) {
+        $app->render("admin_news_add.html.twig", ["errorList" => $errorList,
+            'v' => $valueList
+        ]);
+    } else {
+        DB::insert('news', array(
+            "subject" => $subject,
+            "content" => $content,
+            "status" => $status,
+            "postDate" => $today
+        ));
+        $id = DB::insertId();
+        //$log->debug(sprintf("User %s created", $id));
+        $app->render("index.html.twig", array(
+            "subject" => $subject,
+            "content" => $content
+        ));
+    }
+});
+
+
+$app->get('/admin_report', function() use ($app) {
+    $mList = DB::query("SELECT * FROM orders");
+    $app->render("admin_report.html.twig", array(
+        'mList' => $mList,
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});
