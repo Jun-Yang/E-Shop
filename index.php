@@ -137,4 +137,41 @@ $app->get('/services', function() use ($app) {
     ));          
 });
 
+$app->post('/contact', function() use ($app) {
+    if (!$_SESSION['eshopuser']) {
+        $app->render('forbidden.html.twig');
+        return;
+    }
+    $name = $app->request()->post('name');
+    $email = $app->request()->post('email');
+    $phone = $app->request()->post('phone');
+    $subject = $app->request()->post('subject');
+    $message = $app->request()->post('message');
+    $today = date("Y-m-d");
+    $postDate = $today;
+    $errorList = array();
+    $valueList = array('name' => $name);
+    if (strlen($name) < 2 || strlen($name) > 200) {
+        array_push($errorList, "Username name must be 2-100 characters long");
+    }
+    if ($errorList) {
+        $app->render("contact.html.twig", ["errorList" => $errorList,
+            'v' => $valueList
+        ]);
+    } else {
+        DB::insert('messages', array(
+            "name" => $name, 
+            "email" => $email,
+            "phone" => $phone,
+            "subject" => $subject,
+            "message" => $message
+        ));
+        $app->render("submit_success.html.twig", array(
+            "name" => $name,
+            "email" => $email
+        ));
+    }
+});
+
+
 $app->run();

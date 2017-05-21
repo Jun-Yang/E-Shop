@@ -249,7 +249,6 @@ $app->post('/admin_category_add', function() use ($app) {
             "description" => $description,
             "status" => $status,
             "postDate" => $today
-            
         ));
         $id = DB::insertId();
         //$log->debug(sprintf("User %s created", $id));
@@ -257,7 +256,6 @@ $app->post('/admin_category_add', function() use ($app) {
             "name" => $name,
             "layer" => $layer
         ));
-        
     }
 });
 
@@ -305,7 +303,6 @@ $app->post('/admin_order_add', function() use ($app) {
             'v' => $valueList
         ]);
     } else {
-        
         DB::insert('orders', array(
             "name" => $name, 
             "userID" => $userID, 
@@ -329,4 +326,25 @@ $app->post('/admin_order_add', function() use ($app) {
         ));
         
     }
+});
+
+
+//list message
+/*
+$app->get('/admin_message', function() use ($app) {
+    echo "admin admin admin";
+    $messageList = DB::query("SELECT * FROM messages");
+    //print_r($messageList);
+    $app->render('admin_message.html.twig', array(
+        'messageList' => $messageList,
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});*/
+
+$app->get('/admin_message', function() use ($app) {
+    $mList = DB::query("SELECT * FROM messages");
+    $app->render("admin_message.html.twig", array(
+        'mList' => $mList,
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
 });
