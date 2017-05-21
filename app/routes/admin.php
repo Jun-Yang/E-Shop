@@ -409,7 +409,7 @@ $app->get('/admin_report', function() use ($app) {
 });
 
 //User Edit
-$app->get('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
+$app->get('/admin_product_edit/:id', function($op, $id = 0) use ($app) {
     /* FOR PROJECTS WITH MANY ACCESS LEVELS
     if (($_SESSION['user']) || ($_SESSION['level'] != 'admin')) {
         $app->render('forbidden.html.twig');
@@ -421,8 +421,8 @@ $app->get('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             echo 'Product not found';
             return;
         }
-        $app->render("admin_product_add.html.twig", array(
-            'v' => $product, 'operation' => 'Update'
+        $app->render("admin_product_edit.html.twig", array(
+            'p' => $product, 'operation' => 'Update'
         ));
     } else {
         $app->render("admin_product_add.html.twig",
