@@ -29,11 +29,11 @@
                 {% for p in productList %}
                     <tr>
                         <td><input type="checkbox" name="ckbox" /></td>
-                        <td>{{p.ID}}</td>
-                        <td>{{p.name}}</td>
-                        <td>{{p.title}}</td>
-                        <td><a href="/admin_edit_product"><img src="images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
-                        <td><a href="/admin_delete_product" class="ask"><img src="images/admin/trash.png" alt="" title="" border="0" /></a></td>
+                        <td>{{ p.ID }}</td>
+                        <td>{{ p.name }}</td>
+                        <td>{{ p.title }}</td>
+                        <td><a href="/admin_product_edit/{{ p.ID }}"><img src="images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
+                        <td><a href="/admin_product_delete/{{ p.ID }}" class="ask"><img src="images/admin/trash.png" alt="" title="" border="0" /></a></td>
                     </tr> 
                 {% endfor %}
             </table>
