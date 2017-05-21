@@ -48,3 +48,7 @@ Modify database product table sql
 
 May 20 Chen Chen
 Start to do admin_pannel manage user
+finished user/category/orders/management
+
+May 20 Chen Chen
+Start to do admin_pannel message management
