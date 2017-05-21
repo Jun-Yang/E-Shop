@@ -177,32 +177,6 @@ $app->post('/admin_user_add', function() use ($app) {
             'v' => $valueList
         ]);
     } else {
-
-        print_r($role);
-        /*
-        DB::insert('users', array(
-            "name" => $name,
-            "fname" => $fname,
-            "lname" => $lname,
-            "email" => $email,
-            "phone" => $phone,
-            "city" => $city,
-            "addressLine1" => $addressLine1,
-            "addressLine2" => $addressLine2,
-            "code" => $code,
-            "state" => $state,
-            'password' => password_hash($pass1, CRYPT_BLOWFISH),
-            'role' => $role,
-        ));
-        
-        $app->render("admin_user_add_success.html.twig", array(
-            "name" => $name,
-            "fname" => $fname,
-            "lname" => $lname,
-            "email" => $email,
-            "phone" => $phone
-        ));
-         */
         DB::insert('users', array(
             'name' => $name, 
             "fname" => $fname,
@@ -225,6 +199,64 @@ $app->post('/admin_user_add', function() use ($app) {
             "lname" => $lname,
             "email" => $email,
             "phone" => $phone
+        ));
+        
+    }
+});
+
+
+//Admin_Panel->Manage Category->Add Category
+
+$app->get('/admin_category_add', function() use ($app) {
+    $app->render("admin_category_add.html.twig", array(
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});
+
+$app->post('/admin_category_add', function() use ($app) {
+    if (!$_SESSION['eshopuser']) {
+        $app->render('forbidden.html.twig');
+        return;
+    }
+    $name = $app->request()->post('name');
+    $parent = $app->request()->post('parent');
+    $layer = $app->request()->post('layer');
+    $description = $app->request()->post('description');
+    $status = $app->request()->post('status');
+    $today = date("Y-m-d");
+    $postDate = $today;
+    
+    $errorList = array();
+    $valueList = array('name' => $name);
+    if (strlen($name) < 2 || strlen($name) > 200) {
+        array_push($errorList, "Username name must be 2-100 characters long");
+    } else {
+        $userList = DB::queryFirstRow("SELECT * FROM categories WHERE name=%s", $name);
+        if ($userList) {
+            array_push($errorList, "categories name already in use");
+        }
+    }
+
+    if ($errorList) {
+        $app->render("admin_category_add.html.twig", ["errorList" => $errorList,
+            'v' => $valueList
+        ]);
+    } else {
+        print_r($name . $layer);
+        DB::insert('categories', array(
+            "name" => $name, 
+            "parent" => $parent,
+            "layer" => $layer,
+            "description" => $description,
+            "status" => $status,
+            "postDate" => $today
+            
+        ));
+        $id = DB::insertId();
+        //$log->debug(sprintf("User %s created", $id));
+        $app->render("admin_category_add_success.html.twig", array(
+            "name" => $name,
+            "layer" => $layer
         ));
         
     }
