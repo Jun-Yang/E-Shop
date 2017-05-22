@@ -56,3 +56,4 @@ Start to do admin_pannel message management
 May 21 ChenChen
 finished admin_pannel message management
 start to admin panel admin_product_edit
+start to admin panel admin_product_delete
