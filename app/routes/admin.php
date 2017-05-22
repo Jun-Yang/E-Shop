@@ -408,50 +408,55 @@ $app->get('/admin_report', function() use ($app) {
     ));
 });
 
-//User Edit
-$app->get('/admin_product_edit/:id', function($op, $id = 0) use ($app) {
-    /* FOR PROJECTS WITH MANY ACCESS LEVELS
-    if (($_SESSION['user']) || ($_SESSION['level'] != 'admin')) {
-        $app->render('forbidden.html.twig');
-        return;
-    } */
-    if ($op == 'edit') {
-        $product = DB::queryFirstRow("SELECT * FROM products WHERE id=%i", $id);
-        if (!$product) {
-            echo 'Product not found';
-            return;
-        }
-        $app->render("admin_product_edit.html.twig", array(
-            'p' => $product, 'operation' => 'Update'
-        ));
-    } else {
-        $app->render("admin_product_add.html.twig",
-                array('operation' => 'Add'
-        ));
-    }
-})->conditions(array(
-    'op' => '(add|edit)',
-    'id' => '[0-9]+'));
 
-$app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
+//Product Delete
+$app->get('/admin_product_delete/:id', function($id) use ($app) {
+    $product = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
+    $app->render('admin_product_delete.html.twig', array(
+        'p' => $product
+    ));
+});
+
+$app->post('/admin_product_delete/:id', function($id) use ($app) {
+    DB::delete('products', 'id=%i', $id);
+    $app->render('admin_product_delete_success.html.twig');
+});
+
+//product edit
+
+$app->get('/admin_product_edit/:id', function($id) use ($app) {
+    $product = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
+    $app->render('admin_product_edit.html.twig', array(
+        'p' => $product
+    ));
+});
+
+$app->post('/admin_product_edit/:id', function($id) use ($app) {
+    print_r($id);
     $name = $app->request()->post('name');
-    $description = $app->request()->post('description');
+    $title = $app->request()->post('title');
+    $catID = $app->request()->post('catID');
+    $modelNo = $app->request()->post('modelNo');
+    $modelName = $app->request()->post('modelName');
+    $code = $app->request()->post('code');
+    $stock = $app->request()->post('stock');
+    $desc1 = $app->request()->post('desc1');
+    $desc2 = $app->request()->post('desc2');
     $price = $app->request()->post('price');
+    $discount = $app->request()->post('discount');
+    $image = isset($_FILES['image']) ? $_FILES['image'] : array();
+    
     $valueList = array(
         'name' => $name,
-        'description' => $description,
+        'title' => $title,
         'price' => $price);
-    // WRONG: $image = isset($_FILES['image']) ? $_FILES['image'] : array();
-    $image = $_FILES['image'];
-    // print_r($image);
-    //    
     $errorList = array();
+    $today = date("Y-m-d");
+    
     if (strlen($name) < 2 || strlen($name) > 100) {
         array_push($errorList, "Name must be 2-100 characters long");
     }
-    if (strlen($description) < 2 || strlen($description) > 1000) {
-        array_push($errorList, "Description must be 2-1000 characters long");
-    }
+    
     if (empty($price) || $price < 0 || $price > 99999999) {
         array_push($errorList, "Price must be between 0 and 99999999");
     }
@@ -479,56 +484,65 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
     }
     //
     if ($errorList) {
-        $app->render("admin_product_add.html.twig", array(
+        $app->render("admin_product_edit.html.twig", array(
             'v' => $valueList,
-            "errorList" => $errorList,
-            'operation' => ($op == 'edit' ? 'Edit' : 'Update')
+            "errorList" => $errorList
+            //'operation' => ($op == 'edit' ? 'Edit' : 'Update')
         ));
     } else {
-        // DONT GET FIRED OVER THESE!!!
-        // FIXME: opened a security hole here! .. must be forbidden
-        // FIXME: only allow select extensions .jpg .gif .png, never .php
-        // FIXME: do not allow file to override an previous upload
         $imagePath = "uploads/" . $image['name'];
-        move_uploaded_file($image["tmp_name"], $imagePath);
+        /*move_uploaded_file($image["tmp_name"], $imagePath);
         if ($op == 'edit') {
             // unlink('') OLD file - requires select            
             $oldImagePath = DB::queryFirstField(
                             'SELECT imagePath FROM products WHERE id=%i', $id);
             if (($oldImagePath) && file_exists($oldImagePath)) {
                 unlink($oldImagePath);
-            }
+            }*/
+        $imageBinaryData = file_get_contents($image['tmp_name']);
+        $mimeType = mime_content_type($image['tmp_name']);
+        
             DB::update('products', array(
+                "title" => $title,
+                "catID" => $catID,
                 "name" => $name,
-                "description" => $description,
+                "modelName" => $modelName,
+                "modelNo" => $modelNo,
+                "desc1" => $desc1,
+                "desc2" => $desc2,
                 "price" => $price,
-                "imagePath" => $imagePath
+                "stock" => $stock,
+                "code" => $code,
+                "discount" => $discount,
+                "postDate" => $today,
+                'imageData1' => $imageBinaryData,
+                'imageMimeType1' => $mimeType
+                //"imagePath" => $imagePath
                     ), "id=%i", $id);
-        } else {
+         /* }else {
             DB::insert('products', array(
+                "title" => $title,
+                "catID" => $catID,
                 "name" => $name,
-                "description" => $description,
+                "modelName" => $modelName,
+                "modelNo" => $modelNo,
+                "desc1" => $desc1,
                 "price" => $price,
-                "imagePath" => $imagePath
+                "stock" => $stock,
+                "code" => $code,
+                "discount" => $discount,
+                "postDate" => $today,
+                'imageData1' => $imageBinaryData,
+                'imageMimeType1' => $mimeType
             ));
-        }
-        $app->render("admin_product_add_success.html.twig", array(
+        }*/
+        $app->render("admin_product_edit_success.html.twig", array(
             "imagePath" => $imagePath
         ));
     }
-})->conditions(array(
-    'op' => '(add|edit)',
-    'id' => '[0-9]+'));
-
-//User Delete
-$app->get('/admin_product_delete/:id', function($id) use ($app) {
-    $product = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
-    $app->render('admin_product_delete.html.twig', array(
-        'p' => $product
-    ));
 });
-
-$app->post('/admin_product_delete/:id', function($id) use ($app) {
-    DB::delete('products', 'id=%i', $id);
+    
+ /*   
+    
     $app->render('admin_product_delete_success.html.twig');
-});
+});*/
