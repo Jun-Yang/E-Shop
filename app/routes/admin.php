@@ -399,7 +399,6 @@ $app->post('/admin_news_add', function() use ($app) {
     }
 });
 
-
 $app->get('/admin_report', function() use ($app) {
     $mList = DB::query("SELECT * FROM orders");
     $app->render("admin_report.html.twig", array(
@@ -467,38 +466,28 @@ $app->post('/admin_product_edit/:id', function($id) use ($app) {
         if (!$imageInfo) {
             array_push($errorList, "File does not look like an valid image");
         } else {
-            // FIXME: opened a security hole here! .. must be forbidden
+            
             if (strstr($image["name"], "..")) {
                 array_push($errorList, "File name invalid");
             }
-            // FIXME: only allow select extensions .jpg .gif .png, never .php
+            
             $ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
             if (!in_array($ext, array('jpg', 'jpeg', 'gif', 'png'))) {
                 array_push($errorList, "File name invalid");
             }
-            // FIXME: do not allow file to override an previous upload
+            
             if (file_exists('uploads/' . $image['name'])) {
                 array_push($errorList, "File name already exists. Will not override.");
             }
         }
     }
-    //
     if ($errorList) {
         $app->render("admin_product_edit.html.twig", array(
             'v' => $valueList,
             "errorList" => $errorList
-            //'operation' => ($op == 'edit' ? 'Edit' : 'Update')
         ));
     } else {
         $imagePath = "uploads/" . $image['name'];
-        /*move_uploaded_file($image["tmp_name"], $imagePath);
-        if ($op == 'edit') {
-            // unlink('') OLD file - requires select            
-            $oldImagePath = DB::queryFirstField(
-                            'SELECT imagePath FROM products WHERE id=%i', $id);
-            if (($oldImagePath) && file_exists($oldImagePath)) {
-                unlink($oldImagePath);
-            }*/
         $imageBinaryData = file_get_contents($image['tmp_name']);
         $mimeType = mime_content_type($image['tmp_name']);
         
@@ -519,30 +508,9 @@ $app->post('/admin_product_edit/:id', function($id) use ($app) {
                 'imageMimeType1' => $mimeType
                 //"imagePath" => $imagePath
                     ), "id=%i", $id);
-         /* }else {
-            DB::insert('products', array(
-                "title" => $title,
-                "catID" => $catID,
-                "name" => $name,
-                "modelName" => $modelName,
-                "modelNo" => $modelNo,
-                "desc1" => $desc1,
-                "price" => $price,
-                "stock" => $stock,
-                "code" => $code,
-                "discount" => $discount,
-                "postDate" => $today,
-                'imageData1' => $imageBinaryData,
-                'imageMimeType1' => $mimeType
-            ));
-        }*/
         $app->render("admin_product_edit_success.html.twig", array(
             "imagePath" => $imagePath
         ));
     }
 });
     
- /*   
-    
-    $app->render('admin_product_delete_success.html.twig');
-});*/
