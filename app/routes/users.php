@@ -262,6 +262,12 @@ $app->map('/facebook', function() use ($app, $log) {
     //   $helper = $fb->getJavaScriptHelper();
     //   $helper = $fb->getCanvasHelper();
     //   $helper = $fb->getPageTabHelper();
+    $login_url = "eshop.ipd9.info";
+    // Login Link
+    $FBloginUrl = $helper->getLoginUrl($login_url, $facebook_app_permissions);
+
+    // Rerequest Link
+    $FBloginUrl = $helper->getReRequestUrl($login_url, $facebook_app_permissions);
     $errorList = array();
     
     try {
