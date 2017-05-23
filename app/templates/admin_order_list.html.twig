@@ -5,13 +5,12 @@
 {% block content %}
     <div class="center_content">  
 
-        <div class="right_content">            
+        <div class="left_content">            
             <h2 class="left_h2">Orders List</h2> 
             <div class="sidebar_search" >
                <form>
                    <input type="text" name="searchinput" class="search_input" value="search keyword" onclick="this.value = ''" />
-                   <input type="image" class="search_submit" src="../images/admin/search.png" alt="search_submit"/>
-                    
+                   <input type="image" class="search_submit" src="/images/admin/search.png" alt="search_submit"/>
                </form>            
             </div>
            
@@ -36,15 +35,15 @@
                         <td>{{o.totalWithShippingAndTaxes}}</td>
                         <td>{{o.dateTimePlaced}}</td>
                         <td>{{o.dateTimeShipped}}</td>
-                        <td><a href="/admin_edit_order"><img src="images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
-                        <td><a href="/admin_delete_order" class="ask"><img src="images/admin/trash.png" alt="" title="" border="0" /></a></td>
+                        <td><a href="/admin/order/edit/{{o.ID}}"><img src="/images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
+                        <td><a href="/admin/order/delete/{{o.ID}}" class="ask"><img src="/images/admin/trash.png" alt="" title="" border="0" /></a></td>
                     </tr> 
                 {% endfor %}
             </table>
 
-            <a href="#" class="bt_green"><span class="bt_green_lft"></span><strong>Add new order</strong><span class="bt_green_r"></span></a>
-            <a href="#" class="bt_blue"><span class="bt_blue_lft"></span><strong>View orders by time</strong><span class="bt_blue_r"></span></a>
-            <a href="#" class="bt_red"><span class="bt_red_lft"></span><strong>Delete orders</strong><span class="bt_red_r"></span></a> 
+            <a href="/admin/order/add" class="bt_green"><span class="bt_green_lft"></span><strong>Add new order</strong><span class="bt_green_r"></span></a>
+            <a href="/admin/order/list" class="bt_blue"><span class="bt_blue_lft"></span><strong>View orders by time</strong><span class="bt_blue_r"></span></a>
+            <a href="/admin/order/delete" class="bt_red"><span class="bt_red_lft"></span><strong>Delete orders</strong><span class="bt_red_r"></span></a> 
 
             <div class="pagination">
                 <span class="disabled"><< prev</span>

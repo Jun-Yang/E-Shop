@@ -37,7 +37,7 @@ $app->get('/admin_category', function() use ($app) {
     ));
 });
 
-$app->get('/admin_order', function() use ($app) {
+$app->get('/admin/order', function() use ($app) {
     $orderList = DB::query("SELECT * FROM orders");
     $app->render("admin_order.html.twig", array(
         'orderList' => $orderList,
@@ -45,103 +45,7 @@ $app->get('/admin_order', function() use ($app) {
     ));
 });
 
-$app->get('/admin_product_add', function() use ($app) {
-    $app->render("admin_product_add.html.twig", array(
-        "eshopuser" => $_SESSION['eshopuser']
-    ));
-});
-
-$app->post('/admin_product_add', function() use ($app) {
-    if (!$_SESSION['eshopuser']) {
-        $app->render('forbidden.html.twig');
-        return;
-    }
-
-    $title = $app->request()->post('title');
-    $name = $app->request()->post('name');
-    $catID = $app->request()->post('catID');
-    $modelName = $app->request()->post('modelName');
-    $modelNo = $app->request()->post('modelNo');
-    $desc1 = $app->request()->post('desc1');
-    $desc2 = $app->request()->post('desc2');
-    $code = $app->request()->post('code');
-    //$desc3 = $app->request()->post('desc3');
-    $price = $app->request()->post('price');
-    $stock = $app->request()->post('stock');
-    $discount = $app->request()->post('discount');
-    $today = date("Y-m-d");
-    $postDate = $today;
-    $image = isset($_FILES['image']) ? $_FILES['image'] : array();
-    //$image2 = isset($_FILES['image']) ? $_FILES['image'] : array();
-    $errorList = array();
-    /* if (strlen($name) < 2 || strlen($name) > 100) {
-      array_push($errorList, "Name must be 2-100 characters long");
-      } */
-
-    if (empty($price) || $price < 0 || $price > 99999999) {
-        array_push($errorList, "Price must be between 0 and 99999999");
-    }
-    if ($image) {
-        $imageInfo = getimagesize($image["tmp_name"]);
-        if (!$imageInfo) {
-            array_push($errorList, "File does not look like an valid image");
-        } else {
-            $width = $imageInfo[0];
-            $height = $imageInfo[1];
-            if ($width > 2000 || $height > 2000) {
-                array_push($errorList, "Image must at most 2000 by 2000 pixels");
-            }
-        }
-    }
-
-    $valueList = array('title' => $title);
-
-    if (strlen($title) < 2 || strlen($title) > 200) {
-        array_push($errorList, "Task name must be 2-100 characters long");
-    } else {
-        $productList = DB::queryFirstRow("SELECT * FROM products WHERE title=%s", $title);
-        if ($productList) {
-            array_push($errorList, "Product title already in use");
-        }
-    }
-
-//    print_r($_SESSION['todouser']);
-    if ($errorList) {
-        $app->render("admin_product_add.html.twig", ["errorList" => $errorList,
-            'v' => $valueList
-        ]);
-    } else {
-        $imageBinaryData = file_get_contents($image['tmp_name']);
-        $mimeType = mime_content_type($image['tmp_name']);
-
-        DB::insert('products', array(
-            "title" => $title,
-            "catID" => $catID,
-            "name" => $name,
-            "modelName" => $modelName,
-            "modelNo" => $modelNo,
-            "desc1" => $desc1,
-            "price" => $price,
-            "stock" => $stock,
-            "code" => $code,
-            "discount" => $discount,
-            "postDate" => $today,
-            'imageData1' => $imageBinaryData,
-            'imageMimeType1' => $mimeType
-        ));
-        $app->render("add_success.html.twig", array(
-            "title" => $title,
-            "catID" => $catID,
-            "modelName" => $modelName,
-            "price" => $price,
-            "stock" => $stock
-        ));
-    }
-});
-
-//Admin_Panel->Manage Users->Add users
-
-$app->get('/admin_user_add', function() use ($app) {
+$app->get('/admin/user/add', function() use ($app) {
     $app->render("admin_user_add.html.twig", array(
         "eshopuser" => $_SESSION['eshopuser']
     ));
@@ -211,6 +115,148 @@ $app->post('/admin_user_add', function() use ($app) {
 });
 
 
+// ADMIN - CRUD for orders table
+$app->get('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
+    
+    // FOR PROJECTS WITH MANY ACCESS LEVELS
+//    if (($_SESSION['eshopuser']) || ($_SESSION['role'] != 'admin')) {
+//       $app->render('forbidden.html.twig');
+//       return;
+//    } 
+    
+    if ($op == 'edit') {
+        $order = DB::queryFirstRow("SELECT * FROM orders WHERE id=%i", $id);
+        if (!$order) {
+            echo 'Order not found';
+            return;
+        }
+        $app->render("admin_order_add.html.twig", array(
+            'v' => $order, 'operation' => 'Update',
+            "eshopuser" => $_SESSION['eshopuser']
+        ));
+    } else {
+        $app->render("admin_order_add.html.twig", array(
+            'operation' => 'Add',
+            "eshopuser" => $_SESSION['eshopuser']
+        ));
+    }
+})->conditions(array(
+    'op' => '(add|edit)',
+    'id' => '[0-9]+'));
+
+$app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
+    if (!$_SESSION['eshopuser']) {
+        $app->render('forbidden.html.twig');
+        return;
+    }
+
+    if (!$_SESSION['eshopuser']) {
+        $app->render('forbidden.html.twig');
+        return;
+    }
+    $name = $app->request()->post('name');
+    $userID = $app->request()->post('userID');
+    $address = $app->request()->post('address');
+    $postalCode = $app->request()->post('postalCode');
+    $email = $app->request()->post('email');
+    $phoneNumber = $app->request()->post('phoneNumber');
+    $totalBeforeTax = $app->request()->post('totalBeforeTax');
+    $shippingBeforeTax = $app->request()->post('shippingBeforeTax');
+    $taxes = $app->request()->post('taxes');
+    $totalWithShippingAndTaxes = $app->request()->post('totalWithShippingAndTaxes');
+    $dateTimePlaced = $app->request()->post('dateTimePlaced');
+    $dateTimeShipped = $app->request()->post('dateTimeShipped');
+    $status = $app->request()->post('status');
+    $today = date("Y-m-d");
+    $postDate = $today;
+
+    $errorList = array();
+    $valueList = array('name' => $name);
+    if (strlen($name) < 2 || strlen($name) > 200) {
+        array_push($errorList, "name name must be 2-100 characters long");
+    } /* else {
+      $userList = DB::queryFirstRow("SELECT * FROM orders WHERE name=%s", $name);
+      if ($userList) {
+      array_push($errorList, "orderID name already in use");
+      }
+      } */
+
+    if ($errorList) {
+        $app->render("admin_order_add.html.twig", ["errorList" => $errorList,
+            'v' => $valueList
+        ]);
+    } else {
+        if ($op == 'edit') {
+            // unlink('') OLD file - requires select
+            $oldImagePath = DB::queryFirstField(
+                            'SELECT imagePath FROM orders WHERE id=%i', $id);
+            if (($oldImagePath) && file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+            DB::update('orders', array(
+                "name" => $name,
+                "userID" => $userID,
+                "address" => $address,
+                "postalCode" => $postalCode,
+                "email" => $email,
+                "phoneNumber" => $phoneNumber,
+                "totalBeforeTax" => $totalBeforeTax,
+                "shippingBeforeTax" => $shippingBeforeTax,
+                "taxes" => $taxes,
+                "totalWithShippingAndTaxes" => $totalWithShippingAndTaxes,
+                "dateTimePlaced" => $dateTimePlaced,
+                "dateTimeShipped" => $dateTimeShipped,
+                "status" => $status
+                    ), "id=%i", $id);
+        } else {
+            DB::insert('orders', array(
+                "name" => $name,
+                "userID" => $userID,
+                "address" => $address,
+                "postalCode" => $postalCode,
+                "email" => $email,
+                "phoneNumber" => $phoneNumber,
+                "totalBeforeTax" => $totalBeforeTax,
+                "shippingBeforeTax" => $shippingBeforeTax,
+                "taxes" => $taxes,
+                "totalWithShippingAndTaxes" => $totalWithShippingAndTaxes,
+                "dateTimePlaced" => $dateTimePlaced,
+                "dateTimeShipped" => $dateTimeShipped,
+                "status" => $status
+            ));
+            $id = DB::insertId();
+        }
+        $app->render("add_success.html.twig", array(
+            "name" => $name,
+            "userID" => $userID,
+            "address" => $address,
+            "postalCode" => $postalCode,
+            "email" => $email,
+            "eshopuser" => $_SESSION['eshopuser']
+        ));
+    }
+})->conditions(array(
+    'op' => '(add|edit)',
+    'id' => '[0-9]+'));
+
+// HOMEWORK: implement a table of existing orders with links for editing
+$app->get('/admin/order/list', function() use ($app) {
+    $orderList = DB::query("SELECT * FROM orders");
+    $app->render("admin_order_list.html.twig", array(
+        'orderList' => $orderList,
+        "eshopuser" => $_SESSION['eshopuser']    
+    ));
+});
+
+$app->get('/admin/order/delete/:id', function($id) use ($app) {
+    $order = DB::queryFirstRow('SELECT * FROM orders WHERE id=%i', $id);
+    $app->render('admin_order_delete.html.twig', array(
+        'o' => $order,
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+})->VIA('GET', 'POST');
+
+
 //Admin_Panel->Manage Category->Add Category
 $app->get('/admin_category_add', function() use ($app) {
     $app->render("admin_category_add.html.twig", array(
@@ -264,76 +310,6 @@ $app->post('/admin_category_add', function() use ($app) {
         ));
     }
 });
-
-//Admin_Panel->Manage Order->Add Order
-$app->get('/admin_order_add', function() use ($app) {
-    $app->render("admin_order_add.html.twig", array(
-        "eshopuser" => $_SESSION['eshopuser']
-    ));
-});
-
-$app->post('/admin_order_add', function() use ($app) {
-    if (!$_SESSION['eshopuser']) {
-        $app->render('forbidden.html.twig');
-        return;
-    }
-    $name = $app->request()->post('name');
-    $userID = $app->request()->post('userID');
-    $address = $app->request()->post('address');
-    $postalCode = $app->request()->post('postalCode');
-    $email = $app->request()->post('email');
-    $phoneNumber = $app->request()->post('phoneNumber');
-    $totalBeforeTax = $app->request()->post('totalBeforeTax');
-    $shippingBeforeTax = $app->request()->post('shippingBeforeTax');
-    $taxes = $app->request()->post('taxes');
-    $totalWithShippingAndTaxes = $app->request()->post('totalWithShippingAndTaxes');
-    $dateTimePlaced = $app->request()->post('dateTimePlaced');
-    $dateTimeShipped = $app->request()->post('dateTimeShipped');
-    $status = $app->request()->post('status');
-    $today = date("Y-m-d");
-    $postDate = $today;
-    
-    $errorList = array();
-    $valueList = array('name' => $name);
-    if (strlen($name) < 2 || strlen($name) > 200) {
-        array_push($errorList, "name name must be 2-100 characters long");
-    } /*else {
-        $userList = DB::queryFirstRow("SELECT * FROM orders WHERE name=%s", $name);
-        if ($userList) {
-            array_push($errorList, "orderID name already in use");
-        }
-    }*/
-
-    if ($errorList) {
-        $app->render("admin_order_add.html.twig", ["errorList" => $errorList,
-            'v' => $valueList
-        ]);
-    } else {
-        DB::insert('orders', array(
-            "name" => $name, 
-            "userID" => $userID, 
-            "address" => $address, 
-            "postalCode" => $postalCode, 
-            "email" => $email, 
-            "phoneNumber" => $phoneNumber, 
-            "totalBeforeTax" => $totalBeforeTax, 
-            "shippingBeforeTax" => $shippingBeforeTax, 
-            "taxes" => $taxes, 
-            "totalWithShippingAndTaxes" => $totalWithShippingAndTaxes, 
-            "dateTimePlaced" => $dateTimePlaced, 
-            "dateTimeShipped" => $dateTimeShipped, 
-            "status" => $status
-        ));
-        $id = DB::insertId();
-        //$log->debug(sprintf("User %s created", $id));
-        $app->render("admin_order_add_success.html.twig", array(
-            "name" => $name,
-            "userID" => $userID
-        ));
-        
-    }
-});
-
 
 //list message
 /*
@@ -406,111 +382,3 @@ $app->get('/admin_report', function() use ($app) {
         "eshopuser" => $_SESSION['eshopuser']
     ));
 });
-
-
-//Product Delete
-$app->get('/admin_product_delete/:id', function($id) use ($app) {
-    $product = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
-    $app->render('admin_product_delete.html.twig', array(
-        'p' => $product
-    ));
-});
-
-$app->post('/admin_product_delete/:id', function($id) use ($app) {
-    DB::delete('products', 'id=%i', $id);
-    $app->render('admin_product_delete_success.html.twig');
-});
-
-//product edit
-
-//$app->get('/admin_product_edit/:id', function($id) use ($app) {
-//    $product = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
-//    $app->render('admin_product_edit.html.twig', array(
-//        'p' => $product
-//    ));
-//});
-//
-//$app->post('/admin_product_edit/:id', function($id) use ($app) {
-//    print_r($id);
-//    $name = $app->request()->post('name');
-//    $title = $app->request()->post('title');
-//    $catID = $app->request()->post('catID');
-//    $modelNo = $app->request()->post('modelNo');
-//    $modelName = $app->request()->post('modelName');
-//    $code = $app->request()->post('code');
-//    $stock = $app->request()->post('stock');
-//    $desc1 = $app->request()->post('desc1');
-//    $desc2 = $app->request()->post('desc2');
-//    $price = $app->request()->post('price');
-//    $discount = $app->request()->post('discount');
-//    $image = isset($_FILES['image']) ? $_FILES['image'] : array();
-//    
-//    $valueList = array(
-//        'name' => $name,
-//        'title' => $title,
-//        'price' => $price);
-//    $errorList = array();
-//    $today = date("Y-m-d");
-//    
-//    if (strlen($name) < 2 || strlen($name) > 100) {
-//        array_push($errorList, "Name must be 2-100 characters long");
-//    }
-//    
-//    if (empty($price) || $price < 0 || $price > 99999999) {
-//        array_push($errorList, "Price must be between 0 and 99999999");
-//    }
-//    if ($image['error'] != 0) {
-//        array_push($errorList, "Image is required to create a product");
-//    } else {
-//        $imageInfo = getimagesize($image["tmp_name"]);
-//        if (!$imageInfo) {
-//            array_push($errorList, "File does not look like an valid image");
-//        } else {
-//            
-//            if (strstr($image["name"], "..")) {
-//                array_push($errorList, "File name invalid");
-//            }
-//            
-//            $ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
-//            if (!in_array($ext, array('jpg', 'jpeg', 'gif', 'png'))) {
-//                array_push($errorList, "File name invalid");
-//            }
-//            
-//            if (file_exists('uploads/' . $image['name'])) {
-//                array_push($errorList, "File name already exists. Will not override.");
-//            }
-//        }
-//    }
-//    if ($errorList) {
-//        $app->render("admin_product_edit.html.twig", array(
-//            'v' => $valueList,
-//            "errorList" => $errorList
-//        ));
-//    } else {
-//        $imagePath = "uploads/" . $image['name'];
-//        $imageBinaryData = file_get_contents($image['tmp_name']);
-//        $mimeType = mime_content_type($image['tmp_name']);
-//        
-//            DB::update('products', array(
-//                "title" => $title,
-//                "catID" => $catID,
-//                "name" => $name,
-//                "modelName" => $modelName,
-//                "modelNo" => $modelNo,
-//                "desc1" => $desc1,
-//                "desc2" => $desc2,
-//                "price" => $price,
-//                "stock" => $stock,
-//                "code" => $code,
-//                "discount" => $discount,
-//                "postDate" => $today,
-//                'imageData1' => $imageBinaryData,
-//                'imageMimeType1' => $mimeType
-//                //"imagePath" => $imagePath
-//                    ), "id=%i", $id);
-//        $app->render("admin_product_edit_success.html.twig", array(
-//            "imagePath" => $imagePath
-//        ));
-//    }
-//});
-    

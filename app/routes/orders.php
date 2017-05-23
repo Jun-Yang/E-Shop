@@ -101,5 +101,3 @@ $app->map('/order', function () use ($app) {
         }
     }
 })->via('GET', 'POST');
-
-
