@@ -13,6 +13,7 @@ $app->get('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             echo 'Product not found';
             return;
         }
+        print_r($id);
         $app->render("admin_product_add.html.twig", array(
             'v' => $product, 'operation' => 'Update'
         ));
@@ -84,7 +85,8 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
         $imagePath = "uploads/" . $image['name'];
         move_uploaded_file($image["tmp_name"], $imagePath);
         if ($op == 'edit') {
-            // unlink('') OLD file - requires select            
+            // unlink('') OLD file - requires select
+            print_r($op);
             $oldImagePath = DB::queryFirstField(
                             'SELECT imagePath FROM products WHERE id=%i', $id);
             if (($oldImagePath) && file_exists($oldImagePath)) {
