@@ -2,8 +2,8 @@
 -- version 4.6.5.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3333
--- Generation Time: May 23, 2017 at 05:48 PM
+-- Host: 127.0.0.1
+-- Generation Time: May 23, 2017 at 01:52 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
@@ -129,9 +129,7 @@ CREATE TABLE `news` (
 INSERT INTO `news` (`id`, `subject`, `content`, `postDate`, `status`) VALUES
 (1, 'Great News', 'Last News', '2017-05-21', 'published'),
 (2, 'news', 'sdfdsadfsa', '2017-05-21', 'published'),
-(3, 'Lastest News', 'Discount for all e-bike', '2017-05-21', 'published'),
-(4, 'Latest ', 'content new', '2017-05-23', 'published'),
-(5, 'Latest ', 'content new', '2017-05-23', 'published');
+(3, 'Lastest News', 'Discount for all e-bike', '2017-05-21', 'published');
 
 -- --------------------------------------------------------
 
@@ -192,35 +190,6 @@ CREATE TABLE `orders` (
 
 INSERT INTO `orders` (`ID`, `userID`, `name`, `address`, `postalCode`, `email`, `phoneNumber`, `totalBeforeTax`, `shippingBeforeTax`, `taxes`, `totalWithShippingAndTaxes`, `dateTimePlaced`, `dateTimeShipped`, `status`) VALUES
 (1, 7, 'Jerry003', 'Jerry003 address1', '', '', 'H4L0B5', '1342.00', '0.00', '32.00', '1374.00', '2017-05-21 00:00:00', '2017-05-21 00:00:00', 'placed');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `order_products`
---
-
-CREATE TABLE `order_products` (
-  `id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `quantity` int(11) DEFAULT '0',
-  `user_id` int(11) NOT NULL,
-  `payment_id` int(11) DEFAULT NULL,
-  `invoice_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=koi8u;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `passresets`
---
-
-CREATE TABLE `passresets` (
-  `ID` int(11) NOT NULL,
-  `userID` int(11) NOT NULL,
-  `secretToken` varchar(50) NOT NULL,
-  `expiryDateTime` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -406,13 +375,6 @@ ALTER TABLE `orders`
   ADD KEY `userID` (`userID`);
 
 --
--- Indexes for table `passresets`
---
-ALTER TABLE `passresets`
-  ADD PRIMARY KEY (`ID`),
-  ADD UNIQUE KEY `userID` (`userID`);
-
---
 -- Indexes for table `payments`
 --
 ALTER TABLE `payments`
@@ -468,7 +430,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `news`
 --
 ALTER TABLE `news`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `orderitems`
 --
@@ -484,11 +446,6 @@ ALTER TABLE `orderpayment`
 --
 ALTER TABLE `orders`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `passresets`
---
-ALTER TABLE `passresets`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT for table `payments`
 --

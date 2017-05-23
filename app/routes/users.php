@@ -175,7 +175,7 @@ $app->map('/passreset', function () use ($app, $log) {
             $headers.= "From: Noreply <noreply@ipd9.info>\r\n";
             $headers.= "To: " . htmlentities($user['name']) . " <" . $email . ">\r\n";
 
-//            mail($email, "Password reset from eShop", $html, $headers);
+            mail($email, "Password reset from eShop", $html, $headers);
         } else {
             $app->render('passreset.html.twig', array('error' => TRUE));
         }
