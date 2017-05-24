@@ -95,3 +95,13 @@ $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
     'op' => '(add|edit)',
     'id' => '[0-9]+'));
 
+// AJAX: query categories with name
+$app->get('/admin/category/search', function() use ($app) {
+    $str = $_POST['searchinput']  . "%"; 
+    $categoryList = DB::query("SELECT * FROM categories WHERE name LIKE %s", $str);
+    $app->render("admin_category_list.html.twig", array(
+        'categoryList' => $categoryList,
+        'str' =>$_POST['searchinput'],
+        "eshopuser" => $_SESSION['eshopuser']    
+    ));
+})->VIA('GET', 'POST');

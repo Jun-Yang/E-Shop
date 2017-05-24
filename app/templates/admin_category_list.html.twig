@@ -8,8 +8,8 @@
         <div class="right_content">            
             <h2 class="left_h2">Products Categories List</h2> 
             <div class="sidebar_search">
-            <form>
-                <input type="text" name="searchinput" class="search_input" value="search keyword" onclick="this.value = ''" />
+            <form action="/admin/category/search" method="POST">
+                <input type="text" name="searchinput" class="search_input" value="{{str}}" onclick="this.value = ''" />
                 <input type="image" class="search_submit" src="/images/admin/search.png" alt="search_submit"/>
             </form>            
             </div>
@@ -18,7 +18,7 @@
                 <thead>
                     <tr>
                         <th scope="col" class="rounded-company"></th>
-                        <th scope="col" class="rounded">Id</th>
+                        <th scope="col" class="rounded">ID</th>
                         <th scope="col" class="rounded">Name</th>
                         <th scope="col" class="rounded">Description</th>
                         <th scope="col" class="rounded">Status</th>

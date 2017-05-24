@@ -132,3 +132,14 @@ $app->get('/admin/user/block/:id', function($id) use ($app) {
         "eshopuser" => $_SESSION['eshopuser']    
     ));
 })->VIA('GET', 'POST');
+
+// AJAX: query users with name
+$app->get('/admin/user/search', function() use ($app) {
+    $str = $_POST['searchinput']  . "%"; 
+    $userList = DB::query("SELECT * FROM users WHERE name LIKE %s", $str);
+    $app->render("admin_user_list.html.twig", array(
+        'userList' => $userList,
+        'str' =>$_POST['searchinput'],
+        "eshopuser" => $_SESSION['eshopuser']    
+    ));
+})->VIA('GET', 'POST');
