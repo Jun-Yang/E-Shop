@@ -1,9 +1,13 @@
-{# empty Twig template #}
-<?php
+% extends "master.html.twig" %}
+
+{% block title %}Facebook login{% endblock %}
+
+{% block content %}
+    
 $fb = new Facebook\Facebook([
   'app_id' => '{app-id}',
   'app_secret' => '{app-secret}',
-  'default_graph_version' => 'v2.2',
+  'default_graph_version' => 'v2.9',
 ]);
  
 $helper = $fb->getRedirectLoginHelper();
@@ -12,4 +16,5 @@ $permissions = []; // Optional information that your app can access, such as 'em
 $loginUrl = $helper->getLoginUrl('https://example.com/fb-callback.php', $permissions);
  
 echo '<a href="' . htmlspecialchars($loginUrl) . '">Log in with Facebook</a>';
-?>
+    
+{% endblock %}

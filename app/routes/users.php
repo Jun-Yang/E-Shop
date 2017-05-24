@@ -1,22 +1,5 @@
 <?php
 
-//Facebook login
-//$config = array(
-//      "base_url" => "http://localhost:8008/vendor/hybridauth/hybridauth/hybridauth/",
-//      "providers" => array (
-//        "Facebook" => array (
-//          "enabled" => true,
-//          "keys"    => array("id" => "294651954316911", "secret" => "ec92b4a05fc2edd8153309f9b166ee60"),
-//          "scope"   => ['email', 'user_about_me', 'user_birthday', 'user_hometown'], // optional
-//          "display" => "popup" // optional
-//    )));
-// 
-//    require_once( "vendor/hybridauth/hybridauth/hybridauth/hybrid/Auth.php" ); 
-//    $hybridauth = new Hybrid_Auth( $config ); 
-//    $adapter = $hybridauth->authenticate( "Facebook" ); 
-//    $user_profile = $adapter->getUserProfile();
-
-
 $app->get('/register', function() use ($app, $log) {
     $app->render('register.html.twig', array(
         "eshopuser" => $_SESSION['eshopuser']
@@ -76,6 +59,9 @@ $app->post('/register', function() use ($app, $log) {
         ));
         $id = DB::insertId();
         $log->debug(sprintf("User %s created", $id));
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        $msg->success('Registration successful. You may now login.');
+        $msg->display();
         $app->render('eshop.html.twig');
     }
 });
@@ -107,6 +93,9 @@ $app->post('/login', function() use ($app, $log) {
                     "eshopuser" => $_SESSION['eshopuser']
                 ));
             } else {
+                $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+                $msg->success('Welcome '. $user['name'] . ', you login successfully');
+                $msg->display();
                 $app->render('eshop.html.twig', array(
                     "eshopuser" => $_SESSION['eshopuser']
                 ));
@@ -264,7 +253,10 @@ $app->map('/passreset/:secretToken', function($secretToken) use ($app) {
                 'password' => password_hash($pass1, CRYPT_BLOWFISH)
                     ), "ID=%d", $row['userID']);
             DB::delete('passresets', 'secretToken=%s', $secretToken);
-            $app->render('passreset_success.html.twig');
+            $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+            $msg->success('Password reset successful. You can login now');
+            $msg->display();
+            $app->render('eshop.html.twig');
         }
     }
 })->via('GET', 'POST');
