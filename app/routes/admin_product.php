@@ -47,7 +47,6 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
     $today = date("Y-m-d");
     $postDate = $today;
     $image = isset($_FILES['image']) ? $_FILES['image'] : array();
-    //$image2 = isset($_FILES['image']) ? $_FILES['image'] : array();
     $errorList = array();
     
     if (strlen($name) < 2 || strlen($name) > 100) {
@@ -104,6 +103,7 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             "modelName" => $modelName,
             "modelNo" => $modelNo,
             "desc1" => $desc1,
+            "desc2" => $desc2,
             "price" => $price,
             "stock" => $stock,
             "code" => $code,
@@ -120,6 +120,7 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             "modelName" => $modelName,
             "modelNo" => $modelNo,
             "desc1" => $desc1,
+            "desc2" => $desc2,
             "price" => $price,
             "stock" => $stock,
             "code" => $code,
@@ -129,7 +130,7 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             'imageMimeType1' => $mimeType
         ));
         }
-        $app->render("add_success.html.twig", array(
+        $app->render("admin_product_success.html.twig", array(
             "title" => $title,
             "catID" => $catID,
             "modelName" => $modelName,
@@ -149,14 +150,15 @@ $app->get('/admin/product/list', function() use ($app) {
     ));
 });
 
-$app->get('/admin/product/delete/:id', function($id) use ($app) {
+$app->get('/admin_product_delete/:id', function($id) use ($app) {
     $product = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
     $app->render('admin_product_delete.html.twig', array(
         'p' => $product
     ));
 });
 
-$app->post('/admin/product/delete/:id', function($id) use ($app) {
+$app->post('/admin_product_delete/:id', function($id) use ($app) {
+    print_r($id);
     DB::delete('products', 'id=%i', $id);
     $app->render('admin_product_delete_success.html.twig');
 });
@@ -165,6 +167,42 @@ $app->get('/product', function() use ($app) {
     $app->render('product.html.twig',array(
         "eshopuser" => $_SESSION['eshopuser']
     ));          
+});
+
+//for image view
+
+$app->get('/imageview/:id(/:operation)', function($id, $operation = '') use ($app) {
+
+    $product = DB::queryFirstRow("SELECT imageData1,imageMimeType1 FROM products "
+            . " WHERE ID=%i",$id);
+    if (!$product) {
+        $app->response()->status(404);
+        echo "404 - not found";
+    } else {
+        if ($operation == 'download') {
+            $app->response->headers->set('Content-Disposition',
+                    'attachment; somefile.jpg');
+        }
+        $app->response->headers->set('Content-Type', $product['imageMimeType1']);
+        echo $product['imageData1'];
+    }
+})->conditions(array('operation' => 'download'));
+
+$app->get('/imageview/:id', function($id) use ($app) {
+
+    $product = DB::queryFirstRow("SELECT imageData1,imageMimeType1 FROM products "
+            . " WHERE ID=%i",$id);
+    if (!$product) {
+        $app->response()->status(404);
+        echo "404 - not found";
+    } else {
+        if ($operation == 'download') {
+            $app->response->headers->set('Content-Disposition',
+                    'attachment; somefile.jpg');
+        }
+        $app->response->headers->set('Content-Type', $product['imageMimeType1']);
+        echo $product['imageData1'];
+    }
 });
 
 
