@@ -13,9 +13,13 @@ $app->get('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             echo 'Product not found';
             return;
         }
-        print_r($id);
+//      echo '<img src ="data:image/jpeg;base64,'.base64_encode($product['imageData1']).'")/>';
+        $image1 = base64_encode($product['imageData1']);
+        $image2 = base64_encode($product['imageData2']);
         $app->render("admin_product_add.html.twig", array(
-            'v' => $product, 'operation' => 'Update'
+            'v' => $product, 'operation' => 'Update',
+            'image1' => $image1,
+            'image2' => $image2,
         ));
     } else {
         $app->render("admin_product_add.html.twig",
@@ -40,17 +44,19 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
     $desc1 = $app->request()->post('desc1');
     $desc2 = $app->request()->post('desc2');
     $code = $app->request()->post('code');
-    //$desc3 = $app->request()->post('desc3');
     $price = $app->request()->post('price');
     $stock = $app->request()->post('stock');
     $discount = $app->request()->post('discount');
     $today = date("Y-m-d");
-    $postDate = $today;
     $image = isset($_FILES['image']) ? $_FILES['image'] : array();
     $errorList = array();
     
     if (strlen($name) < 2 || strlen($name) > 100) {
       array_push($errorList, "Name must be 2-100 characters long");
+    }
+    
+    if (empty($catID)) {
+      array_push($errorList, "Category ID cannot be empty");
     }
 
     if (empty($price) || $price < 0 || $price > 99999999) {
@@ -74,28 +80,28 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
     if (strlen($title) < 2 || strlen($title) > 200) {
         array_push($errorList, "Task name must be 2-100 characters long");
     } else {
-        $productList = DB::queryFirstRow("SELECT * FROM products WHERE title=%s", $title);
-        if ($productList) {
+        $productList = DB::queryFirstRow("SELECT * FROM products WHERE title=%s AND ID!=%i", $title, $id);
+        if ($productList ) {
             array_push($errorList, "Product title already in use");
         }
     }
 
-//    print_r($_SESSION['todouser']);
     if ($errorList) {
         $app->render("admin_product_add.html.twig", ["errorList" => $errorList,
             'v' => $valueList
         ]);
     } else {
-        $imageBinaryData = file_get_contents($image['tmp_name']);
-        $mimeType = mime_content_type($image['tmp_name']);
         if ($op == 'edit') {
-            // unlink('') OLD file - requires select
-            print_r($op);
-            $oldImagePath = DB::queryFirstField(
-                            'SELECT imagePath FROM products WHERE id=%i', $id);
-            if (($oldImagePath) && file_exists($oldImagePath)) {
-                unlink($oldImagePath);
+            if ($image) {
+                $imageData1 = file_get_contents($image['tmp_name']);
+                $imageMimeType1 = mime_content_type($image['tmp_name']);
+            } else {
+                $imageData1 = DB::queryFirstField(
+                            'SELECT imageData1 FROM products WHERE id=%i', $id);
+                $imageMimeType1 = DB::queryFirstField(
+                            'SELECT imageMimeType1 FROM products WHERE id=%i', $id);
             }
+            
             DB::update('products', array(
             "title" => $title,
             "catID" => $catID,
@@ -109,10 +115,12 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             "code" => $code,
             "discount" => $discount,
             "postDate" => $today,
-            'imageData1' => $imageBinaryData,
-            'imageMimeType1' => $mimeType
+            'imageData1' => $imageData1,
+            'imageMimeType1' => $imageMimeType1
             ), "id=%i", $id);
         } else {
+            $imageData1 = file_get_contents($image['tmp_name']);
+            $imageMimeType1 = mime_content_type($image['tmp_name']);
             DB::insert('products', array(
             "title" => $title,
             "catID" => $catID,
@@ -126,8 +134,8 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             "code" => $code,
             "discount" => $discount,
             "postDate" => $today,
-            'imageData1' => $imageBinaryData,
-            'imageMimeType1' => $mimeType
+            'imageData1' => $imageData1,
+            'imageMimeType1' => $imageMimeType1
         ));
         }
         $app->render("admin_product_success.html.twig", array(

@@ -30,7 +30,6 @@ $app->get('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
     'op' => '(add|edit)',
     'id' => '[0-9]+'));
 
-//$app->post('/admin_category_add', function() use ($app) {
 $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
     print_r($id);
         if (!$_SESSION['eshopuser']) {

@@ -50,14 +50,12 @@
                 </tr>
                 <tr>
                     <td><label>Image Upload</label></td>
-                    
-                   
-                    <td colspan="2"><img src="../../../imageview/{{ v.ID }}" width="230" height="200"></td>
+                    <td colspan="2"><img src="data:image/jpeg;base64,{{image1}}" width="230" height="200"></td>
                     <td><input type="file" name="image"></td> 
                 </tr>
                 <tr>  
                     <td><label>Image2 Upload</label></td>
-                    <td colspan="2"><img src="../../../imageview/{{ v.ID }}" width="230" height="200"></td>
+                    <td colspan="2"><img src=data:image/jpeg;base64,{{image2}}"" width="230" height="200"></td>
                     <td><input type="file" name="image2"></td>
                 </tr>
             </table>    
@@ -82,13 +80,6 @@
             </div> <!--login-footer-->
         </form>
     </div>   <!--end of center content --> 
-    <div class="right">
-        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-        <a href="/admin/product/add" class="bt_green"><span class="bt_green"></span><strong>Add Anthor One </strong><span class="bt_green_r"></span></a>
-        <a href="/admin/product/list" class="bt_blue"><span class="bt_blue_lft"></span><strong>List all Product</strong><span class="bt_blue_r"></span></a>
-        <a href="/admin/product/delete" class="bt_red"><span class="bt_red_lft"></span><strong>Delete Product</strong><span class="bt_red_r"></span></a>   
-    </div>
 
 {% endblock content %}
 
