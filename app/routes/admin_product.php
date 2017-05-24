@@ -20,10 +20,12 @@ $app->get('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             'v' => $product, 'operation' => 'Update',
             'image1' => $image1,
             'image2' => $image2,
+            'eshopuser' => $_SESSION['eshopuser']    
         ));
     } else {
         $app->render("admin_product_add.html.twig",
-                array('operation' => 'Add'
+                array('operation' => 'Add',
+                      'eshopuser' => $_SESSION['eshopuser']
         ));
     }
 })->conditions(array(
@@ -88,7 +90,8 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
 
     if ($errorList) {
         $app->render("admin_product_add.html.twig", ["errorList" => $errorList,
-            'v' => $valueList
+            'v' => $valueList,
+            'eshopuser' => $_SESSION['eshopuser']
         ]);
     } else {
         if ($op == 'edit') {
@@ -138,12 +141,10 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             'imageMimeType1' => $imageMimeType1
         ));
         }
-        $app->render("admin_product_success.html.twig", array(
-            "title" => $title,
-            "catID" => $catID,
-            "modelName" => $modelName,
-            "price" => $price,
-            "stock" => $stock
+        $productList =  DB::query("SELECT * FROM products");
+        $app->render("admin_product_list.html.twig", array(
+            'productList' => $productList,
+            'eshopuser' => $_SESSION['eshopuser']    
         ));
     }
 })->conditions(array(
@@ -154,19 +155,20 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
 $app->get('/admin/product/list', function() use ($app) {
     $productList =  DB::query("SELECT * FROM products");
     $app->render("admin_product_list.html.twig", array(
-        'productList' => $productList
+        'productList' => $productList,
+        'eshopuser' => $_SESSION['eshopuser']    
     ));
 });
 
 $app->get('/admin/product/delete/:id', function($id) use ($app) {
     $product = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
     $app->render('admin_product_delete.html.twig', array(
-        'p' => $product
+        'p' => $product,
+        'eshopuser' => $_SESSION['eshopuser']
     ));
 });
 
 $app->post('/admin/product/delete/:id', function($id) use ($app) {
-    print_r($id);
     DB::delete('products', 'id=%i', $id);
     $app->render('admin_product_delete_success.html.twig');
 });

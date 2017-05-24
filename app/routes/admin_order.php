@@ -64,7 +64,8 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
 
     if ($errorList) {
         $app->render("admin_order_add.html.twig", ["errorList" => $errorList,
-            'v' => $valueList
+            'v' => $valueList,
+            "eshopuser" => $_SESSION['eshopuser']
         ]);
     } else {
         if ($op == 'edit') {
@@ -107,13 +108,10 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
             ));
             $id = DB::insertId();
         }
-        $app->render("add_success.html.twig", array(
-            "name" => $name,
-            "userID" => $userID,
-            "address" => $address,
-            "postalCode" => $postalCode,
-            "email" => $email,
-            "eshopuser" => $_SESSION['eshopuser']
+        $orderList = DB::query("SELECT * FROM orders");
+        $app->render("admin_order_list.html.twig", array(
+            'orderList' => $orderList,
+            "eshopuser" => $_SESSION['eshopuser']    
         ));
     }
 })->conditions(array(

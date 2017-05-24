@@ -97,13 +97,10 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             ));
             $id = DB::insertId();
         }
-        $app->render("add_success.html.twig", array(
-            "name" => $name,
-            "userID" => $userID,
-            "address" => $address,
-            "postalCode" => $postalCode,
-            "email" => $email,
-            "eshopuser" => $_SESSION['eshopuser']
+        $userList = DB::query("SELECT * FROM users");
+        $app->render("admin_user_list.html.twig", array(
+            'userList' => $userList,
+            "eshopuser" => $_SESSION['eshopuser']    
         ));
     }
 })->conditions(array(

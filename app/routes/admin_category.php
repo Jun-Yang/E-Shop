@@ -5,7 +5,8 @@ $app->get('/admin/category/list', function() use ($app) {
     
     $categoryList =  DB::query("SELECT * FROM categories");
     $app->render("admin_category_list.html.twig", array(
-        'categoryList' => $categoryList
+        'categoryList' => $categoryList,
+        "eshopuser" => $_SESSION['eshopuser']    
     ));
 });
 
@@ -19,11 +20,13 @@ $app->get('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
         }
         print_r($id);
         $app->render("admin_category_add.html.twig", array(
-            'v' => $category, 'operation' => 'Update'
+            'v' => $category, 'operation' => 'Update',
+            "eshopuser" => $_SESSION['eshopuser']
         ));
     } else {
         $app->render("admin_category_add.html.twig",
-                array('operation' => 'Add'
+                array('operation' => 'Add',
+                      "eshopuser" => $_SESSION['eshopuser']
         ));
     }
 })->conditions(array(
@@ -55,7 +58,8 @@ $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
 
     if ($errorList) {
         $app->render("admin_category_add.html.twig", ["errorList" => $errorList,
-            'v' => $valueList
+            'v' => $valueList,
+            "eshopuser" => $_SESSION['eshopuser']
         ]);
     } else {
        
@@ -81,9 +85,10 @@ $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
             "postDate" => $today
         ));
         }
-        $app->render("admin_product_success.html.twig", array(
-            "name" => $name
-            
+        $categoryList =  DB::query("SELECT * FROM categories");
+        $app->render("admin_category_list.html.twig", array(
+            'categoryList' => $categoryList,
+            "eshopuser" => $_SESSION['eshopuser']
         ));
     }
 })->conditions(array(
