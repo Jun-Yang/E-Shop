@@ -120,11 +120,13 @@ $app->post('/login', function() use ($app, $log) {
 
 $app->get('/logout', function() use ($app, $log) {
     $_SESSION['eshopuser'] = array();
+    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+    $msg->success('Logout successfully');
+    $msg->display();
     $app->render('eshop.html.twig');
 });
 
 // PASSWOR RESET
-
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);

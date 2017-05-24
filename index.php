@@ -125,10 +125,9 @@ $app->get('/index', function() use ($app) {
         "eshopuser" => $_SESSION['eshopuser']
     ));}
 });
-    
-
 
 $app->get('/eshop', function() use ($app) {
+    echo ($app->flash['logout']);
     $app->render('eshop.html.twig',array(
         "eshopuser" => $_SESSION['eshopuser']
     )); 

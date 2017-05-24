@@ -18,6 +18,7 @@ class ComposerStaticInitb20a8210fc3fd0165de9042c11029e33
         'P' => 
         array (
             'Psr\\Log\\' => 8,
+            'Plasticbrain\\FlashMessages\\' => 27,
         ),
         'M' => 
         array (
@@ -37,6 +38,10 @@ class ComposerStaticInitb20a8210fc3fd0165de9042c11029e33
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Plasticbrain\\FlashMessages\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/plasticbrain/php-flash-messages/src',
         ),
         'Monolog\\' => 
         array (

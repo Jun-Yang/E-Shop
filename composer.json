@@ -18,6 +18,7 @@
         "sergeytsalkov/meekrodb": "v2.3",
         "facebook/graph-sdk": "5.5.0",
         "monolog/monolog": "1.22.1",
-        "phpmailer/phpmailer": "v5.2.23"
+        "phpmailer/phpmailer": "v5.2.23",
+        "plasticbrain/php-flash-messages": "v1.0.1"
     }
 }
