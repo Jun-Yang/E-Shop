@@ -150,14 +150,14 @@ $app->get('/admin/product/list', function() use ($app) {
     ));
 });
 
-$app->get('/admin_product_delete/:id', function($id) use ($app) {
+$app->get('/admin/product/delete/:id', function($id) use ($app) {
     $product = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
     $app->render('admin_product_delete.html.twig', array(
         'p' => $product
     ));
 });
 
-$app->post('/admin_product_delete/:id', function($id) use ($app) {
+$app->post('/admin/product/delete/:id', function($id) use ($app) {
     print_r($id);
     DB::delete('products', 'id=%i', $id);
     $app->render('admin_product_delete_success.html.twig');

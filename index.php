@@ -111,11 +111,21 @@ $app->get('/scheduled/daily', function() use ($app, $log) {
     echo "Completed";
 });
 
+//display news not so pretty so hidden in index.html.twig 
 $app->get('/index', function() use ($app) {
+    
+    $newsList = DB::query('SELECT * FROM news order by postDate');
+    if ($newsList) {
+        $app->render("index.html.twig", array(
+            "eshopuser" => $_SESSION['eshopuser'],
+            'newsList' => $newsList
+        ));
+    } else {
     $app->render('index.html.twig',array(
         "eshopuser" => $_SESSION['eshopuser']
-    ));          
+    ));}
 });
+    
 
 
 $app->get('/eshop', function() use ($app) {

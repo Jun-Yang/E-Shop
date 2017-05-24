@@ -69,10 +69,14 @@
     </section>  
     <section>
         <div class="container">
-            <h2>{{ subject }}</h2>
-            <br>
-            <label>{{ content}}</label>
-            
+            <div class="center_block">
+            {% if newsList %}
+                {% for n in newsList %}
+                    <h3>{{ n.subject }}</h3>
+                    <p >{{ n.content }}</p>
+                {% endfor %}
+            {% endif%}
+            </div>
         </div>
     </section>
     <section class="section-secondary slogan">
