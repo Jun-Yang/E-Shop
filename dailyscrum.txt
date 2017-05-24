@@ -57,3 +57,18 @@ May 21 ChenChen
 finished admin_pannel message management
 start to admin panel admin_product_edit
 start to admin panel admin_product_delete
+
+May 21 ChenChen
+finished admin_pannel message management
+start to admin panel admin_product_edit
+start to admin panel admin_product_delete
+
+May 22 ChenChen
+finished admin_pannel add news management
+finished admin panel admin_product_edit
+finished admin panel admin_product_delete
+
+May 23 ChenChen
+redo admin panel ->product management (add edit and delete) ; 
+redo admin panel -> category management (add edit )
+
