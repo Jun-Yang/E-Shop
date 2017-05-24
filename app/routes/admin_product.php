@@ -215,5 +215,14 @@ $app->get('/imageview/:id', function($id) use ($app) {
     }
 });
 
-
+// AJAX: query products with name
+$app->get('/admin/product/search', function() use ($app) {
+    $str = $_POST['searchinput']  . "%"; 
+    $productList = DB::query("SELECT * FROM products WHERE name LIKE %s", $str);
+    $app->render("admin_product_list.html.twig", array(
+        'productList' => $productList,
+        'str' =>$_POST['searchinput'],
+        "eshopuser" => $_SESSION['eshopuser']    
+    ));
+})->VIA('GET', 'POST');
 

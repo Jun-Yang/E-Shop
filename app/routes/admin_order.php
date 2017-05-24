@@ -134,3 +134,14 @@ $app->get('/admin/order/delete/:id', function($id) use ($app) {
         "eshopuser" => $_SESSION['eshopuser']
     ));
 })->VIA('GET', 'POST');
+
+// AJAX: query orders with name
+$app->get('/admin/order/search', function() use ($app) {
+    $str = $_POST['searchinput']  . "%"; 
+    $orderList = DB::query("SELECT * FROM orders WHERE name LIKE %s", $str);
+    $app->render("admin_order_list.html.twig", array(
+        'orderList' => $orderList,
+        'str' =>$_POST['searchinput'],
+        "eshopuser" => $_SESSION['eshopuser']    
+    ));
+})->VIA('GET', 'POST');
