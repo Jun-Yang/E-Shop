@@ -89,6 +89,52 @@ $app->get('/admin_message', function() use ($app) {
     ));
 });
 
+$app->get('/admin/message/replay/:id', function($id) use ($app) {
+    $message = DB::queryFirstRow("SELECT * FROM messages WHERE id=%i", $id);
+    $app->render("admin_message_replay.html.twig", array(
+        'v' => $message, 
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});
+
+$app->post('/admin/message/replay/:id', function($id) use ($app) {
+    $name = $app->request()->post('name');
+    $email = $app->request()->post('email');
+    $phone = $app->request()->post('phone');
+    $subject = $app->request()->post('subject');
+    $message = $app->request()->post('message');
+    $response = $app->request()->post('response');
+    $today = date("Y-m-d");
+    $creatDate = $today;
+    $errorList = array();
+    $valueList = array('name' => $name);
+    if (strlen($response) < 2 || strlen($response) > 3000) {
+        array_push($errorList, "Response must be 2-3000 characters long");
+    }
+    if ($errorList) {
+        $app->render("admin_message_reply.html.twig", ["errorList" => $errorList,
+            'v' => $valueList
+        ]);
+    } else {
+        DB::update('messages', array(
+            "name" => $name, 
+            "email" => $email,
+            "phone" => $phone,
+            "subject" => $subject,
+            "message" => $message,
+            "creatDate" =>$creatDate,
+            "response" => $response
+            ), "id=%i", $id);
+
+        $app->render("admin_message_reply_success.html.twig", array(
+            "name" => $name,
+            "email" => $email
+        ));
+    }
+    
+});
+
+
 $app->get('/admin_news_add', function() use ($app) {
     $mList = DB::query("SELECT * FROM news");
     $app->render("admin_news_add.html.twig", array(

@@ -6,7 +6,7 @@
     <div class="center_content">  
 
         <div class="right_content">            
-            <h2 class="left_h2">Products Categories List</h2> 
+            <h2 class="left_h2">Customer Message List</h2> 
             <div class="sidebar_search">
             <form>
                 <input type="text" name="searchinput" class="search_input" value="search keyword" onclick="this.value = ''" />
@@ -24,21 +24,21 @@
                         <th scope="col" class="rounded">email</th>
                         <th scope="col" class="rounded">phone</th>
                         <th scope="col" class="rounded">Post Date</th>
-                        <th scope="col" class="rounded">Edit</th>
+                        <th scope="col" class="rounded">Reply Message</th>
                         <th scope="col" class="rounded-q4">Delete</th>
                     </tr>
                 </thead>
-                {% for c in mList %}
+                {% for v in mList %}
                     <tr>
                         <td><input type="checkbox" name="ckbox" /></td>
-                        <td>{{c.ID}}</td>
-                        <td>{{c.name}}</td>
-                        <td>{{c.subject}}</td>
-                        <td>{{c.email}}</td>
-                        <td>{{c.phone}}</td>
-                        <td>{{c.postDate}}</td>
-                        <td><a href="/admin_edit_category"><img src="images/admin/user_edit.png" alt="" title="" border="0" /></a></td>
-                        <td><a href="/admin_delete_category" class="ask"><img src="images/admin/trash.png" alt="" title="" border="0" /></a></td>
+                        <td>{{v.ID}}</td>
+                        <td>{{v.name}}</td>
+                        <td>{{v.subject}}</td>
+                        <td>{{v.email}}</td>
+                        <td>{{v.phone}}</td>
+                        <td>{{v.postDate}}</td>
+                        <td><a href="/admin/message/replay/{{ v.ID }}"><img src="images/admin/replay.png" alt="" title="" border="0" /></a></td>
+                        <td><a href="/admin_message_delete/{{ v.ID }}" class="ask"><img src="images/admin/trash.png" alt="" title="" border="0" /></a></td>
                     </tr> 
                 {% endfor %}
             </table>
