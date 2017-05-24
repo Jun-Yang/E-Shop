@@ -1,1 +1,17 @@
-{# empty Twig template #}
+{% extends "admin_panel.html.twig" %}
+
+{% block title %}Item add successful{% endblock %}
+
+{% block headExtra %}
+   
+{% endblock %}
+
+{% block content %}
+    <h1 class="left_content">Category Operation Successful!</h1>
+    <p class="label-success">You can continue <a href="/admin_category_add">Add Category</a> 
+        or
+    <a href="/admin_category_add">Edit Category</a>    
+        or
+    <a href="/admin_category_list">List All Category</a>.</p>
+{% endblock content %}
+    

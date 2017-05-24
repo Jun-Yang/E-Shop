@@ -80,6 +80,7 @@ require 'app/routes/categories.php';
 require 'app/routes/admin_product.php';
 require 'app/routes/admin_user.php';
 require 'app/routes/admin_order.php';
+require 'app/routes/admin_category.php';
 
 $app->get('/scheduled/daily', function() use ($app, $log) {
     DB::$error_handler = FALSE;

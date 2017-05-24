@@ -12,19 +12,19 @@
                 </tr>
                 <tr>
                     <td><label>CategoryName</label></td>
-                    <td><input type="text" name="name" placeholder="Required name"  required="required" /></td>
+                    <td><input type="text" name="name" placeholder="Required name"  value="{{v.name}}" required="required" /></td>
                     <td><label>ParentID</label></td>
-                    <td><input type="text" name="parent" placeholder="0"  /></td> 
+                    <td><input type="text" name="parent" placeholder="0" value="{{v.parent}}" /></td> 
                     <td><label>Layer</label></td>
-                    <td><input type="text" name="layer" placeholder="Required Layer 1"  /></td>
+                    <td><input type="text" name="layer" placeholder="Required Layer 1" value="{{v.layer}}" /></td>
                 </tr>
                 <tr>
                     <td><label>Description</label></td>
-                    <td><input type="text" name="description" placeholder="description" value="{{v.category}}"/></td> 
+                    <td><input type="text" name="description" placeholder="description" value="{{v.description}}"/></td> 
                     <td><label>status</label></td>
-                    <td><input type="text" name="status" placeholder="OK" /></td>
+                    <td><input type="text" name="status" placeholder="OK" value="{{v.status}}" /></td>
                     <td><label>PostDate</label></td>
-                    <td><input type="text" name="postDate" placeholder="PostDate" /></td>
+                    <td><input type="text" name="postDate" placeholder="PostDate" value="{{v.postDate}}" /></td>
                 </tr>
             </table>
 
@@ -39,8 +39,9 @@
                     {% endif %}
                 </div>
                 <br>
-                <button type="submit" id="button_manage">Add Category</button><br>
-
+                <br>
+                <br>
+                <input type="submit" id="button_manage" class ="bt_blue" value="{{operation}} Category"><br>    
                 {% if error %}
                     <p class="errorList">Add Category failed try again.</p>
                 {% endif %}

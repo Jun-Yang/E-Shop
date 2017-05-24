@@ -12,6 +12,7 @@ $app->get('/admin_panel', function() use ($app) {
     ));
 });
 
+/*
 //Admin_Panel->Manage Category->Add Category
 $app->get('/admin_category_add', function() use ($app) {
     $app->render("admin_category_add.html.twig", array(
@@ -65,9 +66,11 @@ $app->post('/admin_category_add', function() use ($app) {
         ));
     }
 });
+ 
+
 
 //list message
-/*
+
 $app->get('/admin_message', function() use ($app) {
     echo "admin admin admin";
     $messageList = DB::query("SELECT * FROM messages");
@@ -76,8 +79,8 @@ $app->get('/admin_message', function() use ($app) {
         'messageList' => $messageList,
         "eshopuser" => $_SESSION['eshopuser']
     ));
-});*/
-
+});
+ */
 $app->get('/admin_message', function() use ($app) {
     $mList = DB::query("SELECT * FROM messages");
     $app->render("admin_message.html.twig", array(
@@ -137,3 +140,5 @@ $app->get('/admin_report', function() use ($app) {
         "eshopuser" => $_SESSION['eshopuser']
     ));
 });
+
+
