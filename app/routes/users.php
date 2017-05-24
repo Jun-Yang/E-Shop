@@ -90,7 +90,7 @@ $app->post('/login', function() use ($app, $log) {
     $name = $app->request->post('name');
     $pass = $app->request->post('pass');
     $user = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $name);
-    if (!$user) {
+    if (!$user || $user['status']=='Blocked') {
         $log->debug(sprintf("User failed for username %s from IP %s", $name, $_SERVER['REMOTE_ADDR']));
         $app->render('login.html.twig', array('loginFailed' => TRUE));
     } else {

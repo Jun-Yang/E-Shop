@@ -80,7 +80,7 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             "addressLine2" => $addressLine2,
             "code" => $code,
             "state" => $state,
-                    ), "id=%i", $id);
+            ), "id=%i", $id);
         } else {
             DB::insert('users', array(
                  'name' => $name, 
@@ -124,5 +124,14 @@ $app->get('/admin/user/delete/:id', function($id) use ($app) {
     $app->render('admin_user_delete.html.twig', array(
         'o' => $user,
         "eshopuser" => $_SESSION['eshopuser']
+    ));
+})->VIA('GET', 'POST');
+
+$app->get('/admin/user/block/:id', function($id) use ($app) {
+    DB::update('users', array("status" => "Blocked"), "id=%i", $id);
+    $userList = DB::query("SELECT * FROM users");
+    $app->render("admin_user_list.html.twig", array(
+        'userList' => $userList,
+        "eshopuser" => $_SESSION['eshopuser']    
     ));
 })->VIA('GET', 'POST');
