@@ -18,9 +18,9 @@
 
 
 $app->get('/register', function() use ($app, $log) {
-    $app->render('register.html.twig',array(
+    $app->render('register.html.twig', array(
         "eshopuser" => $_SESSION['eshopuser']
-    ));          
+    ));
 });
 
 // State 2: submission
@@ -42,7 +42,7 @@ $app->post('/register', function() use ($app, $log) {
             unset($valueList['name']);
         }
     }
-        
+
     if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
         array_push($errorList, "Email does not look like a valid email");
         unset($valueList['email']);
@@ -69,7 +69,7 @@ $app->post('/register', function() use ($app, $log) {
     } else {
         // STATE 2: submission successful
         DB::insert('users', array(
-            'name' => $name, 
+            'name' => $name,
             'email' => $email,
             'password' => password_hash($pass1, CRYPT_BLOWFISH)
                 // 'password' => hash('sha256', $pass1)
@@ -81,9 +81,9 @@ $app->post('/register', function() use ($app, $log) {
 });
 
 $app->get('/login', function() use ($app, $log) {
-    $app->render('login.html.twig',array(
+    $app->render('login.html.twig', array(
         "eshopuser" => $_SESSION['eshopuser']
-    ));          
+    ));
 });
 
 $app->post('/login', function() use ($app, $log) {
@@ -96,23 +96,22 @@ $app->post('/login', function() use ($app, $log) {
         $app->render('login.html.twig', array('loginFailed' => TRUE));
     } else {
         // password MUST be compared in PHP because SQL is case-insenstive
-        if(crypt($pass, $user['password']) == $user['password']) {
+        if (crypt($pass, $user['password']) == $user['password']) {
             // LOGIN successful
             unset($user['password']);
             $_SESSION['eshopuser'] = $user;
             $log->debug(sprintf("User %s logged in successfuly from IP %s", $user['ID'], $_SERVER['REMOTE_ADDR']));
-            if($user['role'] === 'admin') {
-               $userList =  DB::query("SELECT * FROM users");
-               $app->render('admin_user.html.twig',array(
-                            'userList' => $userList,
-                            "eshopuser" => $_SESSION['eshopuser']
-                )); 
-            }else {
-                $app->render('eshop.html.twig',array(
-                            "eshopuser" => $_SESSION['eshopuser']
+            if ($user['role'] === 'admin') {
+                $userList = DB::query("SELECT * FROM users");
+                $app->render('admin_user.html.twig', array(
+                    'userList' => $userList,
+                    "eshopuser" => $_SESSION['eshopuser']
+                ));
+            } else {
+                $app->render('eshop.html.twig', array(
+                    "eshopuser" => $_SESSION['eshopuser']
                 ));
             }
-            
         } else {
             $log->debug(sprintf("User failed for username %s from IP %s", $name, $_SERVER['REMOTE_ADDR']));
             $app->render('login.html.twig', array('loginFailed' => TRUE));
@@ -139,7 +138,7 @@ function generateRandomString($length = 10) {
 
 $app->map('/passreset', function () use ($app, $log) {
     // Alternative to cron-scheduled cleanup
-    if (rand(1,1000) == 111) {
+    if (rand(1, 1000) == 111) {
         // TODO: do the cleanup 1 in 1000 accessed to /passreset URL
     }
     if ($app->request()->isGet()) {
@@ -165,17 +164,65 @@ $app->map('/passreset', function () use ($app, $log) {
                 'expiryDateTime' => date("Y-m-d H:i:s", strtotime("+5 minutes"))
             ));
             // email user
-            $url = 'http://' . $_SERVER['SERVER_NAME'] . '/passreset/' . $secretToken;
+            $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' .$_SERVER['SERVER_PORT'] .'/passreset/' . $secretToken;
             $html = $app->view()->render('email_passreset.html.twig', array(
                 'name' => $user['name'],
                 'url' => $url
             ));
-            $headers = "MIME-Version: 1.0\r\n";
-            $headers.= "Content-Type: text/html; charset=UTF-8\r\n";
-            $headers.= "From: Noreply <noreply@ipd9.info>\r\n";
-            $headers.= "To: " . htmlentities($user['name']) . " <" . $email . ">\r\n";
+//            $headers = "MIME-Version: 1.0\r\n";
+//            $headers.= "Content-Type: text/html; charset=UTF-8\r\n";
+//            $headers.= "From: Noreply <noreply@ipd9.info>\r\n";
+//            $headers.= "To: " . htmlentities($user['name']) . " <" . $email . ">\r\n";
+//
+//            mail($email, "Password reset from eShop", $html, $headers);
+            
+            /* CONFIGURATION */
+            $crendentials = array(
+                'email' => 'yangjun3461@gmail.com', //Your GMail adress
+                'password' => 'eshop1234'               //Your GMail password
+            );
 
-            mail($email, "Password reset from eShop", $html, $headers);
+            /* SPECIFIC TO GMAIL SMTP */
+            $smtp = array(
+                'host' => 'smtp.gmail.com',
+                'port' => 587,
+                'username' => $crendentials['email'],
+                'password' => $crendentials['password'],
+                'secure' => 'tls' //SSL or TLS
+            );
+
+            $mail = new PHPMailer;
+
+//            $mail->SMTPDebug = 3;                               // Enable verbose debug output
+
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host = $smtp['host'];  // Specify main and backup SMTP servers
+            $mail->SMTPAuth = true;                               // Enable SMTP authentication
+            $mail->Username = $smtp['username'];                 // SMTP username
+            $mail->Password = $smtp['password'];                           // SMTP password
+            $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+            $mail->Port = 587;                                    // TCP port to connect to
+
+            $mail->setFrom('eshop@ipd9.info', 'Mailer');
+            $mail->addAddress($email);               // Name is optional
+//            $mail->addReplyTo('info@example.com', 'Information');
+//            $mail->addCC('cc@example.com');
+//            $mail->addBCC('bcc@example.com');
+
+//            $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+//            $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+            $mail->isHTML(true);                                  // Set email format to HTML
+
+            $mail->Subject = 'This is the password reset email from E-Shop';
+            $mail->Body = $html;
+//            $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+            if (!$mail->send()) {
+                echo 'Message could not be sent.';
+                echo 'Mailer Error: ' . $mail->ErrorInfo;
+            } else {
+                echo 'Message has been sent';
+            }
         } else {
             $app->render('passreset.html.twig', array('error' => TRUE));
         }
@@ -216,7 +263,7 @@ $app->map('/passreset/:secretToken', function($secretToken) use ($app) {
             DB::update('users', array(
                 'password' => password_hash($pass1, CRYPT_BLOWFISH)
                     ), "ID=%d", $row['userID']);
-            DB::delete('passresets','secretToken=%s', $secretToken);
+            DB::delete('passresets', 'secretToken=%s', $secretToken);
             $app->render('passreset_success.html.twig');
         }
     }
@@ -241,15 +288,15 @@ function verifyPassword($pass1) {
 }
 
 $app->get('/register', function() use ($app) {
-    $app->render('register.html.twig',array(
+    $app->render('register.html.twig', array(
         "eshopuser" => $_SESSION['eshopuser']
-    ));          
+    ));
 });
 
 $app->map('/facebook', function() use ($app, $log) {
     $app_id = '294651954316911';
-    $app_secret = 'ec92b4a05fc2edd8153309f9b166ee60';        
-    
+    $app_secret = 'ec92b4a05fc2edd8153309f9b166ee60';
+
     $fb = new \Facebook\Facebook([
         'app_id' => $app_id,
         'app_secret' => $app_secret,
@@ -269,7 +316,7 @@ $app->map('/facebook', function() use ($app, $log) {
     // Rerequest Link
     $FBloginUrl = $helper->getReRequestUrl($login_url, $facebook_app_permissions);
     $errorList = array();
-    
+
     try {
         $accessToken = $helper->getAccessToken();
     } catch (Facebook\Exceptions\FacebookResponseException $e) {
@@ -334,8 +381,6 @@ $app->map('/facebook', function() use ($app, $log) {
     // User is logged in with a long-lived access token.
     // You can redirect them to a members-only page.
     //header('Location: https://example.com/members.php');
-
-
 //    try {
 //        // Get the \Facebook\GraphNodes\GraphUser object for the current user.
 //        // If you provided a 'default_access_token', the '{access-token}' is optional.
@@ -359,5 +404,4 @@ $app->map('/facebook', function() use ($app, $log) {
 //        $log->error(sprintf("User failed for facebook login %s", $e->getMessage()));
 //        $app->render('login.html.twig', array('loginFailed' => TRUE, 'errorList' => $errorList));
 //    }
-
 })->via('GET', 'POST');

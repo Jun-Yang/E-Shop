@@ -6,6 +6,12 @@ $view->parserOptions = array(
     'cache' => dirname(__FILE__) . '/../cache'
 );
 
+$app->get('/admin_panel', function() use ($app) {
+    $app->render("admin_panel.html.twig", array(
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});
+
 //Admin_Panel->Manage Category->Add Category
 $app->get('/admin_category_add', function() use ($app) {
     $app->render("admin_category_add.html.twig", array(

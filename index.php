@@ -4,6 +4,8 @@ session_start();
 
 // enable on-demand class loader
 require_once 'app/vendor/autoload.php';
+//Email server
+require_once 'app/vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -78,7 +80,6 @@ require 'app/routes/categories.php';
 require 'app/routes/admin_product.php';
 require 'app/routes/admin_user.php';
 require 'app/routes/admin_order.php';
-
 
 $app->get('/scheduled/daily', function() use ($app, $log) {
     DB::$error_handler = FALSE;
