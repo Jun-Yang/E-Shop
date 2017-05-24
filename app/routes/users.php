@@ -90,7 +90,7 @@ $app->post('/login', function() use ($app, $log) {
     $name = $app->request->post('name');
     $pass = $app->request->post('pass');
     $user = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $name);
-    if (!$user || $user['status']=='Blocked') {
+    if (!$user || $user['status'] == 'Blocked') {
         $log->debug(sprintf("User failed for username %s from IP %s", $name, $_SERVER['REMOTE_ADDR']));
         $app->render('login.html.twig', array('loginFailed' => TRUE));
     } else {
@@ -163,7 +163,7 @@ $app->map('/passreset', function () use ($app, $log) {
                 'expiryDateTime' => date("Y-m-d H:i:s", strtotime("+5 minutes"))
             ));
             // email user
-            $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' .$_SERVER['SERVER_PORT'] .'/passreset/' . $secretToken;
+            $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/passreset/' . $secretToken;
             $html = $app->view()->render('email_passreset.html.twig', array(
                 'name' => $user['name'],
                 'url' => $url
@@ -174,7 +174,7 @@ $app->map('/passreset', function () use ($app, $log) {
 //            $headers.= "To: " . htmlentities($user['name']) . " <" . $email . ">\r\n";
 //
 //            mail($email, "Password reset from eShop", $html, $headers);
-            
+
             /* CONFIGURATION */
             $crendentials = array(
                 'email' => 'yangjun3461@gmail.com', //Your GMail adress
@@ -207,7 +207,6 @@ $app->map('/passreset', function () use ($app, $log) {
 //            $mail->addReplyTo('info@example.com', 'Information');
 //            $mail->addCC('cc@example.com');
 //            $mail->addBCC('bcc@example.com');
-
 //            $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
 //            $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
             $mail->isHTML(true);                                  // Set email format to HTML
@@ -315,13 +314,13 @@ $app->map('/facebook', function() use ($app, $log) {
 //    // Rerequest Link
 //    $FBloginUrl = $helper->getReRequestUrl($login_url, $facebook_app_permissions);
     $errorList = array();
-    
+
     try {
         $session = $helper->get;
-    } catch(FacebookSDKException $e) {
+    } catch (FacebookSDKException $e) {
         $session = null;
     }
-    
+
     if ($session) {
         // User logged in, get the AccessToken entity.
         $accessToken = $session->getAccessToken();
@@ -331,10 +330,10 @@ $app->map('/facebook', function() use ($app, $log) {
         // . . . $db->store($longLivedAccessToken);
         // Make calls to Graph with the long-lived token.
         // . . . 
-      } else {
+    } else {
         echo '<a href="' . $helper->getLoginUrl() . '">Login with Facebook</a>';
-      }
-      
+    }
+
 //    try {
 ////        $facebook->api('oauth/access_token', array(
 ////        'client_id'     => $app_id,
