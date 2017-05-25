@@ -85,8 +85,8 @@ $app->get('/login', function() use ($app, $log) {
     //   $helper = $fb->getPageTabHelper();
 
     $permissions = ['email']; // Optional permissions
-//    print_r('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fb-callback.php');
-    $FBLoginUrl = $helper->getLoginUrl('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fb_callback.php', $permissions);
+//    print_r('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fbcallback.php');
+    $FBLoginUrl = $helper->getLoginUrl('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fbcallback.php', $permissions);
     
     $app->render('login.html.twig', array(
         "FBLoginUrl" => $FBLoginUrl,
