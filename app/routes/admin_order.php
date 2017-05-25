@@ -95,6 +95,8 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
                $msg->success('Edit successfully');
                
         } else {
+            $op == 'add';
+            
             DB::insert('orders', array(
                 "name" => $name,
                 "userID" => $userID,

@@ -46,6 +46,7 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
     $code = $app->request()->post('code');
     $state = $app->request()->post('state');
     $code = $app->request()->post('code');
+    $status = $app->request()->post('status');
     $role = $app->request()->post('role');
     $pass1 = $app->request->post('pass1');
     $today = date("Y-m-d");
@@ -57,7 +58,9 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
     } else {
         $userList = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $name);
         if ($userList) {
+            if ($op != 'edit') {
             array_push($errorList, "Username already in use");
+            }
         }
     }
     
@@ -71,7 +74,7 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
         if ($op == 'edit') {
             // unlink('') OLD file - requires select
             DB::update('users', array(
-                 'name' => $name, 
+            'name' => $name, 
             "fname" => $fname,
             "lname" => $lname,
             "email" => $email,
@@ -81,14 +84,16 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             "addressLine1" => $addressLine1,
             "addressLine2" => $addressLine2,
             "code" => $code,
+            "status" => $status,
             "state" => $state,
             ), "id=%i", $id);
             
             $msg->success('Edit successfully');
             
         } else {
+            $op == 'add';
             DB::insert('users', array(
-                 'name' => $name, 
+            'name' => $name, 
             "fname" => $fname,
             "lname" => $lname,
             "email" => $email,
@@ -99,6 +104,7 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             "addressLine2" => $addressLine2,
             "code" => $code,
             "state" => $state,
+            "status" => $status,
             ));
             
             $msg->success('Add successfully');

@@ -76,6 +76,8 @@ $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
             "postDate" => $today
             ), "id=%i", $id);
         } else {
+            $op == 'add';
+            
             DB::insert('categories', array(
             "name" => $name, 
             "parent" => $parent,

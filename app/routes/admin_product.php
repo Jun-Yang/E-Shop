@@ -126,6 +126,7 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             $msg->success('Edit successfully');
             
         } else {
+            $op == 'add';
             $imageData1 = file_get_contents($image['tmp_name']);
             $imageMimeType1 = mime_content_type($image['tmp_name']);
             DB::insert('products', array(
