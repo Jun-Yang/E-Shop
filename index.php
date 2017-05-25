@@ -15,7 +15,7 @@ $log = new Logger('main');
 $log->pushHandler(new StreamHandler('app/logs/everything.log', Logger::DEBUG));
 $log->pushHandler(new StreamHandler('app/logs/errors.log', Logger::ERROR));
 
-if ($_SERVER['SERVER_NAME'] == 'localhost') {
+if ($_SERVER['SERVER_NAME'] === 'localhost') {
     DB::$dbName = 'eshop';
     DB::$user = 'eshop';
     DB::$password = 'FvUVdCWTv8GuWshh';
@@ -59,7 +59,6 @@ $view->parserOptions = array(
     'cache' => dirname(__FILE__) . '/app/cache'
 );
 $view->setTemplatesDirectory(dirname(__FILE__) . '/app/templates');
-
 
 if (!isset($_SESSION['eshopuser'])) {
     $_SESSION['eshopuser'] = array();

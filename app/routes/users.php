@@ -1,5 +1,6 @@
 <?php
 
+
 $app->get('/register', function() use ($app, $log) {
     $app->render('register.html.twig', array(
         "eshopuser" => $_SESSION['eshopuser']
@@ -86,7 +87,7 @@ $app->get('/login', function() use ($app, $log) {
 
     $permissions = ['email']; // Optional permissions
 //    print_r('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fb-callback.php');
-    $FBLoginUrl = $helper->getLoginUrl('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fb-callback.php', $permissions);
+    $FBLoginUrl = $helper->getLoginUrl('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fb_callback.php', $permissions);
     
     $app->render('login.html.twig', array(
         "FBLoginUrl" => $FBLoginUrl,
@@ -232,10 +233,13 @@ $app->map('/passreset', function () use ($app, $log) {
 //            $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
             if (!$mail->send()) {
-                echo 'Message could not be sent.';
-                echo 'Mailer Error: ' . $mail->ErrorInfo;
+                $log->debug(sprintf("Message could not be sent. Mailer Error: %s", $mail->ErrorInfo));
             } else {
-                echo 'Message has been sent';
+                $log->debug(sprintf("Message has been sent")); 
+                $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+                $msg->success('Email with password reset code has been sent. Please allow the email a few minutes to arrive.');
+                $msg->display();
+                $app->render('login.html.twig');
             }
         } else {
             $app->render('passreset.html.twig', array('error' => TRUE));
@@ -245,14 +249,14 @@ $app->map('/passreset', function () use ($app, $log) {
 
 $app->map('/passreset/:secretToken', function($secretToken) use ($app) {
     $row = DB::queryFirstRow("SELECT * FROM passresets WHERE secretToken=%s", $secretToken);
-    if (!$row) {
-        $app->render('passreset_failed.html.twig');
+    if (!$row || strtotime($row['expiryDateTime']) < time()) {
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        $msg->success('Password reset token does not exist or has expired. You may request a new token');
+        $msg->display();
+        $app->render('passreset.html.twig');
         return;
     }
-    if (strtotime($row['expiryDateTime']) < time()) {
-        $app->render('passreset_failed.html.twig');
-        return;
-    }
+    
     //
     if ($app->request()->isGet()) {
         $app->render('passreset_form.html.twig');
