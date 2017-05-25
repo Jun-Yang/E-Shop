@@ -2,16 +2,11 @@
 
 {% block title %}product{% endblock %}
 
-{% block headExtra %}
-{% endblock %}
-
 {% block content %}
 
     <!-- Page Content -->
     <div class="container">
-
         <div class="row">
-
             <div class="col-md-3">
                 <p class="lead">Blue Scooter</p>
                 <div class="list-group">
@@ -24,14 +19,13 @@
             </div>
 
             <div class="col-md-9">
-
                 <div class="thumbnail">
                     <img class="img-responsive" src="http://placehold.it/800x300" alt="">
                     <div class="caption-full">
                         <h4 class="pull-right">$24.99</h4>
                         <h4><a href="#">Product Name</a></h4>
                     </div>
-                    
+
                     <div class="ratings">
                         <p class="pull-right">3 reviews</p>
                         <p>
@@ -44,24 +38,20 @@
                         </p>
                     </div>
                     <form method="POST" action="/cart">
-                            &nbsp;Add to cart
-                            <input type="hidden" name="productID" value="{{p.ID}}">
-                            &nbsp;&nbsp;
-                            <input type="number" name="quantity" value="1" style="width:30px;">
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input type="submit" value="Add to cart">
+                        &nbsp;Add to cart
+                        <input type="hidden" name="productID" value="{{p.ID}}">
+                        &nbsp;&nbsp;
+                        <input type="number" name="quantity" value="1" style="width:30px;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="submit" value="Add to cart">
                     </form>
                 </div>
-                
 
                 <div class="well">
-
                     <div class="text-right">
                         <a class="btn btn-success">Leave a Review</a>
                     </div>
-
                     <hr>
-
                     <div class="row">
                         <div class="col-md-12">
                             <span class="glyphicon glyphicon-star"></span>
@@ -74,9 +64,7 @@
                             <p>This product was great in terms of quality. I would definitely buy another!</p>
                         </div>
                     </div>
-
                     <hr>
-
                     <div class="row">
                         <div class="col-md-12">
                             <span class="glyphicon glyphicon-star"></span>
@@ -89,9 +77,7 @@
                             <p>I've alredy ordered another one!</p>
                         </div>
                     </div>
-
                     <hr>
-
                     <div class="row">
                         <div class="col-md-12">
                             <span class="glyphicon glyphicon-star"></span>
@@ -104,13 +90,9 @@
                             <p>I've seen some better than this, but not at this price. I definitely recommend this item.</p>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
     <!-- /.container -->
 

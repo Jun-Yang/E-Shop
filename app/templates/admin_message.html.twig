@@ -10,7 +10,7 @@
             <div class="sidebar_search">
             <form>
                 <input type="text" name="searchinput" class="search_input" value="search keyword" onclick="this.value = ''" />
-                <input type="image" class="search_submit" src="../images/admin/search.png" alt="search_submit"/>
+                <input type="image" class="search_submit" src="/images/admin/search.png" alt="search_submit"/>
             </form>            
             </div>
 
@@ -37,8 +37,8 @@
                         <td>{{v.email}}</td>
                         <td>{{v.phone}}</td>
                         <td>{{v.postDate}}</td>
-                        <td><a href="/admin/message/replay/{{ v.ID }}"><img src="images/admin/replay.png" alt="" title="" border="0" /></a></td>
-                        <td><a href="/admin_message_delete/{{ v.ID }}" class="ask"><img src="images/admin/trash.png" alt="" title="" border="0" /></a></td>
+                        <td><a href="/admin/message/replay/{{ v.ID }}"><img src="/images/admin/replay.png" alt="" title="" border="0" /></a></td>
+                        <td><a href="/admin_message_delete/{{ v.ID }}" class="ask"><img src="/images/admin/trash.png" alt="" title="" border="0" /></a></td>
                     </tr> 
                 {% endfor %}
             </table>
