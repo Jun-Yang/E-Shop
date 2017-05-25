@@ -67,7 +67,29 @@ $app->post('/register', function() use ($app, $log) {
 });
 
 $app->get('/login', function() use ($app, $log) {
+    
+    $app_id = '306062613148736';
+    $app_secret = 'b7f985a9ce4310a37c04c9a1c2bdb557';
+
+    $fb = new \Facebook\Facebook([
+        'app_id' => $app_id,
+        'app_secret' => $app_secret,
+        'default_graph_version' => 'v2.9',
+            //'default_access_token' => '{access-token}', // optional
+    ]);
+
+    // Use one of the helper classes to get a Facebook\Authentication\AccessToken entity.
+    $helper = $fb->getRedirectLoginHelper();
+    //   $helper = $fb->getJavaScriptHelper();
+    //   $helper = $fb->getCanvasHelper();
+    //   $helper = $fb->getPageTabHelper();
+
+    $permissions = ['email']; // Optional permissions
+//    print_r('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fb-callback.php');
+    $FBLoginUrl = $helper->getLoginUrl('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fb-callback.php', $permissions);
+    
     $app->render('login.html.twig', array(
+        "FBLoginUrl" => $FBLoginUrl,
         "eshopuser" => $_SESSION['eshopuser']
     ));
 });
@@ -78,6 +100,9 @@ $app->post('/login', function() use ($app, $log) {
     $user = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $name);
     if (!$user || $user['status'] == 'Blocked') {
         $log->debug(sprintf("User failed for username %s from IP %s", $name, $_SERVER['REMOTE_ADDR']));
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        $msg->warning(' You cannot login now. This user is blocked.');
+        $msg->display();
         $app->render('login.html.twig', array('loginFailed' => TRUE));
     } else {
         // password MUST be compared in PHP because SQL is case-insenstive
@@ -284,27 +309,3 @@ $app->get('/register', function() use ($app) {
         "eshopuser" => $_SESSION['eshopuser']
     ));
 });
-
-$app->map('/facebook', function() use ($app, $log) {
-    $app_id = '306062613148736';
-    $app_secret = 'b7f985a9ce4310a37c04c9a1c2bdb557';
-
-    $fb = new \Facebook\Facebook([
-        'app_id' => $app_id,
-        'app_secret' => $app_secret,
-        'default_graph_version' => 'v2.9',
-            //'default_access_token' => '{access-token}', // optional
-    ]);
-
-    // Use one of the helper classes to get a Facebook\Authentication\AccessToken entity.
-    $helper = $fb->getRedirectLoginHelper();
-    //   $helper = $fb->getJavaScriptHelper();
-    //   $helper = $fb->getCanvasHelper();
-    //   $helper = $fb->getPageTabHelper();
-
-    $permissions = ['email']; // Optional permissions
-    $loginUrl = $helper->getLoginUrl('https://localhost:8008/fb-callback.php', $permissions);
-    $app->render('facebook.html.twig', array(
-        "loginUrl" => $loginUrl
-    ));
-})->via('GET', 'POST');
