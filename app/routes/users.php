@@ -1,6 +1,5 @@
 <?php
 
-
 $app->get('/register', function() use ($app, $log) {
     $app->render('register.html.twig', array(
         "eshopuser" => $_SESSION['eshopuser']
@@ -163,7 +162,6 @@ $app->map('/passreset', function () use ($app, $log) {
         $email = $app->request()->post('email');
         $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
         if ($user) {
-            $app->render('passreset_sentemail.html.twig');
             $secretToken = generateRandomString(50);
             // VERSION 1: delete and insert
             /*
