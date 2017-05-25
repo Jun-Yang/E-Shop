@@ -105,3 +105,27 @@ $app->get('/admin/category/search', function() use ($app) {
         "eshopuser" => $_SESSION['eshopuser']    
     ));
 })->VIA('GET', 'POST');
+
+
+//add category delete by chenchen 2017-05-24 
+$app->get('/admin/category/delete/:id', function($id) use ($app) {
+    $category = DB::queryFirstRow('SELECT * FROM categories WHERE id=%i', $id);
+    $app->render('admin_category_delete.html.twig', array(
+        'v' => $category,
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+})->VIA('GET');
+
+$app->post('/admin/category/delete/:id', function($id) use ($app) {
+    
+    DB::delete('categories', 'id=%i', $id);
+    $newcategoryList = DB::query("SELECT * FROM categories");
+    
+    
+    /*$app->render('admin_product_delete_success.html.twig');*/
+    $app->render('admin_category_list.html.twig', array(
+        'categoryList' => $newcategoryList,
+        "eshopuser" => $_SESSION['eshopuser']    
+    ));
+    
+})->VIA('POST');

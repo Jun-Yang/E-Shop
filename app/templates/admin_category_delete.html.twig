@@ -12,19 +12,19 @@
                 </tr>
                 <tr>
                     <td><label>CategoryName</label></td>
-                    <td><input type="text" name="name" placeholder="Required name"  required="required" {{v.name}}/></td>
+                    <td>{{v.name}}</td>
                     <td><label>ParentID</label></td>
-                    <td><input type="text" name="parent" placeholder="0" {{v.parent}} /></td> 
+                    <td>{{v.parent}}</td> 
                     <td><label>Layer</label></td>
-                    <td><input type="text" name="layer" {{v.layer}} /></td>
+                    <td>{{v.layer}}</td>
                 </tr>
                 <tr>
                     <td><label>Description</label></td>
-                    <td><input type="text" name="description" {{v.description}}/></td> 
+                    <td>{{v.description}}</td> 
                     <td><label>status</label></td>
-                    <td><input type="text" name="status" {{v.status}} /></td>
+                    <td>{{v.status}} </td>
                     <td><label>PostDate</label></td>
-                    <td><input type="text" name="postDate" {{v.postDate}}  /></td>
+                    <td>{{v.postDate}} </td>
                 </tr>
             </table>
 
@@ -39,10 +39,10 @@
                     {% endif %}
                 </div>
                 <br>
-                <button type="submit" id="button_manage">Add Category</button><br>
+                <button type="submit" id="button_manage">Delete Category</button><br>
 
                 {% if error %}
-                    <p class="errorList">Add Category failed try again.</p>
+                    <p class="errorList">Delete Category failed try again.</p>
                 {% endif %}
 
             </div> <!--login-footer-->
