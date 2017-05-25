@@ -86,6 +86,10 @@ $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
         ));
         }
         $categoryList =  DB::query("SELECT * FROM categories");
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        $msg->success('Operation successfully');
+        $msg->display();
+        
         $app->render("admin_category_list.html.twig", array(
             'categoryList' => $categoryList,
             "eshopuser" => $_SESSION['eshopuser']

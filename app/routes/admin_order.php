@@ -68,10 +68,7 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
             "eshopuser" => $_SESSION['eshopuser']
         ]);
     } else {
-        
         $msg = new \Plasticbrain\FlashMessages\FlashMessages();
-        
-        
         if ($op == 'edit') {
             // unlink('') OLD file - requires select
             $oldImagePath = DB::queryFirstField(
