@@ -115,7 +115,7 @@ $app->get('/admin/user/list', function() use ($app) {
     ));
 });
 
-
+//add user delete by chenchen 2017-05-24 
 $app->get('/admin/user/delete/:id', function($id) use ($app) {
     $user = DB::queryFirstRow('SELECT * FROM users WHERE id=%i', $id);
     $app->render('admin_user_delete.html.twig', array(
