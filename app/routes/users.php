@@ -94,7 +94,7 @@ $app->post('/login', function() use ($app, $log) {
                 ));
             } else {
                 $msg = new \Plasticbrain\FlashMessages\FlashMessages();
-                $msg->success('Welcome '. $user['name'] . ', you login successfully');
+                $msg->success('Welcome ' . $user['name'] . ', you login successfully');
                 $msg->display();
                 $app->render('eshop.html.twig', array(
                     "eshopuser" => $_SESSION['eshopuser']
@@ -301,99 +301,10 @@ $app->map('/facebook', function() use ($app, $log) {
     //   $helper = $fb->getJavaScriptHelper();
     //   $helper = $fb->getCanvasHelper();
     //   $helper = $fb->getPageTabHelper();
-//    $login_url = "localhost:8008/";
-//    // Login Link
-//    $FBloginUrl = $helper->getLoginUrl($login_url, $facebook_app_permissions);
-//
-//    // Rerequest Link
-//    $FBloginUrl = $helper->getReRequestUrl($login_url, $facebook_app_permissions);
-    $errorList = array();
 
-    try {
-        $session = $helper->get;
-    } catch (FacebookSDKException $e) {
-        $session = null;
-    }
-
-    if ($session) {
-        // User logged in, get the AccessToken entity.
-        $accessToken = $session->getAccessToken();
-        // Exchange the short-lived token for a long-lived token.
-        $longLivedAccessToken = $accessToken->extend();
-        // Now store the long-lived token in the database
-        // . . . $db->store($longLivedAccessToken);
-        // Make calls to Graph with the long-lived token.
-        // . . . 
-    } else {
-        echo '<a href="' . $helper->getLoginUrl() . '">Login with Facebook</a>';
-    }
-
-//    try {
-////        $facebook->api('oauth/access_token', array(
-////        'client_id'     => $app_id,
-////        'client_secret' => $app_secret,
-////        'type'          => 'client_cred',
-////        'code'          => $code,
-////        ));
-//        $accessToken = $helper->getAccessToken();
-//        print_r($accessToken->getValue());
-//    } catch (Facebook\Exceptions\FacebookResponseException $e) {
-//        // When Graph returns an error
-//        array_push($errorList, $e->getMessage());
-//        $log->error(sprintf("User failed for facebook login %s", $e->getMessage()));
-//        $app->render('login.html.twig', array('loginFailed' => TRUE, 'errorList' => $errorList));
-//    } catch (Facebook\Exceptions\FacebookSDKException $e) {
-//        // When validation fails or other local issues
-//        array_push($errorList, $e->getMessage());
-//        $log->error(sprintf("User failed for facebook login %s", $e->getMessage()));
-//        $app->render('login.html.twig', array('loginFailed' => TRUE, 'errorList' => $errorList));
-//    }
-//    print_r($accessToken);
-//    if (!isset($accessToken)) {
-//        if ($helper->getError()) {
-//            header('HTTP/1.0 401 Unauthorized');
-//            echo "Error: " . $helper->getError() . "\n";
-//            echo "Error Code: " . $helper->getErrorCode() . "\n";
-//            echo "Error Reason: " . $helper->getErrorReason() . "\n";
-//            echo "Error Description: " . $helper->getErrorDescription() . "\n";
-//        } else {
-//            header('HTTP/1.0 400 Bad Request');
-//            print_r('Bad request1') ;
-//        }
-//        exit;
-//    }
-//
-//    // Logged in
-//    echo '<h3>Access Token</h3>';
-//    var_dump($accessToken->getValue());
-//
-//    // The OAuth 2.0 client handler helps us manage access tokens
-//    $oAuth2Client = $fb->getOAuth2Client();
-//
-//    // Get the access token metadata from /debug_token
-//    $tokenMetadata = $oAuth2Client->debugToken($accessToken);
-//    echo '<h3>Metadata</h3>';
-//    var_dump($tokenMetadata);
-//
-//    // Validation (these will throw FacebookSDKException's when they fail)
-//    $tokenMetadata->validateAppId($app_id); // Replace {app-id} with your app id
-//    // If you know the user ID this access token belongs to, you can validate it here
-//    //$tokenMetadata->validateUserId('123');
-//    $tokenMetadata->validateExpiration();
-//
-//    if (!$accessToken->isLongLived()) {
-//        // Exchanges a short-lived access token for a long-lived one
-//        try {
-//            $accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
-//        } catch (Facebook\Exceptions\FacebookSDKException $e) {
-//            echo "<p>Error getting long-lived access token: " . $helper->getMessage() . "</p>\n\n";
-//            exit;
-//        }
-//
-//        echo '<h3>Long-lived</h3>';
-//        var_dump($accessToken->getValue());
-//    }
-//
-//    $_SESSION['fb_access_token'] = (string) $accessToken;
-//    
+    $permissions = ['email']; // Optional permissions
+    $loginUrl = $helper->getLoginUrl('https://localhost:8008/fb-callback.php', $permissions);
+    $app->render('facebook.html.twig', array(
+        "loginUrl" => $loginUrl
+    ));
 })->via('GET', 'POST');
