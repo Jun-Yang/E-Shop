@@ -107,7 +107,6 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
     'op' => '(add|edit)',
     'id' => '[0-9]+'));
 
-// HOMEWORK: implement a table of existing users with links for editing
 $app->get('/admin/user/list', function() use ($app) {
     $userList = DB::query("SELECT * FROM users");
     $app->render("admin_user_list.html.twig", array(
@@ -116,13 +115,39 @@ $app->get('/admin/user/list', function() use ($app) {
     ));
 });
 
+
 $app->get('/admin/user/delete/:id', function($id) use ($app) {
     $user = DB::queryFirstRow('SELECT * FROM users WHERE id=%i', $id);
     $app->render('admin_user_delete.html.twig', array(
-        'o' => $user,
+        'v' => $user,
         "eshopuser" => $_SESSION['eshopuser']
     ));
-})->VIA('GET', 'POST');
+})->VIA('GET');
+
+/*
+$app->get('/admin/user/delete/:id', function($id) use ($app) {
+    $user = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
+    $app->render('admin_user_delete.html.twig', array(
+        'v' => $user,
+        'eshopuser' => $_SESSION['eshopuser']
+    ));
+})->VIA('GET');
+*/
+$app->post('/admin/user/delete/:id', function($id) use ($app) {
+    print_r($id);
+    DB::delete('users', 'id=%i', $id);
+    $newuserList = DB::query("SELECT * FROM users");
+    
+    
+    /*$app->render('admin_product_delete_success.html.twig');*/
+    $app->render('admin_user_list.html.twig', array(
+        'userList' => $newuserList,
+        "eshopuser" => $_SESSION['eshopuser']    
+    ));
+    
+})->VIA('POST');
+
+
 
 $app->get('/admin/user/block/:id', function($id) use ($app) {
     DB::update('users', array("status" => "Blocked"), "id=%i", $id);
