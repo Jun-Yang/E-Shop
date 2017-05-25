@@ -46,6 +46,7 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
     $code = $app->request()->post('code');
     $state = $app->request()->post('state');
     $code = $app->request()->post('code');
+    $status = $app->request()->post('status');
     $role = $app->request()->post('role');
     $pass1 = $app->request->post('pass1');
     $today = date("Y-m-d");
@@ -57,7 +58,9 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
     } else {
         $userList = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $name);
         if ($userList) {
+            if ($op != 'edit') {
             array_push($errorList, "Username already in use");
+            }
         }
     }
     
@@ -66,10 +69,12 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             'v' => $valueList
         ]);
     } else {
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        
         if ($op == 'edit') {
             // unlink('') OLD file - requires select
             DB::update('users', array(
-                 'name' => $name, 
+            'name' => $name, 
             "fname" => $fname,
             "lname" => $lname,
             "email" => $email,
@@ -79,11 +84,16 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             "addressLine1" => $addressLine1,
             "addressLine2" => $addressLine2,
             "code" => $code,
+            "status" => $status,
             "state" => $state,
             ), "id=%i", $id);
+            
+            $msg->success('Edit successfully');
+            
         } else {
+            $op == 'add';
             DB::insert('users', array(
-                 'name' => $name, 
+            'name' => $name, 
             "fname" => $fname,
             "lname" => $lname,
             "email" => $email,
@@ -94,9 +104,13 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             "addressLine2" => $addressLine2,
             "code" => $code,
             "state" => $state,
+            "status" => $status,
             ));
+            
+            $msg->success('Add successfully');
             $id = DB::insertId();
         }
+        $msg->display();
         $userList = DB::query("SELECT * FROM users");
         $app->render("admin_user_list.html.twig", array(
             'userList' => $userList,
@@ -138,7 +152,9 @@ $app->post('/admin/user/delete/:id', function($id) use ($app) {
     DB::delete('users', 'id=%i', $id);
     $newuserList = DB::query("SELECT * FROM users");
     
-    
+    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+    $msg->success('Delete successfully');
+    $msg->display();
     /*$app->render('admin_product_delete_success.html.twig');*/
     $app->render('admin_user_list.html.twig', array(
         'userList' => $newuserList,

@@ -76,6 +76,8 @@ $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
             "postDate" => $today
             ), "id=%i", $id);
         } else {
+            $op == 'add';
+            
             DB::insert('categories', array(
             "name" => $name, 
             "parent" => $parent,
@@ -86,6 +88,10 @@ $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
         ));
         }
         $categoryList =  DB::query("SELECT * FROM categories");
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        $msg->success('Operation successfully');
+        $msg->display();
+        
         $app->render("admin_category_list.html.twig", array(
             'categoryList' => $categoryList,
             "eshopuser" => $_SESSION['eshopuser']
@@ -123,6 +129,9 @@ $app->post('/admin/category/delete/:id', function($id) use ($app) {
     
     
     /*$app->render('admin_product_delete_success.html.twig');*/
+    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+    $msg->success('Delete successfully');
+    $msg->display();
     $app->render('admin_category_list.html.twig', array(
         'categoryList' => $newcategoryList,
         "eshopuser" => $_SESSION['eshopuser']    

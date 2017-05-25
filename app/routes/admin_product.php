@@ -71,8 +71,8 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
         } else {
             $width = $imageInfo[0];
             $height = $imageInfo[1];
-            if ($width > 2000 || $height > 2000) {
-                array_push($errorList, "Image must at most 2000 by 2000 pixels");
+            if ($width > 800 || $height > 800) {
+                array_push($errorList, "Image must at most 800 by 800 pixels");
             }
         }
     }
@@ -94,6 +94,8 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             'eshopuser' => $_SESSION['eshopuser']
         ]);
     } else {
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        
         if ($op == 'edit') {
             if ($image) {
                 $imageData1 = file_get_contents($image['tmp_name']);
@@ -121,7 +123,10 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             'imageData1' => $imageData1,
             'imageMimeType1' => $imageMimeType1
             ), "id=%i", $id);
+            $msg->success('Edit successfully');
+            
         } else {
+            $op == 'add';
             $imageData1 = file_get_contents($image['tmp_name']);
             $imageMimeType1 = mime_content_type($image['tmp_name']);
             DB::insert('products', array(
@@ -140,7 +145,10 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             'imageData1' => $imageData1,
             'imageMimeType1' => $imageMimeType1
         ));
+            $msg->success('Add successfully');
         }
+        $msg->display();
+        
         $productList =  DB::query("SELECT * FROM products");
         $app->render("admin_product_list.html.twig", array(
             'productList' => $productList,
@@ -170,7 +178,16 @@ $app->get('/admin/product/delete/:id', function($id) use ($app) {
 
 $app->post('/admin/product/delete/:id', function($id) use ($app) {
     DB::delete('products', 'id=%i', $id);
-    $app->render('admin_product_delete_success.html.twig');
+    $productList = DB::query("SELECT * FROM products");
+    
+    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+    $msg->success('Delete successfully');
+    $msg->display();
+    
+    $app->render('admin_product_list.html.twig', array(
+         'productList' => $productList,
+        "eshopuser" => $_SESSION['eshopuser']    
+    ));
 });
 
 $app->get('/product', function() use ($app) {
