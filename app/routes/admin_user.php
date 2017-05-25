@@ -134,7 +134,7 @@ $app->get('/admin/user/delete/:id', function($id) use ($app) {
 })->VIA('GET');
 */
 $app->post('/admin/user/delete/:id', function($id) use ($app) {
-    print_r($id);
+    
     DB::delete('users', 'id=%i', $id);
     $newuserList = DB::query("SELECT * FROM users");
     

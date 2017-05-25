@@ -118,7 +118,7 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
     'op' => '(add|edit)',
     'id' => '[0-9]+'));
 
-// HOMEWORK: implement a table of existing orders with links for editing
+
 $app->get('/admin/order/list', function() use ($app) {
     $orderList = DB::query("SELECT * FROM orders");
     $app->render("admin_order_list.html.twig", array(
@@ -126,14 +126,6 @@ $app->get('/admin/order/list', function() use ($app) {
         "eshopuser" => $_SESSION['eshopuser']    
     ));
 });
-
-$app->get('/admin/order/delete/:id', function($id) use ($app) {
-    $order = DB::queryFirstRow('SELECT * FROM orders WHERE id=%i', $id);
-    $app->render('admin_order_delete.html.twig', array(
-        'o' => $order,
-        "eshopuser" => $_SESSION['eshopuser']
-    ));
-})->VIA('GET', 'POST');
 
 // AJAX: query orders with name
 $app->get('/admin/order/search', function() use ($app) {
@@ -145,3 +137,27 @@ $app->get('/admin/order/search', function() use ($app) {
         "eshopuser" => $_SESSION['eshopuser']    
     ));
 })->VIA('GET', 'POST');
+
+
+//add category delete by chenchen 2017-05-24 
+$app->get('/admin/order/delete/:id', function($id) use ($app) {
+    
+    $order = DB::queryFirstRow('SELECT * FROM orders WHERE id=%i', $id);
+    $app->render('admin_order_delete.html.twig', array(
+        'v' => $order,
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+})->VIA('GET');
+
+$app->post('/admin/order/delete/:id', function($id) use ($app) {
+    print_r($id);
+    DB::delete('orders', 'id=%i', $id);
+    $neworderList = DB::query("SELECT * FROM orders");
+    
+    /*$app->render('admin_order_delete_success.html.twig');*/
+    $app->render('admin_order_list.html.twig', array(
+        'orderList' => $neworderList,
+        "eshopuser" => $_SESSION['eshopuser']    
+    ));
+    
+})->VIA('POST');
