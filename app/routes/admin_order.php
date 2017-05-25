@@ -68,6 +68,10 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
             "eshopuser" => $_SESSION['eshopuser']
         ]);
     } else {
+        
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        
+        
         if ($op == 'edit') {
             // unlink('') OLD file - requires select
             $oldImagePath = DB::queryFirstField(
@@ -90,6 +94,9 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
                 "dateTimeShipped" => $dateTimeShipped,
                 "status" => $status
                     ), "id=%i", $id);
+                    
+               $msg->success('Edit successfully');
+               
         } else {
             DB::insert('orders', array(
                 "name" => $name,
@@ -106,8 +113,12 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
                 "dateTimeShipped" => $dateTimeShipped,
                 "status" => $status
             ));
+            
+            $msg->success('Add successfully');
             $id = DB::insertId();
         }
+        
+        $msg->display();
         $orderList = DB::query("SELECT * FROM orders");
         $app->render("admin_order_list.html.twig", array(
             'orderList' => $orderList,
@@ -150,11 +161,16 @@ $app->get('/admin/order/delete/:id', function($id) use ($app) {
 })->VIA('GET');
 
 $app->post('/admin/order/delete/:id', function($id) use ($app) {
-    print_r($id);
+    
     DB::delete('orders', 'id=%i', $id);
     $neworderList = DB::query("SELECT * FROM orders");
     
     /*$app->render('admin_order_delete_success.html.twig');*/
+    
+    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+    $msg->success('Delete successfully');
+    $msg->display();
+        
     $app->render('admin_order_list.html.twig', array(
         'orderList' => $neworderList,
         "eshopuser" => $_SESSION['eshopuser']    

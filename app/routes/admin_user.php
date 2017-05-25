@@ -66,6 +66,8 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             'v' => $valueList
         ]);
     } else {
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        
         if ($op == 'edit') {
             // unlink('') OLD file - requires select
             DB::update('users', array(
@@ -81,6 +83,9 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             "code" => $code,
             "state" => $state,
             ), "id=%i", $id);
+            
+            $msg->success('Edit successfully');
+            
         } else {
             DB::insert('users', array(
                  'name' => $name, 
@@ -95,8 +100,11 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             "code" => $code,
             "state" => $state,
             ));
+            
+            $msg->success('Add successfully');
             $id = DB::insertId();
         }
+        $msg->display();
         $userList = DB::query("SELECT * FROM users");
         $app->render("admin_user_list.html.twig", array(
             'userList' => $userList,
@@ -138,7 +146,9 @@ $app->post('/admin/user/delete/:id', function($id) use ($app) {
     DB::delete('users', 'id=%i', $id);
     $newuserList = DB::query("SELECT * FROM users");
     
-    
+    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+    $msg->success('Delete successfully');
+    $msg->display();
     /*$app->render('admin_product_delete_success.html.twig');*/
     $app->render('admin_user_list.html.twig', array(
         'userList' => $newuserList,

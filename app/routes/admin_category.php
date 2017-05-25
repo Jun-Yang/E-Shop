@@ -123,6 +123,9 @@ $app->post('/admin/category/delete/:id', function($id) use ($app) {
     
     
     /*$app->render('admin_product_delete_success.html.twig');*/
+    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+    $msg->success('Delete successfully');
+    $msg->display();
     $app->render('admin_category_list.html.twig', array(
         'categoryList' => $newcategoryList,
         "eshopuser" => $_SESSION['eshopuser']    
