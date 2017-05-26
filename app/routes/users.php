@@ -142,36 +142,36 @@ $app->get('/fbcallback', function() use ($app) {
         'app_secret' => $app_secret,
         'default_graph_version' => 'v2.9',
     ]);
-    $log = new Logger('main');
+//    $log = new Logger('main');
     $helper = $fb->getRedirectLoginHelper();
     try {
         $accessToken = $helper->getAccessToken();
     } catch (Facebook\Exceptions\FacebookResponseException $e) {
         // When Graph returns an error
-        $log->error(sprintf("Graph returned an error: " . $e->getMessage()));
+//        $log->error(sprintf("Graph returned an error: " . $e->getMessage()));
         exit;
     } catch (Facebook\Exceptions\FacebookSDKException $e) {
         // When validation fails or other local issues
-        $log->error(sprintf('Facebook SDK returned an error: ' . $e->getMessage()));
+//        $log->error(sprintf('Facebook SDK returned an error: ' . $e->getMessage()));
         exit;
     }
 
     if (!isset($accessToken)) {
         if ($helper->getError()) {
             header('HTTP/1.0 401 Unauthorized');
-            $log->error(sprintf("Error: " . $helper->getError() . "\n"));
-            $log->error(sprintf("Error Code: " . $helper->getErrorCode() . "\n"));
-            $log->error(sprintf("Error Reason: " . $helper->getErrorReason() . "\n"));
-            $log->error(sprintf("Error Description: " . $helper->getErrorDescription() . "\n"));
+//            $log->error(sprintf("Error: " . $helper->getError() . "\n"));
+//            $log->error(sprintf("Error Code: " . $helper->getErrorCode() . "\n"));
+//            $log->error(sprintf("Error Reason: " . $helper->getErrorReason() . "\n"));
+//            $log->error(sprintf("Error Description: " . $helper->getErrorDescription() . "\n"));
         } else {
             header('HTTP/1.0 400 Bad Request');
-            $log->error(sprintf('Bad request'));
+//            $log->error(sprintf('Bad request'));
         }
         exit;
     }
 
 // Logged in
-    $log->debug(sprintf('Access Token: ' . var_dump($accessToken->getValue())));
+//    $log->debug(sprintf('Access Token: ' . var_dump($accessToken->getValue())));
 //    echo '<h3>Access Token</h3>';
 //    var_dump($accessToken->getValue());
     
@@ -180,7 +180,7 @@ $app->get('/fbcallback', function() use ($app) {
 
 // Get the access token metadata from /debug_token
     $tokenMetadata = $oAuth2Client->debugToken($accessToken);
-    $log->debug(sprintf('Metadata: ' . var_dump($tokenMetadata)));
+//    $log->debug(sprintf('Metadata: ' . var_dump($tokenMetadata)));
 //    echo '<h3>Metadata</h3>';
 //    var_dump($tokenMetadata);
     
@@ -195,16 +195,29 @@ $app->get('/fbcallback', function() use ($app) {
         try {
             $accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
         } catch (Facebook\Exceptions\FacebookSDKException $e) {
-            $log->error(sprintf("<p>Error getting long-lived access token: " . $e->getMessage() . "</p>\n\n"));
+//            $log->error(sprintf("<p>Error getting long-lived access token: " . $e->getMessage() . "</p>\n\n"));
             exit;
         }
-        $log->debug(sprintf('Long-lived: ' . var_dump($accessToken->getValue())));
+//        $log->debug(sprintf('Long-lived: ' . var_dump($accessToken->getValue())));
+    }
+    try {
+        // Returns a `Facebook\FacebookResponse` object
+        $response = $fb->get('/me?fields=id,name', (string)$accessToken);
+    } catch(Facebook\Exceptions\FacebookResponseException $e) {
+//        echo 'Graph returned an error: ' . $e->getMessage();
+//        $log->error(sprintf("Graph returned an error: " . $e->getMessage()));
+        exit;
+    } catch(Facebook\Exceptions\FacebookSDKException $e) {
+//        echo 'Facebook SDK returned an error: ' . $e->getMessage();
+//        $log->error(sprintf('Facebook SDK returned an error: ' . $e->getMessage()));
+        exit;
     }
 
-    $_SESSION['eshopuser'] = (string)$accessToken;
-    $log->debug(sprintf("User %s logged in successfuly from IP %s", (string)$accessToken, $_SERVER['REMOTE_ADDR']));
+    $user = $response->getGraphUser();
+    $_SESSION['eshopuser'] = $user;
+//    $log->debug(sprintf("User %s logged in successfuly from IP %s", (string)$accessToken, $_SERVER['REMOTE_ADDR']));
     $msg = new \Plasticbrain\FlashMessages\FlashMessages();
-    $msg->success('Welcome ' . (string) $accessToken . ', you login successfully');
+    $msg->success('Welcome ' . $user['name'] . ', you login successfully');
     $msg->display();
     $app->render('eshop.html.twig', array(
         "eshopuser" => $_SESSION['eshopuser']
