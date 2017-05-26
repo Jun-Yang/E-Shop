@@ -67,7 +67,7 @@ $app->post('/register', function() use ($app, $log) {
 });
 
 $app->get('/login', function() use ($app, $log) {
-    
+
     $app_id = '306062613148736';
     $app_secret = 'b7f985a9ce4310a37c04c9a1c2bdb557';
 
@@ -85,9 +85,9 @@ $app->get('/login', function() use ($app, $log) {
     //   $helper = $fb->getPageTabHelper();
 
     $permissions = ['email']; // Optional permissions
-//    print_r('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fbcallback.php');
-    $FBLoginUrl = $helper->getLoginUrl('https://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/fbcallback.php', $permissions);
-    
+//    print_r('https://' . $_SERVER['SERVER_NAME'] . '/app/routes/fbcallback.php');
+    $FBLoginUrl = $helper->getLoginUrl('https://' . $_SERVER['SERVER_NAME'] . '/fbcallback', $permissions);
+
     $app->render('login.html.twig', array(
         "FBLoginUrl" => $FBLoginUrl,
         "eshopuser" => $_SESSION['eshopuser']
@@ -130,6 +130,85 @@ $app->post('/login', function() use ($app, $log) {
             $app->render('login.html.twig', array('loginFailed' => TRUE));
         }
     }
+});
+
+$app->get('/fbcallback', function() use ($app) {
+    
+    $app_id = '306062613148736';
+    $app_secret = 'b7f985a9ce4310a37c04c9a1c2bdb557';
+
+    $fb = new \Facebook\Facebook([
+        'app_id' => $app_id,
+        'app_secret' => $app_secret,
+        'default_graph_version' => 'v2.9',
+    ]);
+    $log = new Logger('main');
+    $helper = $fb->getRedirectLoginHelper();
+    try {
+        $accessToken = $helper->getAccessToken();
+    } catch (Facebook\Exceptions\FacebookResponseException $e) {
+        // When Graph returns an error
+        $log->error(sprintf("Graph returned an error: " . $e->getMessage()));
+        exit;
+    } catch (Facebook\Exceptions\FacebookSDKException $e) {
+        // When validation fails or other local issues
+        $log->error(sprintf('Facebook SDK returned an error: ' . $e->getMessage()));
+        exit;
+    }
+
+    if (!isset($accessToken)) {
+        if ($helper->getError()) {
+            header('HTTP/1.0 401 Unauthorized');
+            $log->error(sprintf("Error: " . $helper->getError() . "\n"));
+            $log->error(sprintf("Error Code: " . $helper->getErrorCode() . "\n"));
+            $log->error(sprintf("Error Reason: " . $helper->getErrorReason() . "\n"));
+            $log->error(sprintf("Error Description: " . $helper->getErrorDescription() . "\n"));
+        } else {
+            header('HTTP/1.0 400 Bad Request');
+            $log->error(sprintf('Bad request'));
+        }
+        exit;
+    }
+
+// Logged in
+    $log->debug(sprintf('Access Token: ' . var_dump($accessToken->getValue())));
+//    echo '<h3>Access Token</h3>';
+//    var_dump($accessToken->getValue());
+    
+// The OAuth 2.0 client handler helps us manage access tokens
+    $oAuth2Client = $fb->getOAuth2Client();
+
+// Get the access token metadata from /debug_token
+    $tokenMetadata = $oAuth2Client->debugToken($accessToken);
+    $log->debug(sprintf('Metadata: ' . var_dump($tokenMetadata)));
+//    echo '<h3>Metadata</h3>';
+//    var_dump($tokenMetadata);
+    
+// Validation (these will throw FacebookSDKException's when they fail)
+    $tokenMetadata->validateAppId($app_id);
+// If you know the user ID this access token belongs to, you can validate it here
+//$tokenMetadata->validateUserId('123');
+    $tokenMetadata->validateExpiration();
+
+    if (!$accessToken->isLongLived()) {
+        // Exchanges a short-lived access token for a long-lived one
+        try {
+            $accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
+        } catch (Facebook\Exceptions\FacebookSDKException $e) {
+            $log->error(sprintf("<p>Error getting long-lived access token: " . $e->getMessage() . "</p>\n\n"));
+            exit;
+        }
+        $log->debug(sprintf('Long-lived: ' . var_dump($accessToken->getValue())));
+    }
+
+    $_SESSION['eshopuser'] = (string)$accessToken;
+    $log->debug(sprintf("User %s logged in successfuly from IP %s", (string)$accessToken, $_SERVER['REMOTE_ADDR']));
+    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+    $msg->success('Welcome ' . (string) $accessToken . ', you login successfully');
+    $msg->display();
+    $app->render('eshop.html.twig', array(
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
 });
 
 $app->get('/logout', function() use ($app, $log) {
@@ -233,7 +312,7 @@ $app->map('/passreset', function () use ($app, $log) {
             if (!$mail->send()) {
                 $log->debug(sprintf("Message could not be sent. Mailer Error: %s", $mail->ErrorInfo));
             } else {
-                $log->debug(sprintf("Message has been sent")); 
+                $log->debug(sprintf("Message has been sent"));
                 $msg = new \Plasticbrain\FlashMessages\FlashMessages();
                 $msg->success('Email with password reset code has been sent. Please allow the email a few minutes to arrive.');
                 $msg->display();
@@ -254,7 +333,7 @@ $app->map('/passreset/:secretToken', function($secretToken) use ($app) {
         $app->render('passreset.html.twig');
         return;
     }
-    
+
     //
     if ($app->request()->isGet()) {
         $app->render('passreset_form.html.twig');

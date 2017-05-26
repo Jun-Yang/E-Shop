@@ -14,7 +14,8 @@
                 <p class="lead">Blue Scooter</p>
                 <div class="list-group">
                     {% for c in categoryList %}
-                        <a href="#" class="list-group-item">{{c.name}}</a>
+                        <input type="hidden" name="categoryID" value="{{c.ID}}">
+                        <a href="/category/{{c.ID}}" class="list-group-item">{{c.name}}</a>
                     {% endfor %}
                 </div>
             </div>
@@ -53,7 +54,7 @@
                     {% for p in productList %}
                         <div class="col-sm-4 col-lg-4 col-md-4">
                             <div class="thumbnail">
-                                <a href='/product'><img  src="http://placehold.it/320x150" alt=""></a>
+                                <a href='/product/{{p.ID}}'><img  src="http://placehold.it/320x150" alt=""></a>
                                 <div class="caption">
                                     <h4 class="pull-right">{{p.price}}</h4>
                                     <h4><a href="#">{{p.title}}</a></h4>
