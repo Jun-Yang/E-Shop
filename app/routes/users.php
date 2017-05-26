@@ -224,14 +224,14 @@ $app->get('/fbcallback', function() use ($app, $log, $msg) {
 
 $app->get('/logout', function() use ($app, $log, $msg) {
     
-    $user = DB::queryFirstRow("SELECT fbid FROM users WHERE name=%s", $session['eshopuser']['name']);
-    if( null != $user[fbid]) {
+    $user = DB::queryFirstRow("SELECT fbid FROM users WHERE name=%s", $_SESSION['eshopuser']['name']);
+    if( null != $user['fbid']) {
         $url = 'https://www.facebook.com/logout.php?next=' . 'https://eshop.ipd9.info' .
                 '&access_token=' . $user[fbid];
         session_destroy();
         header('Location: '.$url);
     }
-    $log->debug(sprintf("User %s logout successfully", $session['eshopuser']['name']));
+    $log->debug(sprintf("User %s logout successfully", $_SESSION['eshopuser']['name']));
     $_SESSION['eshopuser'] = array();
     $msg->success('Logout successfully');
     $msg->display();
