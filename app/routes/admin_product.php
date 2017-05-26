@@ -190,14 +190,7 @@ $app->post('/admin/product/delete/:id', function($id) use ($app) {
     ));
 });
 
-$app->get('/product', function() use ($app) {
-    $app->render('product.html.twig',array(
-        "eshopuser" => $_SESSION['eshopuser']
-    ));          
-});
-
 //for image view
-
 $app->get('/imageview/:id(/:operation)', function($id, $operation = '') use ($app) {
 
     $product = DB::queryFirstRow("SELECT imageData1,imageMimeType1 FROM products "
