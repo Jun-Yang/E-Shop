@@ -1,7 +1,7 @@
 <?php
 
 // order handling
-$app->map('/order', function () use ($app) {
+$app->map('/order', function () use ($app, $msg) {
     $totalBeforeTax = DB::queryFirstField(
                     "SELECT SUM(products.price * cartitems.quantity) "
                     . " FROM cartitems, products "
@@ -90,7 +90,6 @@ $app->map('/order', function () use ($app) {
                   mail($email, "Order " .$orderID . " placed ", $emailHtml, $headers);
                  */
                 //
-                $msg = new \Plasticbrain\FlashMessages\FlashMessages();
                 $msg->success('Order placed successful.');
                 $msg->display();
                 $app->render('categroy.html.twig');

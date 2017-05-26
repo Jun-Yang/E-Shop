@@ -32,7 +32,7 @@ $app->get('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
     'op' => '(add|edit)',
     'id' => '[0-9]+'));
 
-$app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
+$app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app, $msg) {
     if (!$_SESSION['eshopuser']) {
         $app->render('forbidden.html.twig');
         return;
@@ -94,8 +94,6 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             'eshopuser' => $_SESSION['eshopuser']
         ]);
     } else {
-        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
-        
         if ($op == 'edit') {
             if ($image) {
                 $imageData1 = file_get_contents($image['tmp_name']);
@@ -148,7 +146,6 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app) {
             $msg->success('Add successfully');
         }
         $msg->display();
-        
         $productList =  DB::query("SELECT * FROM products");
         $app->render("admin_product_list.html.twig", array(
             'productList' => $productList,
@@ -176,14 +173,12 @@ $app->get('/admin/product/delete/:id', function($id) use ($app) {
     ));
 });
 
-$app->post('/admin/product/delete/:id', function($id) use ($app) {
+$app->post('/admin/product/delete/:id', function($id) use ($app, $msg) {
     DB::delete('products', 'id=%i', $id);
     $productList = DB::query("SELECT * FROM products");
     
-    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
     $msg->success('Delete successfully');
     $msg->display();
-    
     $app->render('admin_product_list.html.twig', array(
          'productList' => $productList,
         "eshopuser" => $_SESSION['eshopuser']    

@@ -7,7 +7,7 @@ $app->get('/register', function() use ($app, $log) {
 });
 
 // State 2: submission
-$app->post('/register', function() use ($app, $log) {
+$app->post('/register', function() use ($app, $log, $msg) {
     $name = $app->request->post('name');
     $email = $app->request->post('email');
     $pass1 = $app->request->post('pass1');
@@ -59,7 +59,6 @@ $app->post('/register', function() use ($app, $log) {
         ));
         $id = DB::insertId();
         $log->debug(sprintf("User %s created", $id));
-        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
         $msg->success('Registration successful. You may now login.');
         $msg->display();
         $app->render('eshop.html.twig');
@@ -94,13 +93,12 @@ $app->get('/login', function() use ($app, $log) {
     ));
 });
 
-$app->post('/login', function() use ($app, $log) {
+$app->post('/login', function() use ($app, $log, $msg) {
     $name = $app->request->post('name');
     $pass = $app->request->post('pass');
     $user = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $name);
     if (!$user || $user['status'] == 'Blocked') {
         $log->debug(sprintf("User failed for username %s from IP %s", $name, $_SERVER['REMOTE_ADDR']));
-        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
         $msg->warning(' You cannot login now. This user is blocked.');
         $msg->display();
         $app->render('login.html.twig', array('loginFailed' => TRUE));
@@ -118,7 +116,6 @@ $app->post('/login', function() use ($app, $log) {
                     "eshopuser" => $_SESSION['eshopuser']
                 ));
             } else {
-                $msg = new \Plasticbrain\FlashMessages\FlashMessages();
                 $msg->success('Welcome ' . $user['name'] . ', you login successfully');
                 $msg->display();
                 $app->render('eshop.html.twig', array(
@@ -132,7 +129,7 @@ $app->post('/login', function() use ($app, $log) {
     }
 });
 
-$app->get('/fbcallback', function() use ($app) {
+$app->get('/fbcallback', function() use ($app, $log, $msg) {
     
     $app_id = '306062613148736';
     $app_secret = 'b7f985a9ce4310a37c04c9a1c2bdb557';
@@ -142,52 +139,49 @@ $app->get('/fbcallback', function() use ($app) {
         'app_secret' => $app_secret,
         'default_graph_version' => 'v2.9',
     ]);
-//    $log = new Logger('main');
+    
     $helper = $fb->getRedirectLoginHelper();
     try {
         $accessToken = $helper->getAccessToken();
     } catch (Facebook\Exceptions\FacebookResponseException $e) {
         // When Graph returns an error
-//        $log->error(sprintf("Graph returned an error: " . $e->getMessage()));
+        $log->error(sprintf("Graph returned an error: " . $e->getMessage()));
         exit;
     } catch (Facebook\Exceptions\FacebookSDKException $e) {
         // When validation fails or other local issues
-//        $log->error(sprintf('Facebook SDK returned an error: ' . $e->getMessage()));
+        $log->error(sprintf('Facebook SDK returned an error: ' . $e->getMessage()));
         exit;
     }
 
     if (!isset($accessToken)) {
         if ($helper->getError()) {
             header('HTTP/1.0 401 Unauthorized');
-//            $log->error(sprintf("Error: " . $helper->getError() . "\n"));
-//            $log->error(sprintf("Error Code: " . $helper->getErrorCode() . "\n"));
-//            $log->error(sprintf("Error Reason: " . $helper->getErrorReason() . "\n"));
-//            $log->error(sprintf("Error Description: " . $helper->getErrorDescription() . "\n"));
+            $log->error(sprintf("Error: " . $helper->getError() . "\n"));
+            $log->error(sprintf("Error Code: " . $helper->getErrorCode() . "\n"));
+            $log->error(sprintf("Error Reason: " . $helper->getErrorReason() . "\n"));
+            $log->error(sprintf("Error Description: " . $helper->getErrorDescription() . "\n"));
         } else {
             header('HTTP/1.0 400 Bad Request');
-//            $log->error(sprintf('Bad request'));
+            $log->error(sprintf('Bad request'));
         }
         exit;
     }
 
 // Logged in
-//    $log->debug(sprintf('Access Token: ' . var_dump($accessToken->getValue())));
-//    echo '<h3>Access Token</h3>';
-//    var_dump($accessToken->getValue());
+    $log->debug(sprintf('Access Token: ' . var_dump($accessToken->getValue())));
     
 // The OAuth 2.0 client handler helps us manage access tokens
     $oAuth2Client = $fb->getOAuth2Client();
 
 // Get the access token metadata from /debug_token
     $tokenMetadata = $oAuth2Client->debugToken($accessToken);
-//    $log->debug(sprintf('Metadata: ' . var_dump($tokenMetadata)));
-//    echo '<h3>Metadata</h3>';
-//    var_dump($tokenMetadata);
+    $log->debug(sprintf('Metadata: ' . var_dump($tokenMetadata)));
     
 // Validation (these will throw FacebookSDKException's when they fail)
     $tokenMetadata->validateAppId($app_id);
-// If you know the user ID this access token belongs to, you can validate it here
-//$tokenMetadata->validateUserId('123');
+    
+// If you know the user ID this access token belongs to, 
+// you can validate it here $tokenMetadata->validateUserId('123');
     $tokenMetadata->validateExpiration();
 
     if (!$accessToken->isLongLived()) {
@@ -195,28 +189,32 @@ $app->get('/fbcallback', function() use ($app) {
         try {
             $accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
         } catch (Facebook\Exceptions\FacebookSDKException $e) {
-//            $log->error(sprintf("<p>Error getting long-lived access token: " . $e->getMessage() . "</p>\n\n"));
+            $log->error(sprintf("<p>Error getting long-lived access token: " . $e->getMessage() . "</p>\n\n"));
             exit;
         }
-//        $log->debug(sprintf('Long-lived: ' . var_dump($accessToken->getValue())));
+        $log->debug(sprintf('Long-lived: ' . var_dump($accessToken->getValue())));
     }
     try {
         // Returns a `Facebook\FacebookResponse` object
         $response = $fb->get('/me?fields=id,name', (string)$accessToken);
     } catch(Facebook\Exceptions\FacebookResponseException $e) {
-//        echo 'Graph returned an error: ' . $e->getMessage();
-//        $log->error(sprintf("Graph returned an error: " . $e->getMessage()));
+        $log->error(sprintf("Graph returned an error: " . $e->getMessage()));
         exit;
     } catch(Facebook\Exceptions\FacebookSDKException $e) {
-//        echo 'Facebook SDK returned an error: ' . $e->getMessage();
-//        $log->error(sprintf('Facebook SDK returned an error: ' . $e->getMessage()));
+        $log->error(sprintf('Facebook SDK returned an error: ' . $e->getMessage()));
         exit;
     }
 
     $user = $response->getGraphUser();
     $_SESSION['eshopuser'] = $user;
-//    $log->debug(sprintf("User %s logged in successfuly from IP %s", (string)$accessToken, $_SERVER['REMOTE_ADDR']));
-    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+    session_id((string)$accessToken);
+    $log->debug(sprintf("User %s logged in successfuly from IP %s", (string)$accessToken, $_SERVER['REMOTE_ADDR']));
+    DB::insert('users', array(
+        'name' => $user['name'],
+        'email' => $user['email'],
+        'fbid' => $accessToken
+    ));
+    
     $msg->success('Welcome ' . $user['name'] . ', you login successfully');
     $msg->display();
     $app->render('eshop.html.twig', array(
@@ -224,9 +222,17 @@ $app->get('/fbcallback', function() use ($app) {
     ));
 });
 
-$app->get('/logout', function() use ($app, $log) {
+$app->get('/logout', function() use ($app, $log, $msg) {
+    
+    $user = DB::queryFirstRow("SELECT fbid FROM users WHERE name=%s", $session['eshopuser']['name']);
+    if( null != $user[fbid]) {
+        $url = 'https://www.facebook.com/logout.php?next=' . 'https://eshop.ipd9.info' .
+                '&access_token=' . $user[fbid];
+        session_destroy();
+        header('Location: '.$url);
+    }
+    $log->debug(sprintf("User %s logout successfully", $session['eshopuser']['name']));
     $_SESSION['eshopuser'] = array();
-    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
     $msg->success('Logout successfully');
     $msg->display();
     $app->render('eshop.html.twig');
@@ -243,7 +249,7 @@ function generateRandomString($length = 10) {
     return $randomString;
 }
 
-$app->map('/passreset', function () use ($app, $log) {
+$app->map('/passreset', function () use ($app, $log, $msg) {
     // Alternative to cron-scheduled cleanup
     if (rand(1, 1000) == 111) {
         // TODO: do the cleanup 1 in 1000 accessed to /passreset URL
@@ -326,7 +332,6 @@ $app->map('/passreset', function () use ($app, $log) {
                 $log->debug(sprintf("Message could not be sent. Mailer Error: %s", $mail->ErrorInfo));
             } else {
                 $log->debug(sprintf("Message has been sent"));
-                $msg = new \Plasticbrain\FlashMessages\FlashMessages();
                 $msg->success('Email with password reset code has been sent. Please allow the email a few minutes to arrive.');
                 $msg->display();
                 $app->render('login.html.twig');
@@ -337,17 +342,15 @@ $app->map('/passreset', function () use ($app, $log) {
     }
 })->via('GET', 'POST');
 
-$app->map('/passreset/:secretToken', function($secretToken) use ($app) {
+$app->map('/passreset/:secretToken', function($secretToken) use ($app, $msg) {
     $row = DB::queryFirstRow("SELECT * FROM passresets WHERE secretToken=%s", $secretToken);
     if (!$row || strtotime($row['expiryDateTime']) < time()) {
-        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
         $msg->success('Password reset token does not exist or has expired. You may request a new token');
         $msg->display();
         $app->render('passreset.html.twig');
         return;
     }
 
-    //
     if ($app->request()->isGet()) {
         $app->render('passreset_form.html.twig');
     } else {
@@ -372,7 +375,6 @@ $app->map('/passreset/:secretToken', function($secretToken) use ($app) {
                 'password' => password_hash($pass1, CRYPT_BLOWFISH)
                     ), "ID=%d", $row['userID']);
             DB::delete('passresets', 'secretToken=%s', $secretToken);
-            $msg = new \Plasticbrain\FlashMessages\FlashMessages();
             $msg->success('Password reset successful. You can login now');
             $msg->display();
             $app->render('eshop.html.twig');

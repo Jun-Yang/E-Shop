@@ -33,7 +33,7 @@ $app->get('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
     'op' => '(add|edit)',
     'id' => '[0-9]+'));
 
-$app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
+$app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app, $msg) {
     print_r($id);
         if (!$_SESSION['eshopuser']) {
         $app->render('forbidden.html.twig');
@@ -88,7 +88,6 @@ $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
         ));
         }
         $categoryList =  DB::query("SELECT * FROM categories");
-        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
         $msg->success('Operation successfully');
         $msg->display();
         
@@ -122,14 +121,13 @@ $app->get('/admin/category/delete/:id', function($id) use ($app) {
     ));
 })->VIA('GET');
 
-$app->post('/admin/category/delete/:id', function($id) use ($app) {
+$app->post('/admin/category/delete/:id', function($id) use ($app, $msg) {
     
     DB::delete('categories', 'id=%i', $id);
     $newcategoryList = DB::query("SELECT * FROM categories");
     
     
     /*$app->render('admin_product_delete_success.html.twig');*/
-    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
     $msg->success('Delete successfully');
     $msg->display();
     $app->render('admin_category_list.html.twig', array(

@@ -44,7 +44,6 @@
             <h1>Cart</h1>
         </section>
         <br/>
-        <form action="/order">
             <div class="table-responsive">
                 <table class="table table-hover" border="1">
                     {% for ci in cartitemList %}
@@ -62,10 +61,8 @@
                     {% endfor %}
                 </table>
             </div>
-            <input type="submit" class="btn-lg btn-info" value="Place Order" />
-
-        </form>
-        <br/>
+            <a href="/order" class="btn-primary btn-lg"><span class="bt_blue_lft"></span><strong>Place Order</strong><span class="bt_blue_r"></span></a>
+        <br/><br/>
     </div>
                     
 {% endblock %}

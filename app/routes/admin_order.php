@@ -29,7 +29,7 @@ $app->get('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
     'op' => '(add|edit)',
     'id' => '[0-9]+'));
 
-$app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
+$app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app, $msg) {
     
     if (!$_SESSION['eshopuser']) {
         $app->render('forbidden.html.twig');
@@ -68,7 +68,6 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
             "eshopuser" => $_SESSION['eshopuser']
         ]);
     } else {
-        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
         if ($op == 'edit') {
             // unlink('') OLD file - requires select
             $oldImagePath = DB::queryFirstField(
@@ -91,12 +90,9 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
                 "dateTimeShipped" => $dateTimeShipped,
                 "status" => $status
                     ), "id=%i", $id);
-                    
                $msg->success('Edit successfully');
-               
         } else {
             $op == 'add';
-            
             DB::insert('orders', array(
                 "name" => $name,
                 "userID" => $userID,
@@ -112,7 +108,6 @@ $app->post('/admin/order/:op(/:id)', function($op, $id = 0) use ($app) {
                 "dateTimeShipped" => $dateTimeShipped,
                 "status" => $status
             ));
-            
             $msg->success('Add successfully');
             $id = DB::insertId();
         }
@@ -159,14 +154,11 @@ $app->get('/admin/order/delete/:id', function($id) use ($app) {
     ));
 })->VIA('GET');
 
-$app->post('/admin/order/delete/:id', function($id) use ($app) {
+$app->post('/admin/order/delete/:id', function($id) use ($app, $msg) {
     
     DB::delete('orders', 'id=%i', $id);
     $neworderList = DB::query("SELECT * FROM orders");
     
-    /*$app->render('admin_order_delete_success.html.twig');*/
-    
-    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
     $msg->success('Delete successfully');
     $msg->display();
         

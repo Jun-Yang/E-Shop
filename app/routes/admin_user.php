@@ -29,7 +29,7 @@ $app->get('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
     'op' => '(add|edit)',
     'id' => '[0-9]+'));
 
-$app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
+$app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app, $msg) {
     
     if (!$_SESSION['eshopuser']) {
         $app->render('forbidden.html.twig');
@@ -69,8 +69,6 @@ $app->post('/admin/user/:op(/:id)', function($op, $id = 0) use ($app) {
             'v' => $valueList
         ]);
     } else {
-        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
-        
         if ($op == 'edit') {
             // unlink('') OLD file - requires select
             DB::update('users', array(
@@ -138,32 +136,19 @@ $app->get('/admin/user/delete/:id', function($id) use ($app) {
     ));
 })->VIA('GET');
 
-/*
-$app->get('/admin/user/delete/:id', function($id) use ($app) {
-    $user = DB::queryFirstRow('SELECT * FROM products WHERE id=%i', $id);
-    $app->render('admin_user_delete.html.twig', array(
-        'v' => $user,
-        'eshopuser' => $_SESSION['eshopuser']
-    ));
-})->VIA('GET');
-*/
-$app->post('/admin/user/delete/:id', function($id) use ($app) {
+$app->post('/admin/user/delete/:id', function($id) use ($app, $msg) {
     
     DB::delete('users', 'id=%i', $id);
     $newuserList = DB::query("SELECT * FROM users");
     
-    $msg = new \Plasticbrain\FlashMessages\FlashMessages();
     $msg->success('Delete successfully');
     $msg->display();
-    /*$app->render('admin_product_delete_success.html.twig');*/
     $app->render('admin_user_list.html.twig', array(
         'userList' => $newuserList,
         "eshopuser" => $_SESSION['eshopuser']    
     ));
     
 })->VIA('POST');
-
-
 
 $app->get('/admin/user/block/:id', function($id) use ($app) {
     DB::update('users', array("status" => "Blocked"), "id=%i", $id);
