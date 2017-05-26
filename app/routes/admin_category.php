@@ -11,14 +11,14 @@ $app->get('/admin/category/list', function() use ($app) {
 });
 
 $app->get('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
-     print_r($id);
+     
     if ($op == 'edit') {
         $category = DB::queryFirstRow("SELECT * FROM categories WHERE id=%i", $id);
         if (!$category) {
             echo 'category not found';
             return;
         }
-        print_r($id);
+        
         $app->render("admin_category_add.html.twig", array(
             'v' => $category, 'operation' => 'Update',
             "eshopuser" => $_SESSION['eshopuser']
@@ -34,7 +34,7 @@ $app->get('/admin/category/:op(/:id)', function($op, $id = 0) use ($app) {
     'id' => '[0-9]+'));
 
 $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app, $msg) {
-    print_r($id);
+    
         if (!$_SESSION['eshopuser']) {
         $app->render('forbidden.html.twig');
         return;
@@ -65,7 +65,6 @@ $app->post('/admin/category/:op(/:id)', function($op, $id = 0) use ($app, $msg) 
        
         if ($op == 'edit') {
             // unlink('') OLD file - requires select
-            print_r($op);
             
             DB::update('categories', array(
             "name" => $name, 
@@ -128,7 +127,7 @@ $app->post('/admin/category/delete/:id', function($id) use ($app, $msg) {
     
     
     /*$app->render('admin_product_delete_success.html.twig');*/
-    $msg->success('Delete successfully');
+    $msg->success('Delete Category Successfully');
     $msg->display();
     $app->render('admin_category_list.html.twig', array(
         'categoryList' => $newcategoryList,

@@ -1,6 +1,10 @@
 <head>    
     <title>{% block title %}{% endblock %}</title>
-    {% block headExtra %}<link rel="stylesheet" type="text/css" href="/css/admin.css" />{% endblock %}
+    {% block headExtra %}
+        <link rel="stylesheet" type="text/css" href="/css/admin.css" />
+        <link rel="stylesheet" type="text/css" href="/css/admin_message.css" />
+        
+    {% endblock %}
 </head>
 
 <body>
@@ -57,7 +61,7 @@
                         <ul>
                             <li><a href="/admin_message" title="">Message Management</a></li>
                             <li><a href="/admin_news_add" title="">Add News</a></li>
-                            <li><a href="/admin_message_replay" title="">Reply Message</a></li>
+                            
                             <li><a href="" title="">Back To Home</a></li>
                         </ul>
                     </li>

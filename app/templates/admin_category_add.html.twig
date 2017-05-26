@@ -7,7 +7,7 @@
         <form method="post" enctype="multipart/form-data" >
             <table id="rounded-corner">
                 <tr>
-                    <th colspan="4"><label>Category Management </label></th>
+                    <th colspan="2"><label>Category Management </label></th>
                     <th colspan="2">{{v.ID}}</th> 
                 </tr>
                 <tr>
@@ -15,12 +15,15 @@
                     <td><input type="text" name="name" placeholder="Required name"  value="{{v.name}}" required="required" /></td>
                     <td><label>ParentID</label></td>
                     <td><input type="text" name="parent" placeholder="0" value="{{v.parent}}" /></td> 
-                    <td><label>Layer</label></td>
-                    <td><input type="text" name="layer" placeholder="Required Layer 1" value="{{v.layer}}" /></td>
                 </tr>
                 <tr>
+                    <td><label>Layer</label></td>
+                    <td><input type="text" name="layer" placeholder="Required Layer 1" value="{{v.layer}}" /></td>
                     <td><label>Description</label></td>
-                    <td><input type="text" name="description" placeholder="description" value="{{v.description}}"/></td> 
+                    <td><input type="text" name="description" placeholder="description" value="{{v.description}}"/></td>
+                </tr>
+                <tr>
+                     
                     <td><label>status</label></td>
                     <td><input type="text" name="status" placeholder="OK" value="{{v.status}}" /></td>
                     <td><label>PostDate</label></td>
