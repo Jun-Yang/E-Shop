@@ -91,7 +91,7 @@ $app->get('/admin_message', function() use ($app) {
 
 $app->get('/admin/message/replay/:id', function($id) use ($app) {
     $message = DB::queryFirstRow("SELECT * FROM messages WHERE id=%i", $id);
-    $app->render("admin_message_replay.html.twig", array(
+    $app->render("admin_message_reply.html.twig", array(
         'v' => $message, 
         "eshopuser" => $_SESSION['eshopuser']
     ));
@@ -125,10 +125,13 @@ $app->post('/admin/message/replay/:id', function($id) use ($app) {
             "creatDate" =>$creatDate,
             "response" => $response
             ), "id=%i", $id);
-
-        $app->render("admin_message_reply_success.html.twig", array(
+        
+        $newmessage = DB::queryFirstRow("SELECT * FROM messages WHERE id=%i", $id);
+        
+        $app->render("admin_message.html.twig", array(
             "name" => $name,
-            "email" => $email
+            "email" => $email,
+            'v'=> $newmessage
         ));
     }
     
