@@ -248,14 +248,14 @@ $app->get('/logout', function() use ($app, $log, $msg) {
         exit;
     }
     $user = $_SESSION['eshopuser'];
-    $u = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $user->name);
+    $u = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $user['name']);
     if( null != $u['fbid']) {
         $url = 'https://www.facebook.com/logout.php?next=' . 'https://eshop.ipd9.info' .
                 '&access_token=' . (string)$accessToken;
         session_destroy();
         header('Location: '.$url);
     }
-    $log->debug(sprintf("User %s logout successfully", $user->name));
+    $log->debug(sprintf("User %s logout successfully", $user['name']));
     $_SESSION['eshopuser'] = array();
     $msg->success('Logout successfully');
     $msg->display();
