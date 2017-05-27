@@ -63,12 +63,6 @@ $view->parserOptions = array(
 );
 $view->setTemplatesDirectory(dirname(__FILE__) . '/app/templates');
 
-// Start Set Multi
-
-
-// End of Multi
-
-
 if (!isset($_SESSION['eshopuser'])) {
     $_SESSION['eshopuser'] = array();
 }
@@ -195,6 +189,5 @@ $app->post('/contact', function() use ($app) {
         ));
     }
 });
-
 
 $app->run();

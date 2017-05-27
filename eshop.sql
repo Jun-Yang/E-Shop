@@ -309,7 +309,8 @@ CREATE TABLE `users` (
   `ID` int(11) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `email` varchar(35) NOT NULL,
-  `password` varchar(100) NOT NULL,
+  `password` varchar(100) DEFAULT NULL,
+  `fbid` varchar(50) DEFAULT NULL,
   `fname` varchar(255) DEFAULT NULL,
   `lname` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
@@ -328,11 +329,11 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`ID`, `name`, `email`, `password`, `fname`, `lname`, `phone`, `addressLine1`, `addressLine2`, `state`, `city`, `code`, `TYPE`, `role`, `status`, `last_login`) VALUES
-(7, 'Jerry003', 'Jerry003@123.com', '$2y$10$erdahXcf.UC5ZbYph05haOli8tlgg0TcO5B7AarUSZwuQ5DUklM.u', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', '', '2017-05-17 18:36:43'),
-(8, 'jerry', 'jerry@123.com', '$2y$10$.M5jQxGIKDtSxdQgFDBdxeX0Ta8SpTQyRSQxJJ11m/.AQPm9dgquK', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', '', '2017-05-18 19:51:49'),
-(9, 'admin', 'admin@123.com', '$2y$10$f.LGHKm.a/r8hHTpIUHg4.jZFIxqUdCaxBh0WbrxkEVtbrmKf3DaC', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', '', '2017-05-19 04:56:24'),
-(10, 'jerry001', 'jerry001@123.com', '$2y$10$VEeRSOQ6JL4FDRFyIn.znO8zShimef0JYPePqdqByNGj843InCyXu', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', '', '2017-05-21 02:42:22');
+INSERT INTO `users` (`ID`, `name`, `email`, `password`, `fbid`, `fname`, `lname`, `phone`, `addressLine1`, `addressLine2`, `state`, `city`, `code`, `TYPE`, `role`, `status`, `last_login`) VALUES
+(7, 'Jerry003', 'yangjun3461@gmail.com', '$2y$10$erdahXcf.UC5ZbYph05haOli8tlgg0TcO5B7AarUSZwuQ5DUklM.u', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 'Blocked', '2017-05-17 18:36:43'),
+(8, 'jerry', 'jerry@123.com', '$2y$10$.M5jQxGIKDtSxdQgFDBdxeX0Ta8SpTQyRSQxJJ11m/.AQPm9dgquK', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 'Normal', '2017-05-18 19:51:49'),
+(9, 'admin', 'admin@123.com', '$2y$10$f.LGHKm.a/r8hHTpIUHg4.jZFIxqUdCaxBh0WbrxkEVtbrmKf3DaC', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', 'Normal', '2017-05-19 04:56:24'),
+(10, 'jerry001', 'jerry001@123.com', '$2y$10$VEeRSOQ6JL4FDRFyIn.znO8zShimef0JYPePqdqByNGj843InCyXu', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'user', 'Normal', '2017-05-21 02:42:22');
 
 -- --------------------------------------------------------
 
@@ -436,7 +437,8 @@ ALTER TABLE `products`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD UNIQUE KEY `fbid` (`fbid`);
 
 --
 -- Indexes for table `wishlist`
