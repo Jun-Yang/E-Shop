@@ -66,7 +66,7 @@ $app->post('/register', function() use ($app, $log, $msg) {
 });
 
 $app->get('/login', function() use ($app, $log) {
-
+    
     $app_id = '306062613148736';
     $app_secret = 'b7f985a9ce4310a37c04c9a1c2bdb557';
 
@@ -168,14 +168,14 @@ $app->get('/fbcallback', function() use ($app, $log, $msg) {
     }
 
 // Logged in
-    $log->debug(sprintf('Access Token: ' . var_dump($accessToken->getValue())));
+    $log->debug(sprintf('Access Token: ' . $accessToken->getValue()));
     
 // The OAuth 2.0 client handler helps us manage access tokens
     $oAuth2Client = $fb->getOAuth2Client();
 
 // Get the access token metadata from /debug_token
     $tokenMetadata = $oAuth2Client->debugToken($accessToken);
-    $log->debug(sprintf('Metadata: ' . var_dump($tokenMetadata)));
+//    $log->debug(sprintf('Metadata: ' . var_dump($tokenMetadata)));
     
 // Validation (these will throw FacebookSDKException's when they fail)
     $tokenMetadata->validateAppId($app_id);
@@ -192,11 +192,11 @@ $app->get('/fbcallback', function() use ($app, $log, $msg) {
             $log->error(sprintf("<p>Error getting long-lived access token: " . $e->getMessage() . "</p>\n\n"));
             exit;
         }
-        $log->debug(sprintf('Long-lived: ' . var_dump($accessToken->getValue())));
+//        $log->debug(sprintf('Long-lived: ' . var_dump($accessToken->getValue())));
     }
     try {
         // Returns a `Facebook\FacebookResponse` object
-        $response = $fb->get('/me?fields=id,name', (string)$accessToken);
+        $response = $fb->get('/me?fields=id,name,email', (string)$accessToken);
     } catch(Facebook\Exceptions\FacebookResponseException $e) {
         $log->error(sprintf("Graph returned an error: " . $e->getMessage()));
         exit;
@@ -204,17 +204,19 @@ $app->get('/fbcallback', function() use ($app, $log, $msg) {
         $log->error(sprintf('Facebook SDK returned an error: ' . $e->getMessage()));
         exit;
     }
-
+    
     $user = $response->getGraphUser();
     $_SESSION['eshopuser'] = $user;
-    session_id((string)$accessToken);
+//    session_id((string)$accessToken);
     $log->debug(sprintf("User %s logged in successfuly from IP %s", (string)$accessToken, $_SERVER['REMOTE_ADDR']));
-    DB::insert('users', array(
+    $u = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $user['name']);
+    if((null === $u || $u['fbid'] != $user['id'])) {
+        DB::insert('users', array(
         'name' => $user['name'],
         'email' => $user['email'],
-        'fbid' => $accessToken
+        'fbid' => $user['id']
     ));
-    
+    }
     $msg->success('Welcome ' . $user['name'] . ', you login successfully');
     $msg->display();
     $app->render('eshop.html.twig', array(
@@ -224,14 +226,36 @@ $app->get('/fbcallback', function() use ($app, $log, $msg) {
 
 $app->get('/logout', function() use ($app, $log, $msg) {
     
-    $user = DB::queryFirstRow("SELECT fbid FROM users WHERE name=%s", $_SESSION['eshopuser']['name']);
-    if( null != $user['fbid']) {
+    $app_id = '306062613148736';
+    $app_secret = 'b7f985a9ce4310a37c04c9a1c2bdb557';
+
+    $fb = new \Facebook\Facebook([
+        'app_id' => $app_id,
+        'app_secret' => $app_secret,
+        'default_graph_version' => 'v2.9',
+    ]);
+    
+    $helper = $fb->getRedirectLoginHelper();
+    try {
+        $accessToken = $helper->getAccessToken();
+    } catch (Facebook\Exceptions\FacebookResponseException $e) {
+        // When Graph returns an error
+        $log->error(sprintf("Graph returned an error: " . $e->getMessage()));
+        exit;
+    } catch (Facebook\Exceptions\FacebookSDKException $e) {
+        // When validation fails or other local issues
+        $log->error(sprintf('Facebook SDK returned an error: ' . $e->getMessage()));
+        exit;
+    }
+    $user = $_SESSION['eshopuser'];
+    $u = DB::queryFirstRow("SELECT * FROM users WHERE name=%s", $user->name);
+    if( null != $u['fbid']) {
         $url = 'https://www.facebook.com/logout.php?next=' . 'https://eshop.ipd9.info' .
-                '&access_token=' . $user[fbid];
+                '&access_token=' . (string)$accessToken;
         session_destroy();
         header('Location: '.$url);
     }
-    $log->debug(sprintf("User %s logout successfully", $_SESSION['eshopuser']['name']));
+    $log->debug(sprintf("User %s logout successfully", $user->name));
     $_SESSION['eshopuser'] = array();
     $msg->success('Logout successfully');
     $msg->display();
