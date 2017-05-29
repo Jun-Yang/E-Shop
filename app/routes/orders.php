@@ -92,8 +92,9 @@ $app->map('/order', function () use ($app, $msg) {
                 //
                 $msg->success('Order placed successful.');
                 $msg->display();
-                //$app->render('categroy.html.twig');
-                $app->render('order_success.html.twig');
+                $app->render('eshop.html.twig', array(
+                            "eshopuser" => $_SESSION['eshopuser']
+                ));
             } catch (MeekroDBException $e) {
                 DB::rollback();
                 sql_error_handler(array(

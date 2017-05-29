@@ -61,7 +61,7 @@ $app->post('/register', function() use ($app, $log, $msg) {
         $log->debug(sprintf("User %s created", $id));
         $msg->success('Registration successful. You may now login.');
         $msg->display();
-        $app->render('login.html.twig');
+        $app->render('eshop.html.twig');
     }
 });
 
@@ -358,7 +358,9 @@ $app->map('/passreset', function () use ($app, $log, $msg) {
                 $log->debug(sprintf("Message has been sent"));
                 $msg->success('Email with password reset code has been sent. Please allow the email a few minutes to arrive.');
                 $msg->display();
-                $app->render('login.html.twig');
+                $app->render('eshop.html.twig', array(
+                             "eshopuser" => $_SESSION['eshopuser']
+                ));
             }
         } else {
             $app->render('passreset.html.twig', array('error' => TRUE));
@@ -401,7 +403,9 @@ $app->map('/passreset/:secretToken', function($secretToken) use ($app, $msg) {
             DB::delete('passresets', 'secretToken=%s', $secretToken);
             $msg->success('Password reset successful. You can login now');
             $msg->display();
-            $app->render('eshop.html.twig');
+            $app->render('eshop.html.twig', array(
+                         "eshopuser" => $_SESSION['eshopuser']
+            ));
         }
     }
 })->via('GET', 'POST');
