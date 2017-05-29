@@ -37,9 +37,9 @@ $app->post('/register', function() use ($app, $log, $msg) {
         }
     }
     // ALTERNATIVE: if (($msg = verifyPassword($pass1)) !== TRUE) {
-    $msg = verifyPassword($pass1);
-    if ($msg !== TRUE) {
-        array_push($errorList, $msg);
+    $msg1 = verifyPassword($pass1);
+    if ($msg1 !== TRUE) {
+        array_push($errorList, $msg1);
     } else if ($pass1 != $pass2) {
         array_push($errorList, "Passwords don't match");
     }
@@ -61,7 +61,7 @@ $app->post('/register', function() use ($app, $log, $msg) {
         $log->debug(sprintf("User %s created", $id));
         $msg->success('Registration successful. You may now login.');
         $msg->display();
-        $app->render('eshop.html.twig');
+        $app->render('login.html.twig');
     }
 });
 
@@ -382,9 +382,9 @@ $app->map('/passreset/:secretToken', function($secretToken) use ($app, $msg) {
         $pass2 = $app->request()->post('pass2');
         // TODO: verify password quality and that pass1 matches pass2
         $errorList = array();
-        $msg = verifyPassword($pass1);
-        if ($msg !== TRUE) {
-            array_push($errorList, $msg);
+        $msg1 = verifyPassword($pass1);
+        if ($msg1 !== TRUE) {
+            array_push($errorList, $msg1);
         } else if ($pass1 != $pass2) {
             array_push($errorList, "Passwords don't match");
         }
