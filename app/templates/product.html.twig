@@ -8,7 +8,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-3">
-                <p class="lead">Blue Scooter</p>
+                <p class="lead">Blue Energy</p>
                 <div class="list-group">
                     <div class="list-group">
                         {% for c in categoryList %}
@@ -20,12 +20,23 @@
 
             <div class="col-md-9">
                 <div class="thumbnail">
-                    <img class="img-responsive" src="http://placehold.it/800x300" alt="">
+                    <!--<img class="img-responsive" src="http://placehold.it/800x300" alt="">-->
+                    <!--<img src ="data:image/jpeg;base64,'.base64_encode($product['imageData1']).'")/> -->
+                    <img  src="/imageview/{{p.ID}}" width="800" height="300" alt="">
+                    
+                    <!--<img src="data:image/jpeg;base64,'<?.base64_encode(p.imageData1)?>.'")" width="320" height="150"/>-->
                     <div class="caption-full">
                         <h4 class="pull-right">{{p.price}}</h4>
                         <h4><a href="#">{{p.name}}</a></h4>
                     </div>
-
+                    <div>
+                        <p>{{p.desc1}}</p>
+                        <p>{{p.desc2}}</p>
+                    </div>
+                    <div>
+                        <p>Product Title: {{p.title}}</p>
+                        <p>Model Name : {{p.modelName}}</p>
+                    </div>
                     <div class="ratings">
                         <p class="pull-right">3 reviews</p>
                         <p>

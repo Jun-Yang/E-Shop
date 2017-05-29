@@ -25,7 +25,7 @@ if ($_SERVER['SERVER_NAME'] === 'localhost') {
     DB::$user = 'eshop';
     DB::$password = 'FvUVdCWTv8GuWshh';
     DB::$host = '127.0.0.1';   // sometimes needed on Mac OSX
-    DB::$port = 3306 ;
+    DB::$port = 3333;
 } else { // hosted on external server
     DB::$dbName = 'cp4776_eshop';
     DB::$user = 'cp4776_eshop';
@@ -64,12 +64,6 @@ $view->parserOptions = array(
     'cache' => dirname(__FILE__) . '/app/cache'
 );
 $view->setTemplatesDirectory(dirname(__FILE__) . '/app/templates');
-
-// Start Set Multi
-
-
-// End of Multi
-
 
 if (!isset($_SESSION['eshopuser'])) {
     $_SESSION['eshopuser'] = array();
@@ -197,14 +191,6 @@ $app->post('/contact', function() use ($app) {
         ));
     }
 });
-
-
-    //$request = 'http://api.openweathermap.org/data/2.5/forecast/city?APPID=9262b9837c823be1825a0999421377ee';
-    //$response  = file_get_contents($request);
-    //$jsonobj  = json_decode($response);
-    //print_r($request);
-    
-    //print_r($jsonobj);
 
 
 $app->run();

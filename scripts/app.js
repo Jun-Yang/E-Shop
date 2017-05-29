@@ -7,7 +7,7 @@ var wind;
 var direction;
 
 function update(weather) {
-    icon.src = "imgs/codes/" + weather.code + ".png"
+    icon.src = "/images/imgs/codes/" + weather.code + ".png"
     humidity.innerHTML = weather.humidity;
     wind.innerHtml = weather.wind;
     direction.innerHTML = weather.direction;
