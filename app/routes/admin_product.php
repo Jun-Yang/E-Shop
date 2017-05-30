@@ -50,7 +50,22 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app, $msg) {
     $stock = $app->request()->post('stock');
     $discount = $app->request()->post('discount');
     $today = date("Y-m-d");
-    $image = isset($_FILES['image']) ? $_FILES['image'] : array();
+    $image = $_FILES['image'];
+    $valueList = array(
+        'title' => $title,
+        'name' => $name,
+        'catID' => $catID,
+        'modelNamen' => $modelName,
+        'modelNo' => $modelNo,
+        'desc1' => $desc1,
+        'desc2' => $desc2,
+        'code' => $code,
+        'price' => $price,
+        'stock' => $stock,
+        'discount' => $discount,
+        'today' => $today,
+        'image' => $image
+    );
     $errorList = array();
     
     if (strlen($name) < 2 || strlen($name) > 100) {
@@ -64,20 +79,26 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app, $msg) {
     if (empty($price) || $price < 0 || $price > 99999999) {
         array_push($errorList, "Price must be between 0 and 99999999");
     }
-    if ($image) {
+    if ($image['error'] == 0) {
         $imageInfo = getimagesize($image["tmp_name"]);
         if (!$imageInfo) {
             array_push($errorList, "File does not look like an valid image");
         } else {
-            $width = $imageInfo[0];
-            $height = $imageInfo[1];
-            if ($width > 800 || $height > 800) {
-                array_push($errorList, "Image must at most 800 by 800 pixels");
+            // FIXME: opened a security hole here! .. must be forbidden
+            if (strstr($image["name"], "..")) {
+                array_push($errorList, "File name invalid");
+            }
+            // FIXME: only allow select extensions .jpg .gif .png, never .php
+            $ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
+            if (!in_array($ext, array('jpg', 'jpeg', 'gif', 'png'))) {
+                array_push($errorList, "File name invalid");
             }
         }
-    }
-
-    $valueList = array('title' => $title);
+    } else {
+        if($op == 'add' ) {
+             array_push($errorList, "Image is required to create a product");
+        }
+    } 
 
     if (strlen($title) < 2 || strlen($title) > 200) {
         array_push($errorList, "Task name must be 2-100 characters long");
@@ -95,14 +116,14 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app, $msg) {
         ]);
     } else {
         if ($op == 'edit') {
-            if ($image) {
+            if ($image['error'] == 0) {
                 $imageData1 = file_get_contents($image['tmp_name']);
                 $imageMimeType1 = mime_content_type($image['tmp_name']);
             } else {
-                $imageData1 = DB::queryFirstField(
-                            'SELECT imageData1 FROM products WHERE id=%i', $id);
-                $imageMimeType1 = DB::queryFirstField(
-                            'SELECT imageMimeType1 FROM products WHERE id=%i', $id);
+                $p = DB::queryFirstRow(
+                            'SELECT * FROM products WHERE id=%i', $id);
+                $imageMimeType1 = $p['imageMimeType1'];
+                $imageData1 = $p['imageData1'];
             }
             
             DB::update('products', array(
@@ -124,7 +145,6 @@ $app->post('/admin/product/:op(/:id)', function($op, $id = 0) use ($app, $msg) {
             $msg->success('Edit successfully');
             
         } else {
-            $op == 'add';
             $imageData1 = file_get_contents($image['tmp_name']);
             $imageMimeType1 = mime_content_type($image['tmp_name']);
             DB::insert('products', array(
