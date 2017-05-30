@@ -37,9 +37,9 @@ $app->post('/register', function() use ($app, $log, $msg) {
         }
     }
     // ALTERNATIVE: if (($msg = verifyPassword($pass1)) !== TRUE) {
-    $msg = verifyPassword($pass1);
-    if ($msg !== TRUE) {
-        array_push($errorList, $msg);
+    $msg1 = verifyPassword($pass1);
+    if ($msg1 !== TRUE) {
+        array_push($errorList, $msg1);
     } else if ($pass1 != $pass2) {
         array_push($errorList, "Passwords don't match");
     }
@@ -321,23 +321,23 @@ $app->map('/passreset', function () use ($app, $log, $msg) {
             /* SPECIFIC TO GMAIL SMTP */
             $smtp = array(
                 'host' => 'smtp.gmail.com',
-                'port' => 587,
+                'port' => 587,                      // tls 587
                 'username' => $crendentials['email'],
                 'password' => $crendentials['password'],
-                'secure' => 'tls' //SSL or TLS
+                'secure' => 'TLS' //SSL or TLS
             );
 
             $mail = new PHPMailer;
 
-//            $mail->SMTPDebug = 3;                               // Enable verbose debug output
+            $mail->SMTPDebug = 3;                               // Enable verbose debug output
 
             $mail->isSMTP();                                      // Set mailer to use SMTP
             $mail->Host = $smtp['host'];  // Specify main and backup SMTP servers
             $mail->SMTPAuth = true;                               // Enable SMTP authentication
             $mail->Username = $smtp['username'];                 // SMTP username
             $mail->Password = $smtp['password'];                           // SMTP password
-            $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-            $mail->Port = 587;                                    // TCP port to connect to
+            $mail->SMTPSecure = $smtp['secure'];                            // Enable TLS encryption, `ssl` also accepted
+            $mail->Port = $smtp['port'];                                    // TCP port to connect to
 
             $mail->setFrom('eshop@ipd9.info', 'Mailer');
             $mail->addAddress($email);               // Name is optional
@@ -358,9 +358,12 @@ $app->map('/passreset', function () use ($app, $log, $msg) {
                 $log->debug(sprintf("Message has been sent"));
                 $msg->success('Email with password reset code has been sent. Please allow the email a few minutes to arrive.');
                 $msg->display();
-                $app->render('login.html.twig');
+                $app->render('eshop.html.twig', array(
+                             "eshopuser" => $_SESSION['eshopuser']
+                ));
             }
         } else {
+            print_r('send error');
             $app->render('passreset.html.twig', array('error' => TRUE));
         }
     }
@@ -382,9 +385,9 @@ $app->map('/passreset/:secretToken', function($secretToken) use ($app, $msg) {
         $pass2 = $app->request()->post('pass2');
         // TODO: verify password quality and that pass1 matches pass2
         $errorList = array();
-        $msg = verifyPassword($pass1);
-        if ($msg !== TRUE) {
-            array_push($errorList, $msg);
+        $msg1 = verifyPassword($pass1);
+        if ($msg1 !== TRUE) {
+            array_push($errorList, $msg1);
         } else if ($pass1 != $pass2) {
             array_push($errorList, "Passwords don't match");
         }
@@ -401,7 +404,9 @@ $app->map('/passreset/:secretToken', function($secretToken) use ($app, $msg) {
             DB::delete('passresets', 'secretToken=%s', $secretToken);
             $msg->success('Password reset successful. You can login now');
             $msg->display();
-            $app->render('eshop.html.twig');
+            $app->render('eshop.html.twig', array(
+                         "eshopuser" => $_SESSION['eshopuser']
+            ));
         }
     }
 })->via('GET', 'POST');
