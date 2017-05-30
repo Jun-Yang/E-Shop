@@ -190,4 +190,27 @@ $app->get('/admin_report', function() use ($app) {
     ));
 });
 
+$app->get('/admin_report_monthly', function() use ($app) {
+    $mList = DB::query("SELECT * FROM orders where date_format(dateTimePlaced,'%Y-%m')=date_format(now(),'%Y-%m') ");
+    $app->render("admin_report.html.twig", array(
+        'mList' => $mList,
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});
 
+
+$app->get('/admin_report_lastmonth', function() use ($app) {
+    $mList = DB::query("SELECT * FROM orders where date_format(dateTimePlaced,'%Y-%m')=date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y-%m')");
+    $app->render("admin_report_lastmonth.html.twig", array(
+        'mList' => $mList,
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});
+
+$app->get('/admin_report_region', function() use ($app) {
+    $mList = DB::query("SELECT * FROM orders where date_format(dateTimePlaced,'%Y-%m')=date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y-%m')");
+    $app->render("admin_report_lastmonth.html.twig", array(
+        'mList' => $mList,
+        "eshopuser" => $_SESSION['eshopuser']
+    ));
+});
