@@ -321,23 +321,23 @@ $app->map('/passreset', function () use ($app, $log, $msg) {
             /* SPECIFIC TO GMAIL SMTP */
             $smtp = array(
                 'host' => 'smtp.gmail.com',
-                'port' => 587,
+                'port' => 587,                      // tls 587
                 'username' => $crendentials['email'],
                 'password' => $crendentials['password'],
-                'secure' => 'tls' //SSL or TLS
+                'secure' => 'TLS' //SSL or TLS
             );
 
             $mail = new PHPMailer;
 
-//            $mail->SMTPDebug = 3;                               // Enable verbose debug output
+            $mail->SMTPDebug = 3;                               // Enable verbose debug output
 
             $mail->isSMTP();                                      // Set mailer to use SMTP
             $mail->Host = $smtp['host'];  // Specify main and backup SMTP servers
             $mail->SMTPAuth = true;                               // Enable SMTP authentication
             $mail->Username = $smtp['username'];                 // SMTP username
             $mail->Password = $smtp['password'];                           // SMTP password
-            $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-            $mail->Port = 587;                                    // TCP port to connect to
+            $mail->SMTPSecure = $smtp['secure'];                            // Enable TLS encryption, `ssl` also accepted
+            $mail->Port = $smtp['port'];                                    // TCP port to connect to
 
             $mail->setFrom('eshop@ipd9.info', 'Mailer');
             $mail->addAddress($email);               // Name is optional
@@ -363,6 +363,7 @@ $app->map('/passreset', function () use ($app, $log, $msg) {
                 ));
             }
         } else {
+            print_r('send error');
             $app->render('passreset.html.twig', array('error' => TRUE));
         }
     }
